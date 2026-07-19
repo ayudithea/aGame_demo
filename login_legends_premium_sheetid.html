@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Legends Portal Login</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+body{
+background:
+linear-gradient(rgba(0,0,0,.65),rgba(0,0,0,.75)),
+url("https://images.unsplash.com/photo-1542751110-97427bbecf20?auto=format&fit=crop&w=1200&q=80") center/cover fixed;
+color:#fff;
+}
+.wrap{max-width:430px;margin:auto;padding:18px}
+.banner{
+height:90px;border-radius:18px;
+background:linear-gradient(90deg,#6b4f00,#f8d64d,#6b4f00);
+display:flex;justify-content:space-between;align-items:center;
+padding:18px;box-shadow:0 0 20px rgba(255,215,0,.4)
+}
+.banner h2{color:#111}
+.download{
+background:linear-gradient(#3cd3ff,#0f7bdc);
+padding:12px 20px;border-radius:30px;color:#fff;font-weight:bold}
+.logo{
+margin:18px auto;
+text-align:center;font-size:42px;font-weight:bold;
+color:#ffd84d;text-shadow:0 0 15px gold;
+}
+.quick{
+display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:18px}
+.quick div{
+background:#111;border:2px solid #d8b500;border-radius:12px;
+padding:10px 4px;text-align:center;color:#ffd84d;font-size:11px}
+.card{
+background:rgba(10,10,10,.72);
+border:2px solid #ffd84d;border-radius:18px;padding:20px;
+backdrop-filter:blur(6px)
+}
+.title{text-align:center;font-size:22px;margin-bottom:16px}
+.field{
+display:flex;align-items:center;
+border:2px solid #ffd84d;border-radius:40px;
+overflow:hidden;background:#0d0d0d;margin:12px 0}
+.icon{width:58px;text-align:center;font-size:24px;background:#000;padding:12px}
+input{flex:1;background:none;border:none;color:#fff;padding:14px;font-size:17px;outline:none}
+.eye{width:55px;text-align:center;cursor:pointer;font-size:22px}
+.btn{
+width:100%;padding:15px;margin-top:14px;border:none;
+border-radius:35px;font-size:22px;font-weight:bold;
+background:linear-gradient(#fff27d,#ffc800);
+box-shadow:0 5px 15px rgba(255,215,0,.45)
+}
+.social{
+display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:24px}
+.social a{
+text-decoration:none;text-align:center;
+background:#111;border:2px solid #d8b500;color:#fff;
+padding:12px;border-radius:30px}
+#msg{text-align:center;margin-top:12px;color:#ffbfbf}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="banner">
+<div>
+<h2>LEGENDS PORTAL</h2>
+<div>Android Game Community</div>
+</div>
+<div class="download">DOWNLOAD</div>
+</div>
+
+<div class="logo">🦁 LEGENDS</div>
+
+<div class="quick">
+<div>🏆 Event</div>
+<div>🎁 Bonus</div>
+<div>📖 Guide</div>
+<div>⭐ Promo</div>
+<div>💬 CS</div>
+</div>
+
+<div class="card">
+<div class="title">Silakan login untuk melanjutkan</div>
+
+<div class="field">
+<div class="icon">👤</div>
+<input id="user" placeholder="Username">
+</div>
+
+<div class="field">
+<div class="icon">🔒</div>
+<input id="pass" type="password" placeholder="Password">
+<div class="eye" onclick="pass.type=pass.type==='password'?'text':'password';this.textContent=pass.type==='password'?'👁️':'🙈'">👁️</div>
+</div>
+
+<button class="btn" onclick="login()">LOG IN</button>
+<button class="btn" onclick="alert('Halaman pendaftaran dapat ditambahkan.')">DAFTAR</button>
+
+<div id="msg"></div>
+
+<div class="social">
+<a href="#">💬 Telegram</a>
+<a href="#">📘 Facebook</a>
+<a href="#">▶ Discord</a>
+<a href="#">🛟 Bantuan</a>
+</div>
+</div>
+</div>
+
+<script>
+const SHEET_ID="1GYfRdPVHRuesS4pUWSAEGP-FSFXs0j8FljOzl_ANRS8";
+const SHEET_NAME="akun";
+
+async function login(){
+msg.textContent="Memverifikasi...";
+try{
+const url=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${encodeURIComponent(SHEET_NAME)}`;
+const txt=await fetch(url).then(r=>r.text());
+const json=JSON.parse(txt.substring(47).slice(0,-2));
+let ok=false;
+json.table.rows.forEach(r=>{
+const u=(r.c[0]?.v||"").toString().trim();
+const p=(r.c[1]?.v||"").toString().trim();
+if(u===user.value.trim()&&p===pass.value.trim()) ok=true;
+});
+if(ok){
+localStorage.setItem("login","true");
+location.href="portal.html";
+}else{
+msg.textContent="Username atau password salah.";
+}
+}catch(e){
+msg.textContent="Periksa SHEET_ID atau koneksi.";
+}
+}
+</script>
+</body>
+</html>
