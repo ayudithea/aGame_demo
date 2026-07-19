@@ -764,9 +764,13 @@ await destroyMatches(result);
 
 }else{
 
-showMessage("❌ Tidak ada kombinasi");
+showMessage("❌ Tidak ada kombinasi. Tekan SPIN lagi.");
 
-await reshuffleBoard();
+spinBtn.disabled=false;
+
+spinning=false;
+
+return;
 
 }
 
