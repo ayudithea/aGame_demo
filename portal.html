@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1200">
+<title>Portal Game</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+min-width:1200px;
+font-family:Arial,sans-serif;
+background:linear-gradient(180deg,#0b1220,#132b4a,#081018);
+color:#fff;
+}
+.header{
+height:70px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:0 30px;
+background:#111b2d;
+border-bottom:2px solid #d8aa2d;
+position:sticky;top:0;
+}
+.logo{font-size:28px;font-weight:bold;color:#ffd34d}
+.user{background:#233a63;padding:8px 16px;border-radius:20px}
+.banner{
+width:1160px;height:280px;
+margin:20px auto;
+border-radius:24px;
+background:linear-gradient(135deg,#355d93,#1b2b47);
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:48px;
+font-weight:bold;
+color:#ffe27a;
+box-shadow:0 10px 30px rgba(0,0,0,.4);
+}
+.menu{
+width:1160px;
+margin:0 auto 25px;
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:18px;
+}
+.item{
+background:#17304d;
+border:1px solid #365a8d;
+border-radius:18px;
+padding:25px;
+text-align:center;
+cursor:pointer;
+transition:.2s;
+}
+.item:hover{transform:translateY(-4px)}
+.item .i{font-size:54px;margin-bottom:12px}
+.item h3{margin-bottom:8px}
+.games{
+width:1160px;
+margin:0 auto 40px;
+display:grid;
+grid-template-columns:repeat(5,1fr);
+gap:18px;
+}
+.card{
+background:#12253d;
+border-radius:18px;
+padding:20px;
+text-align:center;
+border:1px solid #27456e;
+}
+.icon{font-size:52px;margin-bottom:10px}
+.play{
+margin-top:12px;
+padding:10px 18px;
+border:none;
+border-radius:10px;
+background:#ffd34d;
+font-weight:bold;
+cursor:pointer;
+}
+footer{
+text-align:center;
+padding:30px;
+color:#b8c4d8;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+<div class="logo">🎮 Fantasy Portal</div>
+<div class="user">Guest</div>
+</div>
+
+<div class="banner">
+SELAMAT DATANG
+</div>
+
+<div class="menu">
+<div class="item"><div class="i">🏠</div><h3>Beranda</h3></div>
+<div class="item"><div class="i">🎁</div><h3>Bonus</h3></div>
+<div class="item"><div class="i">🏆</div><h3>Turnamen</h3></div>
+<div class="item"><div class="i">👤</div><h3>Profil</h3></div>
+</div>
+
+<div class="games">
+<div class="card"><div class="icon">🍓</div><h3>Fruit Match</h3><button class="play">Main</button></div>
+<div class="card"><div class="icon">🔢</div><h3>2048</h3><button class="play">Main</button></div>
+<div class="card"><div class="icon">🐍</div><h3>Snake</h3><button class="play">Main</button></div>
+<div class="card"><div class="icon">🧩</div><h3>Puzzle</h3><button class="play">Main</button></div>
+<div class="card"><div class="icon">🚀</div><h3>Runner</h3><button class="play">Main</button></div>
+<div class="card"><div class="icon">🎯</div><h3>Target</h3><button class="play">Main</button></div>
+<div class="card"><div class="icon">♟️</div><h3>Catur</h3><button class="play">Main</button></div>
+<div class="card"><div class="icon">🃏</div><h3>Kartu</h3><button class="play">Main</button></div>
+<div class="card"><div class="icon">💎</div><h3>Permata</h3><button class="play">Main</button></div>
+<div class="card"><div class="icon">⭐</div><h3>Arcade</h3><button class="play">Main</button></div>
+</div>
+
+<footer>Portal Game • Tahap Awal</footer>
+
+</body>
+</html>
