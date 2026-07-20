@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>🍓 Fruit Spin Pro</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+-webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+width:100%;
+height:100%;
+overflow:hidden;
+font-family:Arial,sans-serif;
+background:linear-gradient(180deg,#63d8ff,#ffe7a3);
+}
+
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+
+    background:url("kebun-stroberi.jpg") center center/cover no-repeat fixed;
+
+    min-height:100vh;
+}
+@keyframes bgMove{
+0%{
+background-position:center top;
+}
+50%{
+background-position:center center;
+}
+100%{
+background-position:center top;
+}
+}
+#game{
+width:430px;
+max-width:100%;
+padding:8px;
+}
+
+.header{
+
+background:
+linear-gradient(180deg,#66bb6a,#2e7d32);
+
+color:#fff;
+
+font-size:30px;
+
+font-weight:bold;
+
+text-shadow:2px 2px 5px rgba(0,0,0,.4);
+
+box-shadow:0 8px 18px rgba(0,0,0,.4);
+
+}
+
+.panel{
+background:#fff9dd;
+display:flex;
+justify-content:space-between;
+padding:10px 15px;
+font-size:18px;
+font-weight:bold;
+border-left:4px solid #8b5a2b;
+border-right:4px solid #8b5a2b;
+}
+
+.board{
+    position:relative;
+    width:min(96vw,650px);
+    margin:18px auto;
+    padding:28px;
+    border-radius:35px;
+    overflow:hidden;
+
+    background:
+        linear-gradient(rgba(255,255,255,.15),rgba(255,255,255,.15));
+
+    backdrop-filter:blur(4px);
+    -webkit-backdrop-filter:blur(4px);
+
+    box-shadow:
+        0 12px 30px rgba(0,0,0,.35);
+}
+.board::before{
+    content:"";
+    position:absolute;
+
+    top:-20px;
+    left:-20px;
+    right:-20px;
+    bottom:-20px;
+
+    background:url("akar.png") center center/100% 100% no-repeat;
+
+    z-index:20;
+    pointer-events:none;
+}
+#grid{
+    position:relative;
+    z-index:10;
+
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:10px;
+
+    padding:35px;
+}
+
+#grid{
+    position:relative;
+    z-index:10;
+
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:8px;
+
+    width:100%;
+    height:100%;
+}
+#message{
+    position:relative;
+    z-index:1;
+}
+
+.cell{
+    aspect-ratio:1;
+    background:rgba(255,255,255,.08);
+    border-radius:12px;
+}
+
+/* Bayangan hitam di bawah buah */
+.cell::after{
+    content:"";
+
+    position:absolute;
+
+    width:58%;
+    height:14%;
+
+    bottom:10px;
+    left:50%;
+
+    transform:translateX(-50%);
+
+    background:rgba(0,0,0,.35);
+
+    border-radius:50%;
+
+    filter:blur(6px);
+
+    z-index:0;
+}
+
+/* Gambar buah */
+.cell{
+    text-shadow:
+        0 3px 0 rgba(0,0,0,.15),
+        0 8px 10px rgba(0,0,0,.35);
+}
+
+.cell:hover{
+    transform:translateY(-5px) scale(1.08);
+}
+  .fruit{
+    position:absolute;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    font-size:46px;
+    line-height:1;
+    transform-origin:center center;
+
+    transition:
+        transform .35s ease,
+        opacity .35s ease;
+}
+.fall{
+    animation:fall .35s ease;
+}
+
+@keyframes fall{
+
+    from{
+        transform:translateY(-80px);
+        opacity:0;
+    }
+
+    to{
+        transform:translateY(0);
+        opacity:1;
+    }
+
+}
+
+.spinArea{
+display:flex;
+flex-direction:column;
+align-items:center;
+margin-top:20px;
+}
+
+#spinBtn{
+
+width:100px;
+height:100px;
+
+border-radius:50%;
+border:6px solid #fff;
+
+background:radial-gradient(circle,#ffd54f,#ff9800,#e65100);
+
+box-shadow:
+0 10px 25px rgba(0,0,0,.45),
+inset 0 4px 10px rgba(255,255,255,.45);
+
+font-size:42px;
+cursor:pointer;
+transition:.15s;
+
+}
+
+#spinBtn:hover{
+transform:scale(1.08);
+}
+
+#spinBtn:active{
+transform:scale(.92);
+box-shadow:
+0 3px 10px rgba(0,0,0,.5),
+inset 0 2px 5px rgba(0,0,0,.3);
+}
+
+#message{
+margin-top:12px;
+font-size:20px;
+font-weight:bold;
+color:#fff;
+text-shadow:2px 2px 4px #000;
+min-height:28px;
+text-align:center;
+}
+#message{
+margin-top:10px;
+text-align:center;
+font-size:20px;
+font-weight:bold;
+color:#5a3300;
+min-height:28px;
+}
+.comboPopup{
+
+position:fixed;
+
+left:50%;
+
+top:45%;
+
+transform:translate(-50%,-50%);
+
+font-size:58px;
+
+font-weight:bold;
+
+color:#fff;
+
+text-shadow:0 0 18px #000;
+
+pointer-events:none;
+
+animation:comboPopup 1.2s forwards;
+
+z-index:9999;
+
+}
+
+@keyframes comboPopup{
+
+0%{
+
+opacity:0;
+
+transform:translate(-50%,-50%) scale(.2);
+
+}
+
+25%{
+
+opacity:1;
+
+transform:translate(-50%,-50%) scale(1.4);
+
+}
+
+100%{
+
+opacity:0;
+
+transform:translate(-50%,-180%) scale(1);
+
+}
+
+}
+
+.bigFlash{
+
+animation:bigFlash .7s;
+
+}
+
+@keyframes bigFlash{
+
+0%{filter:brightness(1);}
+
+50%{filter:brightness(2.2);}
+
+100%{filter:brightness(1);}
+
+}
+#freeSpinPopup{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.7);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    z-index:99999;
+}
+
+.popupBox{
+    width:320px;
+    max-width:90%;
+    background:white;
+    border-radius:20px;
+    text-align:center;
+    padding:25px;
+    animation:popupScale .35s;
+}
+
+.popupTitle{
+    font-size:30px;
+    font-weight:bold;
+    color:#ff9800;
+}
+
+.popupIcon{
+    font-size:70px;
+    margin:15px 0;
+}
+
+.popupText{
+    font-size:24px;
+    color:#444;
+    margin-bottom:20px;
+}
+
+#popupOk{
+    width:100%;
+    padding:15px;
+    font-size:22px;
+}
+
+@keyframes popupScale{
+    from{
+        transform:scale(.5);
+        opacity:0;
+    }
+    to{
+        transform:scale(1);
+        opacity:1;
+    }
+}    
+</style>
+
+</head>
+
+<body>
+
+<div id="game">
+
+<div class="header">
+🍓 FRUIT SPIN PRO
+</div>
+
+<div class="panel">
+
+<div>
+💰 Skor :
+<span id="score">0</span>
+</div>
+
+<div>
+🔥 Combo :
+<span id="combo">0</span>
+</div>
+
+</div>
+
+<div class="board">
+    <div id="grid"></div>
+</div>
+
+<div class="spinArea">
+    <button id="spinBtn">🎰</button>
+
+    <div id="message">
+        Tekan tombol SPIN
+    </div>
+</div>
+
+</div>
+
+<script>
+    
+const SCATTER = "⭐";
+const SCATTER_CHANCE = 20; // 20% per putaran
+let freeSpins = 0;
+let inFreeSpin = false;
+const ROWS=5;
+const COLS=5;
+const MIN_MATCH = 6;
+const fruits=[
+ "🍎","🍓","🍍","🥝","🍇","🥭","🍒","🍉","🥥","⭐"
+];
+let board=[];
+let finalBoard=[];
+let score=0;
+let combo=0;
+let spinning=false;
+let forceScatter=false;   
+
+const grid = document.getElementById("grid");
+let cells = [];
+
+const scoreText = document.getElementById("score");
+const comboText = document.getElementById("combo");
+const message = document.getElementById("message");
+const spinBtn = document.getElementById("spinBtn");
+function randomFruit(){
+
+    const normalFruits=[
+        "🍎","🍓","🍍","🥝",
+        "🍇","🥭","🍒","🍉","🥥"
+    ];
+
+    return normalFruits[
+        Math.floor(Math.random()*normalFruits.length)
+    ];
+
+}
+function generateFinalBoard(){
+
+    finalBoard=[];
+
+    for(let r=0;r<ROWS;r++){
+
+        const row=[];
+
+        for(let c=0;c<COLS;c++){
+
+            row.push(randomFruit());
+
+        }
+
+        finalBoard.push(row);
+
+    }
+
+}
+function updatePanel(){
+scoreText.textContent=score;
+comboText.textContent=combo;
+}
+
+function showMessage(text){
+message.textContent=text;
+}
+function createBoard(){
+
+board=[];
+
+for(let r=0;r<ROWS;r++){
+
+const row=[];
+
+for(let c=0;c<COLS;c++){
+
+row.push(randomFruit());
+
+}
+
+board.push(row);
+
+}
+
+drawBoard();
+
+updatePanel();
+
+}
+
+function drawBoard(){
+
+    grid.innerHTML = "";
+    cells = [];
+
+    for(let r = 0; r < ROWS; r++){
+
+        for(let c = 0; c < COLS; c++){
+
+            const cell = document.createElement("div");
+
+            cell.className = "cell";
+            cell.textContent = board[r][c];
+
+            grid.appendChild(cell);
+
+            cells.push(cell);
+
+        }
+
+    }
+
+}
+function sleep(ms){
+
+return new Promise(resolve=>setTimeout(resolve,ms));
+
+}
+
+async function flashBoard(){
+
+cells.forEach(cell=>{
+    cell.style.transform="scale(1.05)";
+});
+
+await sleep(150);
+
+cells.forEach(cell=>{
+    cell.style.transform="scale(1)";
+});
+
+}
+async function animateSpin(){
+
+    spinBtn.disabled = true;
+    spinning = true;
+
+    showMessage("🎰 SPIN...");
+    forceScatter = Math.random()*100 < SCATTER_CHANCE;
+
+    // Kosongkan seluruh papan
+    for(let r=0;r<ROWS;r++){
+        for(let c=0;c<COLS;c++){
+            board[r][c]=null;
+            updateCell(r,c);
+        }
+    }
+
+    await sleep(150);
+
+    // Isi kembali menggunakan animasi gravity
+    await gravity();
+   if(forceScatter){
+
+    const used=[];
+
+    const totalScatter = 4 + Math.floor(Math.random() * 3);
+
+while(used.length < totalScatter){
+        const r=Math.floor(Math.random()*ROWS);
+        const c=Math.floor(Math.random()*COLS);
+
+        const key=r+"-"+c;
+
+        if(used.includes(key)) continue;
+
+        used.push(key);
+
+        board[r][c]=SCATTER;
+
+        updateCell(r,c);
+
+    }
+
+} 
+
+}
+async function spin(){
+
+    if(spinning) return;
+
+    try{
+
+        combo=0;
+        updatePanel();
+
+        await animateSpin();
+       if(checkScatter()){
+
+    await showFreeSpinPopup();
+
+    await startFreeSpins();
+
+    return;
+
+}
+
+        showMessage("🔍 Mencari kombinasi...");
+
+        await sleep(400);
+
+        const result=findMatches();
+
+        if(result.length===0){
+
+            showMessage("❌ Tidak ada kombinasi. Tekan SPIN lagi.");
+
+            spinBtn.disabled=false;
+            spinning=false;
+            return;
+        }
+
+        showMessage("🎉 Kombinasi ditemukan!");
+
+        await destroyMatches(result);
+        if(inFreeSpin){
+
+    freeSpins--;
+
+    showMessage("🎁 FREE SPINS : "+freeSpins);
+
+    if(freeSpins<=0){
+
+        inFreeSpin=false;
+
+        showMessage("Free Spin Selesai");
+
+    }
+
+}
+
+    }catch(e){
+
+        console.error(e);
+
+        showMessage(e.message);
+
+        spinBtn.disabled=false;
+        spinning=false;
+
+    }
+
+}
+   spinBtn.addEventListener("click", spin); 
+function findMatches(){
+
+    const counts={};
+    const positions={};
+
+    for(let r=0;r<ROWS;r++){
+
+        for(let c=0;c<COLS;c++){
+
+            const fruit=board[r][c];
+            if(fruit===SCATTER){
+    continue;
+}
+
+            if(!counts[fruit]){
+                counts[fruit]=0;
+                positions[fruit]=[];
+            }
+
+            counts[fruit]++;
+            positions[fruit].push({r,c});
+
+        }
+
+    }
+
+    const matches=[];
+
+    for(const fruit in counts){
+
+        if(counts[fruit]>=6){
+
+            matches.push(positions[fruit]);
+
+        }
+
+    }
+
+    return matches;
+
+}
+
+function floodFill(r,c,fruit,visited,group){
+
+if(r<0||c<0||r>=ROWS||c>=COLS) return;
+
+if(visited[r][c]) return;
+
+if(board[r][c]!==fruit) return;
+
+visited[r][c]=true;
+
+group.push({
+r:r,
+c:c
+});
+
+floodFill(r-1,c,fruit,visited,group);
+floodFill(r+1,c,fruit,visited,group);
+floodFill(r,c-1,fruit,visited,group);
+floodFill(r,c+1,fruit,visited,group);
+
+}
+async function destroyMatches(groups){
+
+
+for(const group of groups){
+
+for(const pos of group){
+
+const index=pos.r*COLS+pos.c;
+
+cells[index].style.transform="scale(1.4)";
+
+cells[index].style.opacity="0";
+
+}
+
+}
+
+await sleep(350);
+
+for(const group of groups){
+
+score += group.length * (combo + 1) * 10;
+
+for(const pos of group){
+
+board[pos.r][pos.c]=null;
+}
+
+}
+
+updatePanel();
+
+await gravity();
+
+const again=findMatches();
+
+if(again.length>0){
+
+combo++;
+
+updatePanel();
+
+showMessage("🔥 COMBO x"+combo);
+
+await sleep(300);
+
+await destroyMatches(again);
+
+}else{
+
+if(combo==0){
+
+showWin("🎉 WIN");
+
+}else if(combo<3){
+
+showWin("🔥 COMBO x"+(combo+1));
+
+}else if(combo<5){
+
+showWin("🏆 BIG WIN");
+
+}else if(combo<8){
+
+showWin("💎 MEGA WIN");
+
+}else{
+
+showWin("👑 JACKPOT");
+
+if(navigator.vibrate){
+
+navigator.vibrate([150,80,150,80,300]);
+
+}
+
+}
+
+showMessage("Tekan SPIN lagi");
+
+spinBtn.disabled=false;
+
+spinning=false;
+}
+}
+async function gravity(){
+
+    let moved = false;
+
+    // Geser buah ke bawah
+    for(let c=0;c<COLS;c++){
+
+        for(let r=ROWS-1;r>=0;r--){
+
+            if(board[r][c]===null){
+
+                let k=r-1;
+
+                while(k>=0 && board[k][c]===null){
+                    k--;
+                }
+
+                if(k>=0){
+
+                    board[r][c]=board[k][c];
+                    board[k][c]=null;
+
+                    moved=true;
+
+                }
+
+            }
+
+        }
+
+    }
+
+    // Update seluruh papan
+    for(let r=0;r<ROWS;r++){
+        for(let c=0;c<COLS;c++){
+            updateCell(r,c);
+        }
+    }
+
+    if(moved){
+        await sleep(180);
+    }
+
+    // Isi buah baru dari atas
+    for(let c=0;c<COLS;c++){
+
+        for(let r=0;r<ROWS;r++){
+
+            if(board[r][c]===null){
+
+                board[r][c]=randomFruit();
+
+                updateCell(r,c);
+
+                const index=r*COLS+c;
+
+                cells[index].classList.remove("fall");
+                void cells[index].offsetWidth;
+                cells[index].classList.add("fall");
+
+                await sleep(60);
+
+            }
+
+        }
+
+    }
+
+    // Pastikan semua sel tampil normal
+    for(let r=0;r<ROWS;r++){
+        for(let c=0;c<COLS;c++){
+
+            const index=r*COLS+c;
+
+            cells[index].style.opacity="1";
+            cells[index].style.transform="scale(1)";
+
+            updateCell(r,c);
+
+        }
+    }
+
+    await sleep(250);
+
+}
+function updateCell(r,c){
+
+    const index = r * COLS + c;
+
+    if(!cells[index]) return;
+
+    cells[index].textContent = board[r][c] ?? "";
+
+    cells[index].style.opacity = "1";
+
+}
+function showWin(text){
+
+const d=document.createElement("div");
+
+d.className="comboPopup";
+
+d.innerHTML=text;
+
+document.body.appendChild(d);
+
+setTimeout(()=>{
+
+d.remove();
+
+},1200);
+
+grid.classList.add("bigFlash");
+
+setTimeout(()=>{
+
+grid.classList.remove("bigFlash");
+
+},700);
+
+}
+    function checkScatter(){
+
+    let count=0;
+
+    for(let r=0;r<ROWS;r++){
+        for(let c=0;c<COLS;c++){
+
+            if(board[r][c]===SCATTER){
+                count++;
+            }
+
+        }
+    }
+
+    if(count>=4){
+
+        freeSpins+=10;
+        inFreeSpin=true;
+
+        showWin("⭐ FREE SPINS x10 ⭐");
+
+        return true;
+
+    }
+
+    return false;
+
+}
+ async function startFreeSpins(){
+
+    while(freeSpins > 0){
+
+        freeSpins--;
+
+        showMessage("🎁 FREE SPINS : " + freeSpins);
+
+        await sleep(700);
+
+        await animateSpin();
+
+        const result = findMatches();
+
+        if(result.length){
+            await destroyMatches(result);
+        }
+
+    }
+
+    inFreeSpin = false;
+
+    spinBtn.disabled = false;
+    spinning = false;
+
+    showMessage("Free Spin Selesai");
+
+} 
+function showFreeSpinPopup(){
+
+    return new Promise(resolve=>{
+
+        const popup=document.getElementById("freeSpinPopup");
+
+        popup.style.display="flex";
+
+        document.getElementById("popupOk").onclick=()=>{
+
+            popup.style.display="none";
+
+            resolve();
+
+        };
+
+    });
+
+}    
+    
+ createBoard();
+showMessage("Tekan tombol SPIN");   
+</script>
+    <div id="freeSpinPopup" style="display:none;">
+    <div class="popupBox">
+        <div class="popupTitle">🎉 SELAMAT! 🎉</div>
+
+        <div class="popupIcon">⭐ ⭐ ⭐ ⭐</div>
+
+        <div class="popupText">
+            Anda mendapatkan
+            <br><br>
+            <b>10 FREE SPINS</b>
+        </div>
+
+        <button id="popupOk">
+            OK
+        </button>
+    </div>
+</div>
+</body>
+</html>
