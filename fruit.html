@@ -469,8 +469,11 @@ async function animateSpin(){
 
     const used=[];
 
-    while(used.length<4){
+    const totalScatter = 4 + Math.floor(Math.random() * 3);
 
+const used=[];
+
+while(used.length < totalScatter){
         const r=Math.floor(Math.random()*ROWS);
         const c=Math.floor(Math.random()*COLS);
 
