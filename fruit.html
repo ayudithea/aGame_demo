@@ -23,9 +23,33 @@ html,body{
     font-family:Arial,sans-serif;
 }
 
-body{
-    background:url("halaman.png") center center / cover no-repeat fixed;
-    background-color:#000;
+html,body{
+    margin:0;
+    padding:0;
+    background:url("halaman.png") center center/cover no-repeat fixed;
+}
+
+/* Hilangkan background pembungkus */
+#game{
+    background:transparent !important;
+}
+
+/* Hilangkan background area papan */
+.board{
+    background:transparent !important;
+    backdrop-filter:none !important;
+    -webkit-backdrop-filter:none !important;
+    box-shadow:none;
+}
+
+/* Hilangkan background area tombol */
+.spinArea{
+    background:transparent !important;
+}
+
+/* Hilangkan background pesan */
+#message{
+    background:transparent !important;
 }
 .header{
 
