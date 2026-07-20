@@ -404,36 +404,40 @@ async function spin(){
    spinBtn.addEventListener("click", spin); 
 function findMatches(){
 
-const visited=Array.from(
-{length:ROWS},
-()=>Array(COLS).fill(false)
-);
+    const counts={};
+    const positions={};
 
-let matches=[];
+    for(let r=0;r<ROWS;r++){
 
-for(let r=0;r<ROWS;r++){
+        for(let c=0;c<COLS;c++){
 
-for(let c=0;c<COLS;c++){
+            const fruit=board[r][c];
 
-if(visited[r][c]) continue;
+            if(!counts[fruit]){
+                counts[fruit]=0;
+                positions[fruit]=[];
+            }
 
-const fruit=board[r][c];
+            counts[fruit]++;
+            positions[fruit].push({r,c});
 
-const group=[];
+        }
 
-floodFill(r,c,fruit,visited,group);
+    }
 
-if(group.length >= MIN_MATCH){
+    const matches=[];
 
-    matches.push(group);
+    for(const fruit in counts){
 
-}
+        if(counts[fruit]>=6){
 
-}
+            matches.push(positions[fruit]);
 
-}
+        }
 
-return matches;
+    }
+
+    return matches;
 
 }
 
