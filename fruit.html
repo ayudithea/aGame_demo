@@ -315,8 +315,9 @@ Tekan tombol SPIN
 </div>
 
 <script>
+    
 const SCATTER = "⭐";
-
+const SCATTER_CHANCE = 20; // 20% per putaran
 let freeSpins = 0;
 let inFreeSpin = false;
 const ROWS=5;
@@ -330,6 +331,7 @@ let finalBoard=[];
 let score=0;
 let combo=0;
 let spinning=false;
+let forceScatter=false;   
 
 const grid = document.getElementById("grid");
 let cells = [];
@@ -339,11 +341,6 @@ const comboText = document.getElementById("combo");
 const message = document.getElementById("message");
 const spinBtn = document.getElementById("spinBtn");
 function randomFruit(){
-
-    // Scatter hanya sekitar 1,5%
-    if(Math.random() < 0.08){
-        return SCATTER;
-    }
 
     const normalFruits=[
         "🍎","🍓","🍍","🥝",
@@ -454,6 +451,7 @@ async function animateSpin(){
     spinning = true;
 
     showMessage("🎰 SPIN...");
+    forceScatter = Math.random()*100 < SCATTER_CHANCE;
 
     // Kosongkan seluruh papan
     for(let r=0;r<ROWS;r++){
@@ -467,6 +465,28 @@ async function animateSpin(){
 
     // Isi kembali menggunakan animasi gravity
     await gravity();
+   if(forceScatter){
+
+    const used=[];
+
+    while(used.length<4){
+
+        const r=Math.floor(Math.random()*ROWS);
+        const c=Math.floor(Math.random()*COLS);
+
+        const key=r+"-"+c;
+
+        if(used.includes(key)) continue;
+
+        used.push(key);
+
+        board[r][c]=SCATTER;
+
+        updateCell(r,c);
+
+    }
+
+} 
 
 }
 async function spin(){
