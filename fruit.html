@@ -554,19 +554,21 @@ async function gravity(){
 
         let stack=[];
 
-        for(let r=ROWS-1;r>=0;r--){
-            if(board[r][c]!=null){
-                stack.push(board[r][c]);
-            }
-        }
+// Ambil semua buah yang masih ada
+for(let r=ROWS-1;r>=0;r--){
+    if(board[r][c] !== null){
+        stack.unshift(board[r][c]);
+    }
+}
 
-        for(let r=ROWS-1;r>=0;r--){
-            if(stack.length){
-                board[r][c]=stack.pop();
-            }else{
-                board[r][c]=randomFruit();
-            }
-        }
+// Isi ulang kolom dari bawah
+for(let r=ROWS-1;r>=0;r--){
+    if(stack.length>0){
+        board[r][c]=stack.pop();
+    }else{
+        board[r][c]=randomFruit();
+    }
+}
 
     }
 
