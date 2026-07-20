@@ -371,39 +371,18 @@ async function animateSpin(){
 
     showMessage("🎰 SPIN...");
 
-    // Jumlah langkah animasi
-    for(let step=0; step<25; step++){
-
-        // Semua kolom turun 1 langkah
+    // Kosongkan seluruh papan
+    for(let r=0;r<ROWS;r++){
         for(let c=0;c<COLS;c++){
-
-            // Geser isi kolom ke bawah
-            for(let r=ROWS-1;r>0;r--){
-
-                board[r][c]=board[r-1][c];
-
-            }
-
-            // Buah baru muncul di paling atas
-            board[0][c]=randomFruit();
-
+            board[r][c]=null;
+            updateCell(r,c);
         }
-
-        // Gambar ulang
-        for(let r=0;r<ROWS;r++){
-
-            for(let c=0;c<COLS;c++){
-
-                updateCell(r,c);
-
-            }
-
-        }
-
-        // Semakin lama semakin pelan
-        await sleep(35 + step*4);
-
     }
+
+    await sleep(150);
+
+    // Isi kembali menggunakan animasi gravity
+    await gravity();
 
 }
 async function spin(){
