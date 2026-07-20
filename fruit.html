@@ -102,16 +102,11 @@ border-right:4px solid #8b5a2b;
 .board::before{
     content:"";
     position:absolute;
-
-    top:-4px;
-    left:-4px;
-    right:-4px;
-    bottom:-4px;
-
-    background:url("akar.png") center/contain no-repeat;
-
+    inset:0;
     z-index:20;
     pointer-events:none;
+
+    background:url("akar.png") center center / 100% 100% no-repeat;
 }
 #grid{
     position:relative;
