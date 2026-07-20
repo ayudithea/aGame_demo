@@ -330,25 +330,20 @@ updatePanel();
 
 function drawBoard(){
 
-    grid.innerHTML="";
-    cells=[];
+    grid.innerHTML = "";
+    cells = [];
 
-    for(let r=0;r<ROWS;r++){
+    for(let r = 0; r < ROWS; r++){
 
-        for(let c=0;c<COLS;c++){
+        for(let c = 0; c < COLS; c++){
 
-            const cell=document.createElement("div");
+            const cell = document.createElement("div");
 
-            cell.className="cell";
-            cell.style.opacity="1";
-            cell.style.transform="scale(1)";
-
-            cell.dataset.row=r;
-            cell.dataset.col=c;
-
-            cell.textContent=board[r][c];
+            cell.className = "cell";
+            cell.textContent = board[r][c];
 
             grid.appendChild(cell);
+
             cells.push(cell);
 
         }
