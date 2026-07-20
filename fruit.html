@@ -670,13 +670,26 @@ async function gravity(){
 }
 function updateCell(r,c){
 
-    const index=r*COLS+c;
+    const index = r * COLS + c;
 
     if(!cells[index]) return;
 
-    cells[index].style.opacity="1";
+    const fruit = cells[index];
 
-    cells[index].textContent=board[r][c]??"";
+    // Mulai dari atas
+    fruit.style.transition = "none";
+    fruit.style.transform = "translateY(-70px)";
+    fruit.style.opacity = "0";
+
+    fruit.textContent = board[r][c] ?? "";
+
+    requestAnimationFrame(()=>{
+
+        fruit.style.transition = "transform .12s linear, opacity .12s linear";
+        fruit.style.transform = "translateY(0)";
+        fruit.style.opacity = "1";
+
+    });
 
 }
 function showWin(text){
