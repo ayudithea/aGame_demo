@@ -86,10 +86,16 @@ border-right:4px solid #8b5a2b;
 
 .board{
     position:relative;
-    overflow:visible;
-    padding:28px;   /* ruang untuk bingkai */
-    border-radius:30px;
-    background:#d8ccb9;
+    overflow:hidden;
+    padding:28px;
+    border-radius:28px;
+
+    background:
+    linear-gradient(rgba(245,250,240,.72),rgba(245,250,240,.72)),
+    url("https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1200&q=80");
+
+    background-size:cover;
+    background-position:center;
 }
 
 .board::before{
