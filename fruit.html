@@ -112,117 +112,44 @@ border-right:4px solid #8b5a2b;
 }
 
 .cell{
-    aspect-ratio:1;
-    background:rgba(255,255,255,.08);
-    border-radius:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:18px;
+  background:rgba(255,255,255,.12);
+  backdrop-filter:blur(2px);
 }
 
-/* Bayangan hitam di bawah buah */
-.cell::after{
-    content:"";
-
-    position:absolute;
-
-    width:58%;
-    height:14%;
-
-    bottom:10px;
-    left:50%;
-
-    transform:translateX(-50%);
-
-    background:rgba(0,0,0,.35);
-
-    border-radius:50%;
-
-    filter:blur(6px);
-
-    z-index:0;
+.cell img{
+  width:82%;
+  filter:drop-shadow(0 8px 8px rgba(0,0,0,.35));
 }
 
-/* Gambar buah */
-.cell{
-    text-shadow:
-        0 3px 0 rgba(0,0,0,.15),
-        0 8px 10px rgba(0,0,0,.35);
+.spin-btn{
+  width:140px;
+  height:140px;
+  border-radius:50%;
+  border:8px solid #fff;
+  background:linear-gradient(#ffbf47,#ff8d00);
+  box-shadow:0 12px 30px rgba(0,0,0,.35);
+  margin:22px auto;
 }
 
-.cell:hover{
-    transform:translateY(-5px) scale(1.08);
-}
-  .fruit{
-    position:absolute;
-    left:0;
-    top:0;
-    width:100%;
-    height:100%;
-
-    display:flex;
-    justify-content:center;
-    align-items:center;
-
-    font-size:46px;
-    line-height:1;
-    transform-origin:center center;
-
-    transition:
-        transform .35s ease,
-        opacity .35s ease;
-}
-.fall{
-    animation:fall .35s ease;
+.message{
+  text-align:center;
+  color:#fff;
+  font-size:34px;
+  font-weight:bold;
+  text-shadow:0 3px 8px #000;
 }
 
-@keyframes fall{
-
-    from{
-        transform:translateY(-80px);
-        opacity:0;
-    }
-
-    to{
-        transform:translateY(0);
-        opacity:1;
-    }
-
-}
-
-.spinArea{
-display:flex;
-flex-direction:column;
-align-items:center;
-margin-top:20px;
-}
-
-#spinBtn{
-
-width:100px;
-height:100px;
-
-border-radius:50%;
-border:6px solid #fff;
-
-background:radial-gradient(circle,#ffd54f,#ff9800,#e65100);
-
-box-shadow:
-0 10px 25px rgba(0,0,0,.45),
-inset 0 4px 10px rgba(255,255,255,.45);
-
-font-size:42px;
-cursor:pointer;
-transition:.15s;
-
-}
-
-#spinBtn:hover{
-transform:scale(1.08);
-}
-
-#spinBtn:active{
-transform:scale(.92);
-box-shadow:
-0 3px 10px rgba(0,0,0,.5),
-inset 0 2px 5px rgba(0,0,0,.3);
+@media(max-width:700px){
+ header{font-size:28px;padding:12px;}
+ .scoreboard{font-size:18px;padding:10px 14px;}
+ .board{padding:24px;}
+ .cell{border-radius:12px;}
+ .spin-btn{width:96px;height:96px;}
+ .message{font-size:22px;}
 }
 
 #message{
