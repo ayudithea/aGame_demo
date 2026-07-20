@@ -338,17 +338,18 @@ function drawBoard(){
         for(let c = 0; c < COLS; c++){
 
             const cell = document.createElement("div");
+
             cell.className = "cell";
+            cell.style.opacity = "1";
+            cell.style.transform = "scale(1)";
 
-            const fruit = document.createElement("div");
-            fruit.className = "fruit";
-            fruit.textContent = board[r][c];
+            cell.dataset.row = r;
+            cell.dataset.col = c;
 
-            cell.appendChild(fruit);
+            cell.textContent = board[r][c];
 
             grid.appendChild(cell);
-
-            cells.push(fruit);
+            cells.push(cell);
 
         }
 
