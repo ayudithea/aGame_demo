@@ -219,6 +219,59 @@ animation:bigFlash .7s;
 100%{filter:brightness(1);}
 
 }
+#freeSpinPopup{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.7);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    z-index:99999;
+}
+
+.popupBox{
+    width:320px;
+    max-width:90%;
+    background:white;
+    border-radius:20px;
+    text-align:center;
+    padding:25px;
+    animation:popupScale .35s;
+}
+
+.popupTitle{
+    font-size:30px;
+    font-weight:bold;
+    color:#ff9800;
+}
+
+.popupIcon{
+    font-size:70px;
+    margin:15px 0;
+}
+
+.popupText{
+    font-size:24px;
+    color:#444;
+    margin-bottom:20px;
+}
+
+#popupOk{
+    width:100%;
+    padding:15px;
+    font-size:22px;
+}
+
+@keyframes popupScale{
+    from{
+        transform:scale(.5);
+        opacity:0;
+    }
+    to{
+        transform:scale(1);
+        opacity:1;
+    }
+}    
 </style>
 
 </head>
@@ -413,6 +466,8 @@ async function spin(){
 
         await animateSpin();
        if(checkScatter()){
+
+    await showFreeSpinPopup();
 
     await startFreeSpins();
 
@@ -791,10 +846,46 @@ grid.classList.remove("bigFlash");
 
     showMessage("Free Spin Selesai");
 
-}   
+} 
+function showFreeSpinPopup(){
+
+    return new Promise(resolve=>{
+
+        const popup=document.getElementById("freeSpinPopup");
+
+        popup.style.display="flex";
+
+        document.getElementById("popupOk").onclick=()=>{
+
+            popup.style.display="none";
+
+            resolve();
+
+        };
+
+    });
+
+}    
     
  createBoard();
 showMessage("Tekan tombol SPIN");   
 </script>
+    <div id="freeSpinPopup" style="display:none;">
+    <div class="popupBox">
+        <div class="popupTitle">🎉 SELAMAT! 🎉</div>
+
+        <div class="popupIcon">⭐ ⭐ ⭐ ⭐</div>
+
+        <div class="popupText">
+            Anda mendapatkan
+            <br><br>
+            <b>10 FREE SPINS</b>
+        </div>
+
+        <button id="popupOk">
+            OK
+        </button>
+    </div>
+</div>
 </body>
 </html>
