@@ -594,28 +594,50 @@ spinning=false;
 }
 async function gravity(){
 
-    let moved=false;
+    let moved = false;
 
     // Geser buah ke bawah
-    for(let c=0;c<COLS;c++){
+    for(let c = 0; c < COLS; c++){
 
-        for(let r=ROWS-1;r>=0;r--){
+        for(let r = ROWS - 1; r >= 0; r--){
 
-            if(board[r][c]===null){
+            if(board[r][c] === null){
 
-                // Cari buah pertama di atasnya
-                let k=r-1;
+                let k = r - 1;
 
-                while(k>=0 && board[k][c]===null){
+                while(k >= 0 && board[k][c] === null){
                     k--;
                 }
 
-                if(k>=0){
+                if(k >= 0){
 
-                    board[r][c]=board[k][c];
-                    board[k][c]=null;
+                    const from = k;
+                    const to = r;
 
-                    moved=true;
+                    board[to][c] = board[from][c];
+                    board[from][c] = null;
+
+                    const index = to * COLS + c;
+                    const distance = (to - from) * 64;
+
+                    cells[index].textContent = board[to][c];
+
+                    cells[index].classList.remove("fall");
+
+                    cells[index].style.transition = "none";
+                    cells[index].style.transform = `translateY(-${distance}px)`;
+
+                    requestAnimationFrame(()=>{
+
+                        cells[index].style.transition =
+                            "transform .22s ease";
+
+                        cells[index].style.transform =
+                            "translateY(0)";
+
+                    });
+
+                    moved = true;
 
                 }
 
@@ -625,18 +647,26 @@ async function gravity(){
 
     }
 
-    // Update tampilan setelah buah turun
-    for(let r=0;r<ROWS;r++){
-        for(let c=0;c<COLS;c++){
-            updateCell(r,c);
+    // Jangan update semua kotak kalau ada yang bergerak
+    if(!moved){
+
+        for(let r=0;r<ROWS;r++){
+
+            for(let c=0;c<COLS;c++){
+
+                updateCell(r,c);
+
+            }
+
         }
+
     }
 
     if(moved){
-        await sleep(180);
+        await sleep(220);
     }
 
-    // Isi bagian atas dengan buah baru
+    // Isi bagian atas
     for(let c=0;c<COLS;c++){
 
         for(let r=0;r<ROWS;r++){
@@ -650,9 +680,7 @@ async function gravity(){
                 const index=r*COLS+c;
 
                 cells[index].classList.remove("fall");
-
                 void cells[index].offsetWidth;
-
                 cells[index].classList.add("fall");
 
                 await sleep(60);
@@ -672,22 +700,9 @@ function updateCell(r,c){
 
     if(!cells[index]) return;
 
-    const fruit = cells[index];
+    cells[index].textContent = board[r][c] ?? "";
 
-    // Mulai dari atas
-    fruit.style.transition = "none";
-    fruit.style.transform = "translateY(-70px)";
-    fruit.style.opacity = "0";
-
-    fruit.textContent = board[r][c] ?? "";
-
-    requestAnimationFrame(()=>{
-
-        fruit.style.transition = "transform .12s linear, opacity .12s linear";
-        fruit.style.transform = "translateY(0)";
-        fruit.style.opacity = "1";
-
-    });
+    cells[index].style.opacity = "1";
 
 }
 function showWin(text){
