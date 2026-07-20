@@ -86,44 +86,28 @@ border-right:4px solid #8b5a2b;
 
 .board{
     position:relative;
+    padding:18px;
+    border-radius:30px;
+    overflow:hidden;
 
-    padding:14px;
-
-    background:rgba(235,224,205,.92);
-
-    border-radius:28px;
-
-    border:10px solid transparent;
+    background:rgba(233,225,210,.95);
 
     box-shadow:
-        0 10px 25px rgba(0,0,0,.45),
-        inset 0 0 20px rgba(255,255,255,.15);
-
-    overflow:hidden;
+        0 10px 25px rgba(0,0,0,.4);
 }
 .board::before{
 
-content:"";
+    content:"";
 
-position:absolute;
+    position:absolute;
 
-inset:0;
+    inset:0;
 
-padding:10px;
+    background:url("akar.png") center center / 100% 100% no-repeat;
 
-border-radius:28px;
+    pointer-events:none;
 
-background:
-url("https://i.imgur.com/j2Z5QmL.png") center/cover no-repeat;
-
--webkit-mask:
-linear-gradient(#000 0 0) content-box,
-linear-gradient(#000 0 0);
-
--webkit-mask-composite:xor;
-mask-composite:exclude;
-
-pointer-events:none;
+    z-index:20;
 
 }
 
@@ -170,6 +154,15 @@ transform:translateX(-20px);
     gap:10px;
 
     padding:0 8px;
+}
+#grid{
+    position:relative;
+    z-index:1;
+}
+
+#message{
+    position:relative;
+    z-index:1;
 }
 
 .cell{
