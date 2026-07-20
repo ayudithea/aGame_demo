@@ -72,20 +72,14 @@ gap:8px;
 
 .cell{
     position:relative;
-overflow:hidden;
-    
-    aspect-ratio:1;
-    background:transparent;
-    border-radius:12px;
+    overflow:visible;
+
+    width:64px;
+    height:64px;
+
     display:flex;
     justify-content:center;
     align-items:center;
-    font-size:48px;
-    user-select:none;
-
-    transition:
-        transform .35s ease,
-        opacity .35s ease;
 }
   .fruit{
     position:absolute;
@@ -98,12 +92,14 @@ overflow:hidden;
     justify-content:center;
     align-items:center;
 
-    font-size:48px;
+    font-size:46px;
+    line-height:1;
+    transform-origin:center center;
 
     transition:
         transform .35s ease,
         opacity .35s ease;
-}  
+}
 .fall{
     animation:fall .35s ease;
 }
