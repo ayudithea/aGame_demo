@@ -591,47 +591,24 @@ async function gravity(){
     let moved = false;
 
     // Geser buah ke bawah
-    for(let c = 0; c < COLS; c++){
+    for(let c=0;c<COLS;c++){
 
-        for(let r = ROWS - 1; r >= 0; r--){
+        for(let r=ROWS-1;r>=0;r--){
 
-            if(board[r][c] === null){
+            if(board[r][c]===null){
 
-                let k = r - 1;
+                let k=r-1;
 
-                while(k >= 0 && board[k][c] === null){
+                while(k>=0 && board[k][c]===null){
                     k--;
                 }
 
-                if(k >= 0){
+                if(k>=0){
 
-                    const from = k;
-                    const to = r;
+                    board[r][c]=board[k][c];
+                    board[k][c]=null;
 
-                    board[to][c] = board[from][c];
-                    board[from][c] = null;
-
-                    const index = to * COLS + c;
-                    const distance = (to - from) * 64;
-
-                    cells[index].textContent = board[to][c];
-
-                    cells[index].classList.remove("fall");
-
-                    cells[index].style.transition = "none";
-                    cells[index].style.transform = `translateY(-${distance}px)`;
-
-                    requestAnimationFrame(()=>{
-
-                        cells[index].style.transition =
-                            "transform .22s ease";
-
-                        cells[index].style.transform =
-                            "translateY(0)";
-
-                    });
-
-                    moved = true;
+                    moved=true;
 
                 }
 
@@ -641,26 +618,18 @@ async function gravity(){
 
     }
 
-    // Jangan update semua kotak kalau ada yang bergerak
-    if(!moved){
-
-        for(let r=0;r<ROWS;r++){
-
-            for(let c=0;c<COLS;c++){
-
-                updateCell(r,c);
-
-            }
-
+    // Update seluruh papan
+    for(let r=0;r<ROWS;r++){
+        for(let c=0;c<COLS;c++){
+            updateCell(r,c);
         }
-
     }
 
     if(moved){
-        await sleep(220);
+        await sleep(180);
     }
 
-    // Isi bagian atas
+    // Isi buah baru dari atas
     for(let c=0;c<COLS;c++){
 
         for(let r=0;r<ROWS;r++){
@@ -683,6 +652,20 @@ async function gravity(){
 
         }
 
+    }
+
+    // Pastikan semua sel tampil normal
+    for(let r=0;r<ROWS;r++){
+        for(let c=0;c<COLS;c++){
+
+            const index=r*COLS+c;
+
+            cells[index].style.opacity="1";
+            cells[index].style.transform="scale(1)";
+
+            updateCell(r,c);
+
+        }
     }
 
     await sleep(250);
