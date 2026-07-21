@@ -108,26 +108,16 @@ border-right:4px solid #8b5a2b;
 /* =========================
    CELL
 ========================= */
-.cell{
-    position:relative;
-
-    aspect-ratio:1;
-
+..cell{
     display:flex;
     justify-content:center;
     align-items:center;
 
-    overflow:hidden;
+    font-size:52px;
+    line-height:1;
+    text-align:center;
 
-    border-radius:16px;
-
-    background:rgba(255,255,255,.08);
-
-    font-size:40px;
-
-    transition:
-        transform .25s,
-        opacity .25s;
+    font-family:"Noto Color Emoji","Apple Color Emoji","Segoe UI Emoji",sans-serif;
 }
 
 .cell:hover{
