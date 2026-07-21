@@ -594,7 +594,19 @@ async function showMultiplier(){
 
     }
 
-}   
+}  
+ const fruitValue = {
+    "🍎": 1000,
+    "🍓": 15000,
+    "🍍": 20000,
+    "🥝": 25000,
+    "🍇": 30000,
+    "🥭": 40000,
+    "🍒": 50000,
+    "🍉": 75000,
+    "🥥": 100000,
+    "💎": 400000   // Scatter
+};
 function randomFruit(){
 
     const normalFruits=[
@@ -879,7 +891,9 @@ await sleep(350);
 
 for(const group of groups){
 
-    let win = group.length * (combo + 1) * 10;
+    const fruit = board[group[0].r][group[0].c];
+
+let win = group.length * fruitValue[fruit] * (combo + 1);
 
     score += win;
     totalWin += win;
