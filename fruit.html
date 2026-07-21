@@ -69,13 +69,18 @@ box-shadow:0 8px 18px rgba(0,0,0,.4);
 }
 
 .panel{
+    position:absolute;
+    top:72px;          /* sesuaikan sampai tepat di papan kayu */
+    left:0;
     width:100%;
+
     display:flex;
-    justify-content:space-between;
+    justify-content:space-around;
     align-items:center;
 
-    padding:8px 18px;
-    margin-bottom:10px;
+    padding:0 20px;
+
+    background:transparent;
 
     color:#fff;
     font-size:22px;
@@ -85,9 +90,8 @@ box-shadow:0 8px 18px rgba(0,0,0,.4);
         2px 2px 5px #000,
         0 0 10px #000;
 
-    background:transparent;
+    z-index:100;
 }
-
 /* =========================
    BOARD
 ========================= */
