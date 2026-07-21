@@ -489,7 +489,7 @@ const scoreText = document.getElementById("score");
 const comboText = document.getElementById("combo");
 const message = document.getElementById("message");
 const spinBtn = document.getElementById("spinBtn");
- const MULTIPLIERS = [
+const MULTIPLIERS = [
     2, 5, 10, 25, 50, 100, 250, 500, 1000, 5000, 10000
 ];
  function randomMultiplier(){
@@ -497,15 +497,7 @@ const spinBtn = document.getElementById("spinBtn");
         Math.floor(Math.random()*MULTIPLIERS.length)
     ];
 }
-
-function randomFruit(){
-
-    const normalFruits=[
-        "🍎","🍓","🍍","🥝",
-        "🍇","🥭","🍒","🍉","🥥"
-    ];
-
- async function showMultiplier(){
+async function showMultiplier(){
 
     if(Math.random()>0.2) return;
 
@@ -533,12 +525,7 @@ function randomFruit(){
     div.remove();
 
 }
-    return normalFruits[
-        Math.floor(Math.random()*normalFruits.length)
-    ];
-
-}
-function generateFinalBoard(){
+ function generateFinalBoard(){
 
     finalBoard=[];
 
@@ -555,6 +542,20 @@ function generateFinalBoard(){
         finalBoard.push(row);
 
     }
+
+}   
+function randomFruit(){
+
+    const normalFruits=[
+        "🍎","🍓","🍍","🥝",
+        "🍇","🥭","🍒","🍉","🥥"
+    ];
+
+ 
+
+ return normalFruits[
+        Math.floor(Math.random()*normalFruits.length)
+    ];
 
 }
 function updatePanel(){
