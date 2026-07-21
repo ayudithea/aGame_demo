@@ -43,7 +43,7 @@ html,body{
 }
 
 /* Hilangkan background area tombol */
-.spinArea{
+.Area{
     background:transparent !important;
 }
 
@@ -183,9 +183,9 @@ border-right:4px solid #8b5a2b;
 }
 
 /* =========================
-   SPIN AREA
+    AREA
 ========================= */
-.spinArea{
+.Area{
     display:flex;
     flex-direction:column;
     align-items:center;
@@ -215,7 +215,7 @@ border-right:4px solid #8b5a2b;
 }
 
 
-.spinArea{
+.Area{
 display:flex;
 flex-direction:column;
 align-items:center;
@@ -223,29 +223,27 @@ margin-top:20px;
 }
 
 #spinBtn{
-    width:120px;
-    height:120px;
-    border:none;
+    width:110px;
+    height:110px;
     border-radius:50%;
-    cursor:pointer;
-
-    font-size:52px;
-    font-weight:900;
-    color:#fff;
-
-    background:linear-gradient(180deg,#ffd95e 0%,#ff9d00 55%,#d96b00 100%);
-
-    box-shadow:
-        inset 0 8px 12px rgba(255,255,255,.7),
-        inset 0 -10px 12px rgba(0,0,0,.25),
-        0 10px 20px rgba(0,0,0,.45);
-
     border:6px solid #fff;
-
-    text-shadow:
-        2px 2px 3px rgba(0,0,0,.4);
-
+    background:radial-gradient(circle at 30% 30%, #3d3d3d, #111 80%);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    box-shadow:
+        inset 0 6px 12px rgba(255,255,255,.15),
+        inset 0 -8px 12px rgba(0,0,0,.6),
+        0 8px 18px rgba(0,0,0,.5);
     transition:.15s;
+}
+
+#spinBtn span{
+    font-size:68px;
+    color:#fff;
+    line-height:1;
+    font-weight:bold;
 }
 
 #spinBtn:hover{
@@ -254,10 +252,14 @@ margin-top:20px;
 
 #spinBtn:active{
     transform:scale(.92);
-    box-shadow:
-        inset 0 4px 8px rgba(255,255,255,.5),
-        inset 0 -6px 8px rgba(0,0,0,.3),
-        0 3px 8px rgba(0,0,0,.35);
+}
+ .spin{
+    animation:spin .5s linear;
+}
+
+@keyframes spin{
+    from{transform:rotate(0deg);}
+    to{transform:rotate(360deg);}
 }
 #message{
 margin-top:12px;
@@ -345,7 +347,7 @@ animation:bigFlash .7s;
 100%{filter:brightness(1);}
 
 }
-#freeSpinPopup{
+#freePopup{
     position:fixed;
     inset:0;
     background:rgba(0,0,0,.7);
@@ -420,8 +422,10 @@ animation:bigFlash .7s;
     <div id="grid"></div>
 </div>
 
-<div class="spinArea">
-    <button id="spinBtn">O</button>
+<div class="Area">
+    <button id="spinBtn">
+    <span>↻</span>
+</button>
 
     <div id="message">
         Tekan tombol SPIN
@@ -1017,7 +1021,17 @@ function showFreeSpinPopup(){
     });
 
 }    
-    
+const btn=document.getElementById("spinBtn");
+
+btn.addEventListener("click",()=>{
+    btn.classList.add("spin");
+
+    setTimeout(()=>{
+        btn.classList.remove("spin");
+    },500);
+
+    // Jalankan fungsi spin game di sini
+});    
  createBoard();
 showMessage("Tekan tombol SPIN");   
 </script>
