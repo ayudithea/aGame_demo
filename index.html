@@ -59,13 +59,31 @@ body::before{
     }
 }
 
+:root{
+
+/* PANEL LOGIN */
+--panel-atas: 80px;     /* naik(-) turun(+) */
+--panel-kiri: 0px;      /* kiri(-) kanan(+) */
+
+/* UKURAN PANEL */
+--panel-lebar: 380px;
+--panel-tinggi: auto;
+
+}
+
 .wrap{
-    width:280%;
-    max-width:500px;
-    padding:100px;
+    width:100%;
+    max-width:var(--panel-lebar);
     position:relative;
-    z-index:2;
-    margin-top:300px;
+
+    transform:translate(
+        var(--panel-kiri),
+        var(--panel-atas)
+    );
+}
+
+.card{
+    height:var(--panel-tinggi);
 }
 .card{
     background:rgba(8,12,25,.55);
