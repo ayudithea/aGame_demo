@@ -416,7 +416,48 @@ animation:bigFlash .7s;
 
 </head>
 
-<body> <div class="board"> <div class="panel"> <div>💰 SCORE : <span id="score">0</span></div> <div>🔥 COMBO : <span id="combo">0</span></div> </div> <div id="grid"></div> </div> <div class="Area"> <button id="spinBtn"> <span>⟳</span> </button> <div id="message"> Tekan tombol SPIN </div> </div> <div id="freeSpinPopup" style="display:none;"> <div class="popupBox"> <div class="popupTitle">🎉 SELAMAT! 🎉</div> <div class="popupIcon">⭐ ⭐ ⭐ ⭐</div> <div class="popupText"> Anda mendapatkan <br><br> <b>10 FREE SPINS</b> </div> <button id="popupOk"> OK </button> </div> </div>
+<body>
+
+<div class="board">
+
+    <div class="topPanel">
+    <div>💰 SCORE : <span id="score">0</span></div>
+    <div>🔥 COMBO : <span id="combo">0</span></div>
+</div>
+
+<div class="board">
+    <div id="grid"></div>
+</div>
+
+<div class="Area">
+
+    <button id="spinBtn">
+        <span>⟳</span>
+    </button>
+
+    <div id="message">
+        Tekan tombol SPIN
+    </div>
+
+</div>
+
+<div id="freeSpinPopup" style="display:none;">
+    <div class="popupBox">
+        <div class="popupTitle">🎉 SELAMAT! 🎉</div>
+
+        <div class="popupIcon">⭐ ⭐ ⭐ ⭐</div>
+
+        <div class="popupText">
+            Anda mendapatkan
+            <br><br>
+            <b>10 FREE SPINS</b>
+        </div>
+
+        <button id="popupOk">
+            OK
+        </button>
+    </div>
+</div>
 <script>
     
 const SCATTER = "⭐";
