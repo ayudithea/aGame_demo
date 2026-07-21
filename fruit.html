@@ -79,101 +79,60 @@ border-left:4px solid #8b5a2b;
 border-right:4px solid #8b5a2b;
 }
 
-.board{
-    position:relative;
-    width:min(96vw,650px);
-    margin:140px auto;
-    padding:-20px;
-    border-radius:50px;
-    overflow:hidden;
+/* ===== Pengaturan Buah ===== */
+:root{
 
-    background:
-        linear-gradient(rgba(255,255,255,.15),rgba(255,255,255,.15));
+    /* Ukuran buah */
+    --fruit-size: 75%;
 
-    backdrop-filter:blur(4px);
-    -webkit-backdrop-filter:blur(4px);
+    /* Posisi buah */
+    --fruit-pos-x: 50%;
+    --fruit-pos-y: 50%;
 
-    box-shadow:
-        0 12px 30px rgba(0,0,0,.35);
+    /* Geser buah */
+    --fruit-offset-x: 0px;
+    --fruit-offset-y: 0px;
+
+    /* Jarak antar kotak */
+    --grid-gap: 4px;
+
+    /* Ukuran sudut kotak */
+    --cell-radius: 18px;
 }
-.board::before{
-    content:"";
-    position:absolute;
-}
 
+/* Grid */
 #grid{
-    position:relative;
-    z-index:10;
-
     display:grid;
     grid-template-columns:repeat(5,1fr);
-    gap:-150px;
-
-    width:100%;
-    height:100%;
+    gap:var(--grid-gap);
 }
-#message{
+
+/* Kotak */
+.cell{
     position:relative;
-    z-index:1;
-}
-
-.cell{
     aspect-ratio:1;
-    background:rgba(255,255,255,.08);
-    border-radius:50px;
+    border-radius:var(--cell-radius);
+    overflow:hidden;
 }
 
-/* Bayangan hitam di bawah buah */
-.cell::after{
-    content:"";
-
+/* Buah */
+.fruit{
     position:absolute;
 
-    width:20%;
-    height:10%;
+    left:var(--fruit-pos-x);
+    top:var(--fruit-pos-y);
 
-    bottom:10px;
-    left:50%;
+    width:var(--fruit-size);
+    height:var(--fruit-size);
 
-    transform:translateX(-50%);
-
-    background:rgba(0,0,0,.35);
-
-    border-radius:50%;
-
-    filter:blur(6px);
-
-    z-index:0;
-}
-
-/* Gambar buah */
-.cell{
-    text-shadow:
-        0 3px 0 rgba(0,0,0,.15),
-        0 8px 10px rgba(0,0,0,.35);
-}
-
-.cell:hover{
-    transform:translateY(-5px) scale(1.08);
-}
-  .fruit{
-    position:absolute;
-    left:0;
-    top:0;
-    width:100%;
-    height:100%;
+    transform:translate(-50%,-50%)
+              translate(var(--fruit-offset-x),var(--fruit-offset-y));
 
     display:flex;
     justify-content:center;
     align-items:center;
 
-    font-size:48px;
-    line-height:1;
-    transform-origin:center center;
-
-    transition:
-        transform .35s ease,
-        opacity .35s ease;
+    font-size:100%;
 }
 .fall{
     animation:fall .35s ease;
