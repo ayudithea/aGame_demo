@@ -120,7 +120,7 @@ border-right:4px solid #8b5a2b;
     font-size:35px;
     line-height:50;
 
-    overflow:hidden;
+    overflow:visible;
 }
 .cell:hover{
     transform:scale(1.05);
@@ -499,29 +499,20 @@ const MULTIPLIERS = [
 }
 async function showMultiplier(){
 
-    if(Math.random()>0.2) return;
-
-    const r=Math.floor(Math.random()*ROWS);
-    const c=Math.floor(Math.random()*COLS);
+    const r = 2;
+    const c = 2;
 
     const cell = cells[r * COLS + c];
 
-    if(!cell) return;
-
-    const multi=randomMultiplier();
-
-    totalMultiplier*=multi;
-
-    const div=document.createElement("div");
-    div.className="multiplier";
-    div.textContent="x"+multi;
+    const div = document.createElement("div");
+    div.className = "multiplier";
+    div.textContent = "x100";
 
     cell.appendChild(div);
 
-    await sleep(800);
+    await sleep(3000);
 
     div.remove();
-
 }
  function generateFinalBoard(){
 
