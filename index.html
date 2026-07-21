@@ -59,31 +59,26 @@ body::before{
     }
 }
 
-:root{
-
-/* PANEL LOGIN */
---panel-atas: 200px;     /* naik(-) turun(+) */
---panel-kiri: 0px;      /* kiri(-) kanan(+) */
-
-/* UKURAN PANEL */
---panel-lebar: 350px;
---panel-tinggi: 1000;
-
-}
-
 .wrap{
-    width:800%;
-    max-width:var(--panel-lebar);
     position:relative;
-
-    transform:translate(
-        var(--panel-kiri),
-        var(--panel-atas)
-    );
+    top:var(--panel-atas);
+    bottom:var(--panel-bawah);
+    left:var(--panel-kiri);
+    right:var(--panel-kanan);
 }
-
-.card{
-    height:var(--panel-tinggi);
+.field-email{
+    position:relative;
+    top:var(--email-atas);
+    bottom:var(--email-bawah);
+    left:var(--email-kiri);
+    right:var(--email-kanan);
+}
+.field-pass{
+    position:relative;
+    top:var(--pass-atas);
+    bottom:var(--pass-bawah);
+    left:var(--pass-kiri);
+    right:var(--pass-kanan);
 }
 .card{
     background:rgba(8,12,25,.55);
@@ -92,6 +87,7 @@ body::before{
     border-radius:28px;
    padding:15px 22px 22px;
     box-shadow:0 0 30px rgba(255,193,7,.18);
+height:var(--panel-tinggi);
 }
 .logo{
     font-size:52px;
