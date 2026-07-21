@@ -473,17 +473,26 @@ animation:bigFlash .7s;
 
 </div>
 
-<div class="Area">
-<div id="message">
-        Tekan tombol SPIN
-    </div>
+<div class="controlArea">
+
+    <button id="betMinus">−</button>
+
     <button id="spinBtn">
         <span>⟳</span>
     </button>
 
-    
+    <button id="betPlus">+</button>
 
 </div>
+
+<div class="betPanel">
+    💰 BET :
+    <span id="betValue">200</span>
+</div>
+
+    
+
+
 
 <div id="freeSpinPopup" style="display:none;">
     <div class="popupBox">
@@ -1144,6 +1153,28 @@ function showFreeSpinPopup(){
  createBoard();
 showMessage("Tekan tombol SPIN");   
 </script>
+ let bet = 200;
+
+const betText = document.getElementById("betValue");
+
+function updateBet(){
+    betText.textContent = bet.toLocaleString("id-ID");
+}
+
+document.getElementById("betPlus").onclick = () => {
+    bet += 200;
+    updateBet();
+};
+
+document.getElementById("betMinus").onclick = () => {
+    if(bet > 200){
+        bet -= 200;
+        updateBet();
+    }
+};
+
+updateBet();
+ </script>
     <div id="freeSpinPopup" style="display:none;">
     <div class="popupBox">
         <div class="popupTitle">🎉 SELAMAT! 🎉</div>
