@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
@@ -67,50 +67,18 @@ text-shadow:2px 2px 5px rgba(0,0,0,.4);
 box-shadow:0 8px 18px rgba(0,0,0,.4);
 
 }
-.topPanel{
-    position:absolute;
-    top:95px;      /* sesuaikan dengan tinggi logo */
-    left:50%;
-    transform:translateX(-50%);
 
-    width:90%;
-    height:55px;
-
-    display:flex;
-    justify-content:space-around;
-    align-items:center;
-
-    color:#fff;
-    font-size:22px;
-    font-weight:bold;
-
-    text-shadow:2px 2px 5px #000;
-    z-index:999;
-}
 .panel{
-    position:absolute;
-    top:0px;          /* sesuaikan sampai tepat di papan kayu */
-    left:0;
-    width:100%;
-
-    display:flex;
-    justify-content:space-around;
-    align-items:center;
-
-    padding:0 20px;
-
-    background:transparent;
-
-    color:#fff;
-    font-size:22px;
-    font-weight:bold;
-
-    text-shadow:
-        2px 2px 5px #000,
-        0 0 10px #000;
-
-    z-index:100;
+background:#fff9dd;
+display:flex;
+justify-content:space-between;
+padding:10px 15px;
+font-size:18px;
+font-weight:bold;
+border-left:4px solid #8b5a2b;
+border-right:4px solid #8b5a2b;
 }
+
 /* =========================
    BOARD
 ========================= */
@@ -118,7 +86,7 @@ box-shadow:0 8px 18px rgba(0,0,0,.4);
     position: relative;
     transform: translateX(18px);
     width:min(96vw,500px);
-    margin:180px auto 30px;
+    margin:145px auto 30px;
     padding:8px;
     overflow:hidden;
 
@@ -227,6 +195,7 @@ box-shadow:0 8px 18px rgba(0,0,0,.4);
 
     background:transparent;
 }
+
 /* =========================
    FALL
 ========================= */
@@ -246,21 +215,68 @@ box-shadow:0 8px 18px rgba(0,0,0,.4);
 }
 
 
+.Area{
+display:flex;
+flex-direction:column;
+align-items:center;
+margin-top:20px;
+}
 
-#message{
-    margin-top:-10px;
-    min-height:28px;
+#spinBtn{
+    width:110px;
+    height:110px;
+    border-radius:50%;
+    border:6px solid #fff;
+    background:radial-gradient(circle at 30% 30%, #3d3d3d, #111 80%);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    box-shadow:
+        inset 0 6px 12px rgba(255,255,255,.15),
+        inset 0 -8px 12px rgba(0,0,0,.6),
+        0 8px 18px rgba(0,0,0,.5);
+    transition:.15s;
+}
 
-    text-align:center;
-
-    font-size:16px;      /* diperkecil */
+#spinBtn span{
+    font-size:68px;
+    color:#fff;
+    line-height:1;
     font-weight:bold;
+}
 
-    color:#fff;          /* putih */
+#spinBtn:hover{
+    transform:scale(1.05);
+}
 
-    text-shadow:
-        2px 2px 4px #000,
-        0 0 8px #000;
+#spinBtn:active{
+    transform:scale(.92);
+}
+ .spin{
+    animation:spin .5s linear;
+}
+
+@keyframes spin{
+    from{transform:rotate(0deg);}
+    to{transform:rotate(360deg);}
+}
+#message{
+margin-top:12px;
+font-size:20px;
+font-weight:bold;
+color:#fff;
+text-shadow:2px 2px 4px #000;
+min-height:28px;
+text-align:center;
+}
+#message{
+margin-top:10px;
+text-align:center;
+font-size:20px;
+font-weight:bold;
+color:#5a3300;
+min-height:28px;
 }
 .comboPopup{
 
@@ -383,46 +399,23 @@ animation:bigFlash .7s;
         transform:scale(1);
         opacity:1;
     }
-}
- .multiplier{
-    position:absolute;
-    left:50%;
-    top:50%;
-    transform:translate(-50%,-50%);
-    color:#FFD700;
-    font-size:28px;
-    font-weight:bold;
-    text-shadow:0 0 8px #000,0 0 12px orange;
-    pointer-events:none;
-    z-index:1000;
-    animation:multiPop .8s ease;
-}
-
-@keyframes multiPop{
-    0%{
-        opacity:0;
-        transform:translate(-50%,-50%) scale(.3);
-    }
-    40%{
-        opacity:1;
-        transform:translate(-50%,-50%) scale(1.3);
-    }
-    100%{
-        opacity:0;
-        transform:translate(-50%,-90%) scale(1);
-    }
-}
+}    
 </style>
 
 </head>
 
 <body>
+<div id="game">
+<div>
+💰 Skor :
+<span id="score">0</span>
+</div>
 
-<div class="board">
+<div>
+🔥 Combo :
+<span id="combo">0</span>
+</div>
 
-    <div class="topPanel">
-    <div>💰 SCORE : <span id="score">0</span></div>
-    <div>🔥 COMBO : <span id="combo">0</span></div>
 </div>
 
 <div class="board">
@@ -430,34 +423,15 @@ animation:bigFlash .7s;
 </div>
 
 <div class="Area">
-
-    <button id="spinBtn">
-        <span>⟳</span>
-    </button>
+    <button id="spinBtn">36</button>
 
     <div id="message">
         Tekan tombol SPIN
     </div>
+</div>
 
 </div>
 
-<div id="freeSpinPopup" style="display:none;">
-    <div class="popupBox">
-        <div class="popupTitle">🎉 SELAMAT! 🎉</div>
-
-        <div class="popupIcon">⭐ ⭐ ⭐ ⭐</div>
-
-        <div class="popupText">
-            Anda mendapatkan
-            <br><br>
-            <b>10 FREE SPINS</b>
-        </div>
-
-        <button id="popupOk">
-            OK
-        </button>
-    </div>
-</div>
 <script>
     
 const SCATTER = "⭐";
@@ -469,13 +443,14 @@ const COLS=5;
 const MIN_MATCH = 6;
 const symbols = [
     "🍎","🍓","🍍","🥝","🍇",
-    "🥭","🍒","🍉","🥥"
+    "🥭","🍒","🍉","🥥","⭐",
+    "💥2x","💥5x","💥10x","💥25x",
+    "💥50x","💥100x","💥250x",
+    "💥500x","💥1000x","💥5000x","💥10000x"
 ];
 let board=[];
 let finalBoard=[];
 let score=0;
-let totalWin = 0;
-let totalMultiplier = 1;
 let combo=0;
 let spinning=false;
 let forceScatter=false;   
@@ -487,50 +462,19 @@ const scoreText = document.getElementById("score");
 const comboText = document.getElementById("combo");
 const message = document.getElementById("message");
 const spinBtn = document.getElementById("spinBtn");
-const MULTIPLIERS = [
-    2, 5, 10, 25, 50, 100, 250, 500, 1000, 5000, 10000
-];
- 
-updateBet();
- function randomMultiplier(){
-    return MULTIPLIERS[
-        Math.floor(Math.random()*MULTIPLIERS.length)
+function randomFruit(){
+
+    const normalFruits=[
+        "🍎","🍓","🍍","🥝",
+        "🍇","🥭","🍒","🍉","🥥"
     ];
+
+    return normalFruits[
+        Math.floor(Math.random()*normalFruits.length)
+    ];
+
 }
-async function showMultiplier(){
-
-    const multi = randomMultiplier();
-
-    totalMultiplier *= multi;
-
-    const d = document.createElement("div");
-
-    d.style.position = "fixed";
-    d.style.left = "50%";
-    d.style.top = "45%";
-    d.style.transform = "translate(-50%,-50%)";
-    d.style.fontSize = "70px";
-    d.style.fontWeight = "bold";
-    d.style.color = "#FFD700";
-    d.style.textShadow = "0 0 10px #000,0 0 25px orange";
-    d.style.pointerEvents = "none";
-    d.style.zIndex = "999999";
-    d.style.transition = ".8s";
-
-    d.textContent = "✨ x" + multi;
-
-    document.body.appendChild(d);
-
-    await sleep(700);
-
-    d.style.top = "30%";
-    d.style.opacity = "0";
-
-    await sleep(500);
-
-    d.remove();
-}
- function generateFinalBoard(){
+function generateFinalBoard(){
 
     finalBoard=[];
 
@@ -547,20 +491,6 @@ async function showMultiplier(){
         finalBoard.push(row);
 
     }
-
-}   
-function randomFruit(){
-
-    const normalFruits=[
-        "🍎","🍓","🍍","🥝",
-        "🍇","🥭","🍒","🍉","🥥"
-    ];
-
- 
-
- return normalFruits[
-        Math.floor(Math.random()*normalFruits.length)
-    ];
 
 }
 function updatePanel(){
@@ -833,23 +763,28 @@ await sleep(350);
 
 for(const group of groups){
 
-    let win = group.length * (combo + 1) * 10;
+let win = group.length * (combo + 1) * 10;
 
-    score += win;
-    totalWin += win;
+let totalMultiplier = 1;
 
-    for(const pos of group){
+for(const pos of group){
 
-        board[pos.r][pos.c] = null;
+    const multi = getMultiplier(board[pos.r][pos.c]);
 
+    if(multi>0){
+        totalMultiplier *= multi;
     }
+
+}
+
+score += win * totalMultiplier;
 
 }
 
 updatePanel();
 
 await gravity();
-await showMultiplier();
+
 const again=findMatches();
 
 if(again.length>0){
@@ -1097,10 +1032,52 @@ function showFreeSpinPopup(){
     });
 
 }    
+const btn=document.getElementById("spinBtn");
+
+btn.addEventListener("click",()=>{
+    btn.classList.add("spin");
+
+    setTimeout(()=>{
+        btn.classList.remove("spin");
+    },500);
+
+    // Jalankan fungsi spin game di sini
+}); 
+ const MULTIPLIERS=[
+    {icon:"2️⃣",value:2},
+    {icon:"5️⃣",value:5},
+    {icon:"1️⃣0️⃣",value:10},
+    {icon:"2️⃣5️⃣",value:25},
+    {icon:"5️⃣0️⃣",value:50},
+    {icon:"1️⃣0️⃣0️⃣",value:100},
+    {icon:"2️⃣5️⃣0️⃣",value:250},
+    {icon:"5️⃣0️⃣0️⃣",value:500},
+    {icon:"1️⃣0️⃣0️⃣0️⃣",value:1000},
+    {icon:"5️⃣0️⃣0️⃣0️⃣",value:5000},
+    {icon:"1️⃣0️⃣0️⃣0️⃣0️⃣",value:10000}
+];
+ if(Math.random()<0.03){   // 3% peluang
+    return MULTIPLIERS[
+        Math.floor(Math.random()*MULTIPLIERS.length)
+    ].icon;
+}
+ function getMultiplier(symbol){
+
+    for(const m of MULTIPLIERS){
+
+        if(m.icon===symbol){
+            return m.value;
+        }
+
+    }
+
+    return 0;
+
+}
  createBoard();
 showMessage("Tekan tombol SPIN");   
 </script>
-<div id="freeSpinPopup" style="display:none;">
+    <div id="freeSpinPopup" style="display:none;">
     <div class="popupBox">
         <div class="popupTitle">🎉 SELAMAT! 🎉</div>
 
