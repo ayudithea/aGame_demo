@@ -504,9 +504,7 @@ async function showMultiplier(){
     const r=Math.floor(Math.random()*ROWS);
     const c=Math.floor(Math.random()*COLS);
 
-    const cell=document.querySelector(
-        `.cell[data-row="${r}"][data-col="${c}"]`
-    );
+    const cell = cells[r * COLS + c];
 
     if(!cell) return;
 
@@ -828,11 +826,14 @@ await sleep(350);
 
 for(const group of groups){
 
-    let win = group.length*(combo+1)*10;
+    let win = group.length * (combo + 1) * 10;
 
-score += win;
+    score += win;
+    totalWin += win;
 
-totalWin += win;
+    for(const pos of group){
+
+        board[pos.r][pos.c] = null;
 
     }
 
