@@ -63,7 +63,7 @@ body::before{
     padding:15px;
     position:relative;
     z-index:2;
-margin-top:90px;
+    margin-top:160px;
 }
 .card{
     background:rgba(8,12,25,.55);
@@ -116,12 +116,36 @@ button{
     margin-top:12px;
 }
 .login{
-background:linear-gradient(90deg,#ffe066,#ffb300);
-color:#222;
+    background:linear-gradient(to bottom,#ffe87c,#ffbf00,#d99000);
+    color:#222;
+    border:2px solid #ffd84d;
+    border-radius:16px;
+    box-shadow:
+        0 8px 0 #996300,
+        0 12px 20px rgba(255,180,0,.5);
+    transition:.15s;
+}
+
+.login:active{
+    transform:translateY(6px);
+    box-shadow:
+        0 2px 0 #996300;
 }
 .register{
-background:linear-gradient(90deg,#00c853,#009624);
-color:#fff;
+    background:linear-gradient(to bottom,#32ff7e,#00c853,#009624);
+    color:#fff;
+    border:2px solid #6dff8f;
+    border-radius:16px;
+    box-shadow:
+        0 8px 0 #006b1d,
+        0 12px 20px rgba(0,180,70,.45);
+    transition:.15s;
+}
+
+.register:active{
+    transform:translateY(6px);
+    box-shadow:
+        0 2px 0 #006b1d;
 }
 .links{
 display:grid;
