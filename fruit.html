@@ -503,6 +503,34 @@ const MULTIPLIERS = [
         Math.floor(Math.random()*MULTIPLIERS.length)
     ];
 }
+ async function showMultiplier(){
+
+    if(Math.random()>0.2) return;
+
+    const r=Math.floor(Math.random()*ROWS);
+    const c=Math.floor(Math.random()*COLS);
+
+    const cell=document.querySelector(
+        `.cell[data-row="${r}"][data-col="${c}"]`
+    );
+
+    if(!cell) return;
+
+    const multi=randomMultiplier();
+
+    totalMultiplier*=multi;
+
+    const div=document.createElement("div");
+    div.className="multiplier";
+    div.textContent="x"+multi;
+
+    cell.appendChild(div);
+
+    await sleep(800);
+
+    div.remove();
+
+}
     return normalFruits[
         Math.floor(Math.random()*normalFruits.length)
     ];
@@ -797,11 +825,11 @@ await sleep(350);
 
 for(const group of groups){
 
-    score += group.length * (combo + 1) * 10;
+    let win = group.length*(combo+1)*10;
 
-    for(const pos of group){
+score += win;
 
-        board[pos.r][pos.c]=null;
+totalWin += win;
 
     }
 
