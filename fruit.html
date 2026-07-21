@@ -423,9 +423,7 @@ animation:bigFlash .7s;
 </div>
 
 <div class="Area">
-    <button id="spinBtn">
-    <span>↻</span>
-</button>
+    <button id="spinBtn">36</button>
 
     <div id="message">
         Tekan tombol SPIN
@@ -570,7 +568,7 @@ async function animateSpin(){
     spinBtn.disabled = true;
     spinning = true;
 
-    showMessage("🎰 SPIN...");
+    showMessage("SPIN...");
     forceScatter = Math.random()*100 < SCATTER_CHANCE;
 
     // Kosongkan seluruh papan
