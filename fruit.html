@@ -67,7 +67,26 @@ text-shadow:2px 2px 5px rgba(0,0,0,.4);
 box-shadow:0 8px 18px rgba(0,0,0,.4);
 
 }
+.topPanel{
+    position:absolute;
+    top:165px;      /* sesuaikan dengan tinggi logo */
+    left:50%;
+    transform:translateX(-50%);
 
+    width:90%;
+    height:55px;
+
+    display:flex;
+    justify-content:space-around;
+    align-items:center;
+
+    color:#fff;
+    font-size:22px;
+    font-weight:bold;
+
+    text-shadow:2px 2px 5px #000;
+    z-index:999;
+}
 .panel{
     position:absolute;
     top:0px;          /* sesuaikan sampai tepat di papan kayu */
@@ -446,14 +465,15 @@ animation:bigFlash .7s;
 </head>
 
 <body>
+<div class="topPanel">
+    <div>💰 SCORE : <span id="score">0</span></div>
+    <div>🔥 COMBO : <span id="combo">0</span></div>
+</div>
 
 <div class="board">
-
-    <div class="panel">
-        <div>💰 SCORE : <span id="score">0</span></div>
-        <div>🔥 COMBO : <span id="combo">0</span></div>
-    </div>
-
+    <div id="grid"></div>
+</div>
+<div class="board">
     <div id="grid"></div>
 
 </div>
