@@ -536,26 +536,31 @@ animation:bigFlash .7s;
 
 </div>
 
-<div class="controlArea">
+<div class="Area">
 
-    <button id="betMinus">−</button>
+    <div class="controlArea">
 
-    <button id="spinBtn">
-        <span>⟳</span>
-    </button>
+        <div class="speedBox">
+            <button id="speedMinus">−</button>
+            <div class="controlLabel">Kecepatan</div>
+        </div>
 
-    <button id="betPlus">+</button>
+        <button id="spinBtn">
+            <span>⟳</span>
+        </button>
+
+        <div class="betBox">
+            <button id="betPlus">+</button>
+            <div class="controlLabel">Betting</div>
+        </div>
+
+    </div>
+
+    <div id="message">
+        Tekan tombol SPIN
+    </div>
 
 </div>
-
-<div class="betPanel">
-    💰 BET :
-    <span id="betValue">200</span>
-</div>
-
-    
-
-
 
 <div id="freeSpinPopup" style="display:none;">
     <div class="popupBox">
