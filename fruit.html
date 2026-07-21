@@ -24,24 +24,11 @@ background:linear-gradient(180deg,#63d8ff,#ffe7a3);
 }
 
 body{
-    margin:0;
-    font-family:Arial,sans-serif;
+display:flex;
+justify-content:center;
+align-items:center;
+}
 
-    background:url("kebun-stroberi.jpg") center center/cover no-repeat fixed;
-
-    min-height:100vh;
-}
-@keyframes bgMove{
-0%{
-background-position:center top;
-}
-50%{
-background-position:center center;
-}
-100%{
-background-position:center top;
-}
-}
 #game{
 width:430px;
 max-width:100%;
@@ -49,20 +36,14 @@ padding:8px;
 }
 
 .header{
-
-background:
-linear-gradient(180deg,#66bb6a,#2e7d32);
-
+background:linear-gradient(180deg,#ffb300,#ff9800);
 color:#fff;
-
 font-size:30px;
-
 font-weight:bold;
-
-text-shadow:2px 2px 5px rgba(0,0,0,.4);
-
-box-shadow:0 8px 18px rgba(0,0,0,.4);
-
+text-align:center;
+padding:15px;
+border-radius:18px 18px 0 0;
+box-shadow:0 6px 15px rgba(0,0,0,.35);
 }
 
 .panel{
@@ -77,101 +58,28 @@ border-right:4px solid #8b5a2b;
 }
 
 .board{
-    position:relative;
-    width:min(96vw,650px);
-    margin:18px auto;
-    padding:28px;
-    border-radius:35px;
-    overflow:hidden;
-
-    background:
-        linear-gradient(rgba(255,255,255,.15),rgba(255,255,255,.15));
-
-    backdrop-filter:blur(4px);
-    -webkit-backdrop-filter:blur(4px);
-
-    box-shadow:
-        0 12px 30px rgba(0,0,0,.35);
-}
-.board::before{
-    content:"";
-    position:absolute;
-
-    top:-20px;
-    left:-20px;
-    right:-20px;
-    bottom:-20px;
-
-    background:url("akar.png") center center/100% 100% no-repeat;
-
-    z-index:20;
-    pointer-events:none;
-}
-#grid{
-    position:relative;
-    z-index:10;
-
-    display:grid;
-    grid-template-columns:repeat(5,1fr);
-    gap:10px;
-
-    padding:35px;
+background:#8b5a2b;
+padding:10px;
+border-radius:0 0 18px 18px;
+box-shadow:0 10px 20px rgba(0,0,0,.35);
 }
 
 #grid{
-    position:relative;
-    z-index:10;
-
-    display:grid;
-    grid-template-columns:repeat(5,1fr);
-    gap:8px;
-
-    width:100%;
-    height:100%;
-}
-#message{
-    position:relative;
-    z-index:1;
+display:grid;
+grid-template-columns:repeat(5,1fr);
+gap:8px;
 }
 
 .cell{
-    aspect-ratio:1;
-    background:rgba(255,255,255,.08);
-    border-radius:12px;
-}
+    position:relative;
+    overflow:visible;
 
-/* Bayangan hitam di bawah buah */
-.cell::after{
-    content:"";
+    width:64px;
+    height:64px;
 
-    position:absolute;
-
-    width:58%;
-    height:14%;
-
-    bottom:10px;
-    left:50%;
-
-    transform:translateX(-50%);
-
-    background:rgba(0,0,0,.35);
-
-    border-radius:50%;
-
-    filter:blur(6px);
-
-    z-index:0;
-}
-
-/* Gambar buah */
-.cell{
-    text-shadow:
-        0 3px 0 rgba(0,0,0,.15),
-        0 8px 10px rgba(0,0,0,.35);
-}
-
-.cell:hover{
-    transform:translateY(-5px) scale(1.08);
+    display:flex;
+    justify-content:center;
+    align-items:center;
 }
   .fruit{
     position:absolute;
@@ -210,53 +118,23 @@ border-right:4px solid #8b5a2b;
 
 }
 
-.spinArea{
-display:flex;
-flex-direction:column;
-align-items:center;
-margin-top:20px;
-}
-
-#spinBtn{
-
-width:100px;
-height:100px;
-
-border-radius:50%;
-border:6px solid #fff;
-
-background:radial-gradient(circle,#ffd54f,#ff9800,#e65100);
-
-box-shadow:
-0 10px 25px rgba(0,0,0,.45),
-inset 0 4px 10px rgba(255,255,255,.45);
-
-font-size:42px;
-cursor:pointer;
-transition:.15s;
-
-}
-
-#spinBtn:hover{
-transform:scale(1.08);
-}
-
-#spinBtn:active{
-transform:scale(.92);
-box-shadow:
-0 3px 10px rgba(0,0,0,.5),
-inset 0 2px 5px rgba(0,0,0,.3);
-}
-
-#message{
+button{
+width:100%;
 margin-top:12px;
-font-size:20px;
+padding:15px;
+border:none;
+border-radius:12px;
+background:linear-gradient(180deg,#ffb300,#ff9800);
+color:white;
+font-size:22px;
 font-weight:bold;
-color:#fff;
-text-shadow:2px 2px 4px #000;
-min-height:28px;
-text-align:center;
+cursor:pointer;
 }
+
+button:active{
+transform:scale(.97);
+}
+
 #message{
 margin-top:10px;
 text-align:center;
@@ -334,59 +212,6 @@ animation:bigFlash .7s;
 100%{filter:brightness(1);}
 
 }
-#freeSpinPopup{
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,.7);
-    display:none;
-    justify-content:center;
-    align-items:center;
-    z-index:99999;
-}
-
-.popupBox{
-    width:320px;
-    max-width:90%;
-    background:white;
-    border-radius:20px;
-    text-align:center;
-    padding:25px;
-    animation:popupScale .35s;
-}
-
-.popupTitle{
-    font-size:30px;
-    font-weight:bold;
-    color:#ff9800;
-}
-
-.popupIcon{
-    font-size:70px;
-    margin:15px 0;
-}
-
-.popupText{
-    font-size:24px;
-    color:#444;
-    margin-bottom:20px;
-}
-
-#popupOk{
-    width:100%;
-    padding:15px;
-    font-size:22px;
-}
-
-@keyframes popupScale{
-    from{
-        transform:scale(.5);
-        opacity:0;
-    }
-    to{
-        transform:scale(1);
-        opacity:1;
-    }
-}    
 </style>
 
 </head>
@@ -414,37 +239,33 @@ animation:bigFlash .7s;
 </div>
 
 <div class="board">
-    <div id="grid"></div>
+
+<div id="grid"></div>
+
+<button id="spinBtn">
+🎰 SPIN
+</button>
+
+<div id="message">
+Tekan tombol SPIN
 </div>
 
-<div class="spinArea">
-    <button id="spinBtn">🎰</button>
-
-    <div id="message">
-        Tekan tombol SPIN
-    </div>
 </div>
 
 </div>
 
 <script>
-    
-const SCATTER = "⭐";
-const SCATTER_CHANCE = 20; // 20% per putaran
-let freeSpins = 0;
-let inFreeSpin = false;
+
 const ROWS=5;
 const COLS=5;
 const MIN_MATCH = 6;
-const fruits=[
- "🍎","🍓","🍍","🥝","🍇","🥭","🍒","🍉","🥥","⭐"
-];
+const fruits=[ "🍎", "🍓", "🍍", "🥝", "🍇", "🥭", "🍒", "🍉", "🥥" ];
+
 let board=[];
 let finalBoard=[];
 let score=0;
 let combo=0;
 let spinning=false;
-let forceScatter=false;   
 
 const grid = document.getElementById("grid");
 let cells = [];
@@ -454,16 +275,7 @@ const comboText = document.getElementById("combo");
 const message = document.getElementById("message");
 const spinBtn = document.getElementById("spinBtn");
 function randomFruit(){
-
-    const normalFruits=[
-        "🍎","🍓","🍍","🥝",
-        "🍇","🥭","🍒","🍉","🥥"
-    ];
-
-    return normalFruits[
-        Math.floor(Math.random()*normalFruits.length)
-    ];
-
+return fruits[Math.floor(Math.random()*fruits.length)];
 }
 function generateFinalBoard(){
 
@@ -518,21 +330,34 @@ updatePanel();
 
 function drawBoard(){
 
-    grid.innerHTML = "";
-    cells = [];
+    grid.innerHTML="";
+    cells=[];
 
-    for(let r = 0; r < ROWS; r++){
+    for(let r=0;r<ROWS;r++){
 
-        for(let c = 0; c < COLS; c++){
+        for(let c=0;c<COLS;c++){
 
-            const cell = document.createElement("div");
+            // Kotak
+            const cell=document.createElement("div");
+            cell.className="cell";
 
-            cell.className = "cell";
-            cell.textContent = board[r][c];
+            // Buah
+            const fruit=document.createElement("div");
+            fruit.className="fruit";
+            fruit.textContent=board[r][c];
 
+            // Simpan posisi
+            fruit.dataset.row=r;
+            fruit.dataset.col=c;
+
+            // Masukkan buah ke dalam kotak
+            cell.appendChild(fruit);
+
+            // Masukkan kotak ke grid
             grid.appendChild(cell);
 
-            cells.push(cell);
+            // Yang disimpan sekarang adalah buahnya
+            cells.push(fruit);
 
         }
 
@@ -564,7 +389,6 @@ async function animateSpin(){
     spinning = true;
 
     showMessage("🎰 SPIN...");
-    forceScatter = Math.random()*100 < SCATTER_CHANCE;
 
     // Kosongkan seluruh papan
     for(let r=0;r<ROWS;r++){
@@ -578,29 +402,6 @@ async function animateSpin(){
 
     // Isi kembali menggunakan animasi gravity
     await gravity();
-   if(forceScatter){
-
-    const used=[];
-
-    const totalScatter = 4 + Math.floor(Math.random() * 3);
-
-while(used.length < totalScatter){
-        const r=Math.floor(Math.random()*ROWS);
-        const c=Math.floor(Math.random()*COLS);
-
-        const key=r+"-"+c;
-
-        if(used.includes(key)) continue;
-
-        used.push(key);
-
-        board[r][c]=SCATTER;
-
-        updateCell(r,c);
-
-    }
-
-} 
 
 }
 async function spin(){
@@ -613,15 +414,6 @@ async function spin(){
         updatePanel();
 
         await animateSpin();
-       if(checkScatter()){
-
-    await showFreeSpinPopup();
-
-    await startFreeSpins();
-
-    return;
-
-}
 
         showMessage("🔍 Mencari kombinasi...");
 
@@ -641,21 +433,6 @@ async function spin(){
         showMessage("🎉 Kombinasi ditemukan!");
 
         await destroyMatches(result);
-        if(inFreeSpin){
-
-    freeSpins--;
-
-    showMessage("🎁 FREE SPINS : "+freeSpins);
-
-    if(freeSpins<=0){
-
-        inFreeSpin=false;
-
-        showMessage("Free Spin Selesai");
-
-    }
-
-}
 
     }catch(e){
 
@@ -680,9 +457,6 @@ function findMatches(){
         for(let c=0;c<COLS;c++){
 
             const fruit=board[r][c];
-            if(fruit===SCATTER){
-    continue;
-}
 
             if(!counts[fruit]){
                 counts[fruit]=0;
@@ -820,7 +594,7 @@ spinning=false;
 }
 async function gravity(){
 
-    let moved = false;
+    let moved=false;
 
     // Geser buah ke bawah
     for(let c=0;c<COLS;c++){
@@ -829,6 +603,7 @@ async function gravity(){
 
             if(board[r][c]===null){
 
+                // Cari buah pertama di atasnya
                 let k=r-1;
 
                 while(k>=0 && board[k][c]===null){
@@ -850,7 +625,7 @@ async function gravity(){
 
     }
 
-    // Update seluruh papan
+    // Update tampilan setelah buah turun
     for(let r=0;r<ROWS;r++){
         for(let c=0;c<COLS;c++){
             updateCell(r,c);
@@ -861,7 +636,7 @@ async function gravity(){
         await sleep(180);
     }
 
-    // Isi buah baru dari atas
+    // Isi bagian atas dengan buah baru
     for(let c=0;c<COLS;c++){
 
         for(let r=0;r<ROWS;r++){
@@ -875,7 +650,9 @@ async function gravity(){
                 const index=r*COLS+c;
 
                 cells[index].classList.remove("fall");
+
                 void cells[index].offsetWidth;
+
                 cells[index].classList.add("fall");
 
                 await sleep(60);
@@ -884,20 +661,6 @@ async function gravity(){
 
         }
 
-    }
-
-    // Pastikan semua sel tampil normal
-    for(let r=0;r<ROWS;r++){
-        for(let c=0;c<COLS;c++){
-
-            const index=r*COLS+c;
-
-            cells[index].style.opacity="1";
-            cells[index].style.transform="scale(1)";
-
-            updateCell(r,c);
-
-        }
     }
 
     await sleep(250);
@@ -909,9 +672,22 @@ function updateCell(r,c){
 
     if(!cells[index]) return;
 
-    cells[index].textContent = board[r][c] ?? "";
+    const fruit = cells[index];
 
-    cells[index].style.opacity = "1";
+    // Mulai dari atas
+    fruit.style.transition = "none";
+    fruit.style.transform = "translateY(-70px)";
+    fruit.style.opacity = "0";
+
+    fruit.textContent = board[r][c] ?? "";
+
+    requestAnimationFrame(()=>{
+
+        fruit.style.transition = "transform .12s linear, opacity .12s linear";
+        fruit.style.transform = "translateY(0)";
+        fruit.style.opacity = "1";
+
+    });
 
 }
 function showWin(text){
@@ -939,101 +715,8 @@ grid.classList.remove("bigFlash");
 },700);
 
 }
-    function checkScatter(){
-
-    let count=0;
-
-    for(let r=0;r<ROWS;r++){
-        for(let c=0;c<COLS;c++){
-
-            if(board[r][c]===SCATTER){
-                count++;
-            }
-
-        }
-    }
-
-    if(count>=4){
-
-        freeSpins+=10;
-        inFreeSpin=true;
-
-        showWin("⭐ FREE SPINS x10 ⭐");
-
-        return true;
-
-    }
-
-    return false;
-
-}
- async function startFreeSpins(){
-
-    while(freeSpins > 0){
-
-        freeSpins--;
-
-        showMessage("🎁 FREE SPINS : " + freeSpins);
-
-        await sleep(700);
-
-        await animateSpin();
-
-        const result = findMatches();
-
-        if(result.length){
-            await destroyMatches(result);
-        }
-
-    }
-
-    inFreeSpin = false;
-
-    spinBtn.disabled = false;
-    spinning = false;
-
-    showMessage("Free Spin Selesai");
-
-} 
-function showFreeSpinPopup(){
-
-    return new Promise(resolve=>{
-
-        const popup=document.getElementById("freeSpinPopup");
-
-        popup.style.display="flex";
-
-        document.getElementById("popupOk").onclick=()=>{
-
-            popup.style.display="none";
-
-            resolve();
-
-        };
-
-    });
-
-}    
-    
  createBoard();
 showMessage("Tekan tombol SPIN");   
 </script>
-    <div id="freeSpinPopup" style="display:none;">
-    <div class="popupBox">
-        <div class="popupTitle">🎉 SELAMAT! 🎉</div>
-
-        <div class="popupIcon">⭐ ⭐ ⭐ ⭐</div>
-
-        <div class="popupText">
-            Anda mendapatkan
-            <br><br>
-            <b>10 FREE SPINS</b>
-        </div>
-
-        <button id="popupOk">
-            OK
-        </button>
-    </div>
-</div>
 </body>
 </html>
