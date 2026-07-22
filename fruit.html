@@ -930,7 +930,15 @@ let win = group.length * fruitValue[fruit] * (combo + 1);
 
     score += win;
     totalWin += win;
+player.wallet.coin = score;
 
+const user = auth.currentUser;
+
+await db.collection("players")
+    .doc(user.uid)
+    .update({
+        "wallet.coin": score
+    });
     for(const pos of group){
 
         board[pos.r][pos.c] = null;
