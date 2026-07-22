@@ -13,7 +13,10 @@ header{position:sticky;top:0;background:#000;border-bottom:2px solid #d4a500;pad
 .info{padding:14px}.title{font-size:28px;font-weight:bold;margin-bottom:4px}.sub{color:#bbb;margin-bottom:14px}
 .play{display:block;text-decoration:none;text-align:center;background:linear-gradient(#ffe77d,#eab500);color:#000;font-weight:bold;padding:12px;border-radius:12px}
 </style></head><body>
-<header><div style="font-size:34px">☰</div><div class="logo">LEGENDS PORTAL</div><div class="btn" onclick="logout()">Logout</div></header>
+<header><div style="font-size:34px">☰</div><div class="logo">
+    LEGENDS PORTAL
+    <div id="playerEmail" style="font-size:13px;color:#ffe16b;margin-top:5px;"></div>
+</div><div class="btn" onclick="logout()">Logout</div></header>
 <div class="banner">PILIH GAME FAVORITMU</div>
 <div class="grid">
 <div class='card'>
@@ -61,6 +64,8 @@ const player = JSON.parse(sessionStorage.getItem("player"));
 if(!player){
     location.replace("index.html");
 }
+document.getElementById("playerEmail").textContent =
+    player.profile.email;    
 // Jika belum login, kembali ke halaman login
 auth.onAuthStateChanged((user)=>{
     if(!user){
