@@ -340,34 +340,6 @@ window.addEventListener("load", () => {
         }, { once: true });
     });
 });
-async function login(){
-
-    showPopup("Silakan lengkapi semua data.");
-    showPopup("Konfirmasi password tidak cocok.");
-    showPopup("Memverifikasi akun...");
-
-    const e = document.getElementById("email").value.trim();
-    const p = document.getElementById("password").value;
-    const msg = document.getElementById("msg");
-
-    msg.textContent = "Memverifikasi...";
-
-    try{
-        await auth.signInWithEmailAndPassword(e,p);
-
-        alert("Login berhasil");
-
-        location.href = "portal.html";
-
-    }catch(err){
-
-        alert(err.code);
-
-        showPopup("Format email tidak valid.");
-        console.error(err);
-
-    }
-}    
 </script>
    <div id="popup" class="popup">
     <div class="popup-box">
