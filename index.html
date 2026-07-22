@@ -177,16 +177,20 @@ body{
         </div>
 
         <!-- Password -->
-        <div class="field pass">
-            <div class="icon"></div>
-            <input id="password" type="password" placeholder="_">
-            <div class="eye"
-        onclick="password.type=password.type==='password'?'text':'password';this.textContent=password.type==='password'?'👁️':'🙈'">
+<div class="field pass">
+    <div class="icon"></div>
+
+    <input id="password" type="password" placeholder="_">
+
+    <div class="eye"
+    onclick="password.type=password.type==='password'?'text':'password';this.textContent=password.type==='password'?'👁️':'🙈'">
         👁️
     </div>
-         </div>   
-       <button class="login">.</button>
-        <button class="register">.</button>
+</div>
+
+<button class="login" onclick="login()">.</button>
+
+<button class="register">.</button>
     </div>
 </div>
 <script>
