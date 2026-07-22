@@ -276,11 +276,26 @@ async function login(){
 
         await auth.signInWithEmailAndPassword(e,p);
 
-        msg.textContent = "✅ Login berhasil. Selamat datang di LEGENDS PORTAL.";
+const user = auth.currentUser;
 
-        setTimeout(()=>{
-            location.replace("portal.html");
-        },800);
+const doc = await db.collection("players")
+    .doc(user.uid)
+    .get();
+
+if(doc.exists){
+
+    sessionStorage.setItem(
+        "player",
+        JSON.stringify(doc.data())
+    );
+
+}
+
+msg.textContent = "✅ Login berhasil. Selamat datang di LEGENDS PORTAL.";
+
+setTimeout(()=>{
+    location.replace("portal.html");
+},800);
 
     }catch(err){
 
