@@ -107,6 +107,47 @@ input{
     text-align:center;
     color:#ffd54a;
 }
+  .popup{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.7);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+}
+
+.popup-box{
+    width:320px;
+    background:#111;
+    border:2px solid #39b8ff;
+    border-radius:15px;
+    padding:25px;
+    text-align:center;
+    color:#fff;
+    box-shadow:0 0 20px #39b8ff;
+}
+
+.popup-box h2{
+    color:#ffd54a;
+    margin-bottom:10px;
+}
+
+.popup-box p{
+    margin-bottom:20px;
+}
+
+.popup-box button{
+    width:150px;
+    height:45px;
+    border:none;
+    border-radius:10px;
+    background:linear-gradient(#3ec5ff,#006dff);
+    color:#fff;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+}  
 </style>
 </head>
 <body>
@@ -161,12 +202,24 @@ registerBtn.onclick=()=>{
  }
  auth.createUserWithEmailAndPassword(email,pass)
  .then(()=>{
-    msg.textContent="Registrasi berhasil.";
-    setTimeout(()=>location.href="index.html",1200);
- })
+    showSuccessPopup();
+})
  .catch(e=>msg.textContent=e.message);
 };
-</script>
+ function showSuccessPopup(){
+    document.getElementById("successPopup").style.display="flex";
+}
 
+function goLogin(){
+    location.href="index.html";
+}   
+</script>
+<div id="successPopup" class="popup">
+    <div class="popup-box">
+        <h2>🎉 Registrasi Berhasil</h2>
+        <p>Akun Anda berhasil dibuat.</p>
+        <button onclick="goLogin()">OK</button>
+    </div>
+</div>
 </body>
 </html>
