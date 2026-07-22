@@ -363,7 +363,7 @@ async function login(){
 
         alert(err.code);
 
-        msg.textContent = err.message;
+        showPopup("Format email tidak valid.");
         console.error(err);
 
     }
