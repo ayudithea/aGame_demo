@@ -77,6 +77,9 @@ body::before{
 }
 
 .field{
+    display:flex;
+    align-items:center;
+
     width:300px;
     height:48px;
 
@@ -86,20 +89,19 @@ body::before{
     border:none;
 }
 .login{
-    width:300px;
-    height:52px;
-
-    margin:22px auto 14px;
-
-    display:block;
+    background:transparent;
+    border:none;
+    color:#000;
+    font-size:22px;
+    font-weight:bold;
 }
+
 .register{
-    width:300px;
-    height:52px;
-
-    margin:0 auto;
-
-    display:block;
+    background:transparent;
+    border:none;
+    color:#fff;
+    font-size:20px;
+    font-weight:bold;
 }
 input{
     flex:1;
@@ -108,6 +110,8 @@ input{
     outline:none;
     color:#fff;
     font-size:18px;
+input::placeholder{
+    color:#d8d8d8;
 }
 
 .icon{
@@ -142,12 +146,7 @@ input{
 <body>
 <div class="panel">
 
-    <img src="logo.png" class="logo">
-
-    <div class="sub">
-        Masuk untuk melanjutkan petualanganmu
-    </div>
-
+  
     <div class="field">
         <div class="icon">📧</div>
         <input id="email" type="email" placeholder="Email">
