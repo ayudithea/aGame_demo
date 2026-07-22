@@ -164,7 +164,7 @@ input{
 <input type="password" id="password" placeholder="Password">
 <input type="password" id="confirm" placeholder="Konfirmasi Password">
 
-<button id="registerBtn">DAFTAR</button>
+<button id="registerBtn" type="button">DAFTAR</button>
 
 <a class="back" href="index.html">Kembali ke Login</a>
 
@@ -188,26 +188,29 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth();
 
-registerBtn.onclick=()=>{
- const email=email.value.trim();
- const pass=password.value;
- const conf=confirm.value;
- if(!email||!pass||!conf){
-   msg.textContent="Lengkapi semua data.";
-   return;
- }
- if(pass!==conf){
-   msg.textContent="Password tidak sama.";
-   return;
- }
- auth.createUserWithEmailAndPassword(email,pass)
- .then(()=>{
-    showSuccessPopup();
-})
- .catch((e)=>{
-    console.log(e);
-    alert(e.code + "\n" + e.message);
-    msg.textContent = e.message;
+document.getElementById("registerBtn").addEventListener("click", async function () {
+
+    const email = document.getElementById("email").value.trim();
+    const pass = document.getElementById("password").value;
+    const conf = document.getElementById("confirm").value;
+
+    if (!email || !pass || !conf) {
+        alert("Lengkapi semua data.");
+        return;
+    }
+
+    if (pass !== conf) {
+        alert("Password tidak sama.");
+        return;
+    }
+
+    try {
+        await auth.createUserWithEmailAndPassword(email, pass);
+        showSuccessPopup();
+    } catch (e) {
+        alert(e.code + "\n" + e.message);
+        console.error(e);
+    }
 });
  function showSuccessPopup(){
     document.getElementById("successPopup").style.display="flex";
