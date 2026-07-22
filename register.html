@@ -132,8 +132,12 @@ input{
 }
 
 .popup-box h2{
+    position:static;
+    width:auto;
+    margin:0 0 10px;
     color:#ffd54a;
-    margin-bottom:10px;
+    text-align:center;
+    text-shadow:none;
 }
 
 .popup-box p{
@@ -230,29 +234,21 @@ const msg = document.getElementById("msg");
 }
     try{
 
-    if(email===""){
-        msg.textContent="⚠ Silakan masukkan alamat email.";
+    if(pass.length < 6){
+        showPopup("Password minimal 6 karakter.");
         return;
     }
 
-    if(pass.length<6){
-        msg.textContent="⚠ Password minimal 6 karakter.";
-        return;
-    }
+    msg.textContent = "⏳ Membuat akun LEGENDS PORTAL...";
 
-    if(pass!==conf){
-    msg.textContent="⚠ Konfirmasi password tidak cocok.";
-    return;
-}
 
     showPopup(
-    "🎉 Akun berhasil dibuat.\n\nSilakan login menggunakan email dan password yang telah didaftarkan.",
-    function(){
-        auth.signOut().then(()=>{
+        "🎉 Akun berhasil dibuat.\n\nSilakan login menggunakan email dan password yang telah didaftarkan.",
+        function(){
             location.replace("index.html");
-        });
-    }
-);
+        }
+    );
+
 }catch(err){
 
     switch(err.code){
@@ -278,8 +274,8 @@ const msg = document.getElementById("msg");
             console.error(err);
     }
 
-}        
-}); 
+}
+ });   
 </script>
 <div id="successPopup" class="popup">
     <div class="popup-box">
