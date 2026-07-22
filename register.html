@@ -101,11 +101,14 @@ input{
 #msg{
     position:absolute;
     left:50%;
+    top:76%;
     transform:translateX(-50%);
-    top:82%;
-    width:320px;
+    width:85%;
     text-align:center;
-    color:#ffd54a;
+    color:#ffe16b;
+    font-size:15px;
+    font-weight:bold;
+    text-shadow:0 0 8px #000;
 }
   .popup{
     position:fixed;
@@ -208,18 +211,59 @@ document.getElementById("registerBtn").addEventListener("click", async function 
         return;
     }
 
-    try {
-        await auth.createUserWithEmailAndPassword(email, pass);
+    try{
 
-// Logout agar pengguna harus login terlebih dahulu
-await auth.signOut();
-
-showSuccessPopup();
-    } catch (e) {
-        alert(e.code + "\n" + e.message);
-        console.error(e);
+    if(email===""){
+        msg.textContent="⚠ Silakan masukkan alamat email.";
+        return;
     }
-});
+
+    if(pass.length<6){
+        msg.textContent="⚠ Password minimal 6 karakter.";
+        return;
+    }
+
+    if(pass!==confirmPass){
+        msg.textContent="⚠ Konfirmasi password tidak cocok.";
+        return;
+    }
+
+    msg.textContent="⏳ Membuat akun LEGENDS PORTAL...";
+
+    await auth.createUserWithEmailAndPassword(email,pass);
+
+    await auth.signOut();
+
+    msg.textContent="✅ Akun LEGENDS PORTAL berhasil dibuat.";
+
+    showSuccessPopup();
+
+}catch(err){
+
+    switch(err.code){
+
+        case "auth/email-already-in-use":
+            msg.textContent="📧 Email sudah terdaftar. Silakan gunakan email lain.";
+            break;
+
+        case "auth/invalid-email":
+            msg.textContent="📧 Format email tidak valid.";
+            break;
+
+        case "auth/weak-password":
+            msg.textContent="🔒 Password minimal 6 karakter.";
+            break;
+
+        case "auth/network-request-failed":
+            msg.textContent="🌐 Tidak dapat terhubung ke server LEGENDS PORTAL.";
+            break;
+
+        default:
+            msg.textContent="⚠ Terjadi kesalahan saat membuat akun LEGENDS PORTAL.";
+            console.error(err);
+    }
+
+}
  function showSuccessPopup(){
     document.getElementById("successPopup").style.display="flex";
 }
