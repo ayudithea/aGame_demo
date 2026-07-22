@@ -200,7 +200,7 @@ document.getElementById("registerBtn").addEventListener("click", async function 
     const email = document.getElementById("email").value.trim();
     const pass = document.getElementById("password").value;
     const conf = document.getElementById("confirm").value;
-
+const msg = document.getElementById("msg");
     if (!email || !pass || !conf) {
         alert("Lengkapi semua data.");
         return;
@@ -223,10 +223,10 @@ document.getElementById("registerBtn").addEventListener("click", async function 
         return;
     }
 
-    if(pass!==confirmPass){
-        msg.textContent="⚠ Konfirmasi password tidak cocok.";
-        return;
-    }
+    if(pass!==conf){
+    msg.textContent="⚠ Konfirmasi password tidak cocok.";
+    return;
+}
 
     msg.textContent="⏳ Membuat akun LEGENDS PORTAL...";
 
@@ -264,6 +264,7 @@ document.getElementById("registerBtn").addEventListener("click", async function 
     }
 
 }
+ });   
  function showSuccessPopup(){
     document.getElementById("successPopup").style.display="flex";
 }
