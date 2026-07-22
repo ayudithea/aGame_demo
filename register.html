@@ -213,7 +213,7 @@ console.log("Firebase OK");
 
 document.getElementById("registerBtn").addEventListener("click", async function () {
 
-    
+ 
 
     const email = document.getElementById("email").value.trim();
     const pass = document.getElementById("password").value;
@@ -253,15 +253,33 @@ const msg = document.getElementById("msg");
         });
     }
 );
- function showSuccessPopup(){
-    document.getElementById("successPopup").style.display="flex";
-}
+}catch(err){
 
-function goLogin(){
-    auth.signOut().then(()=>{
-        location.replace("index.html");
-    });
-}
+    switch(err.code){
+
+        case "auth/email-already-in-use":
+            showPopup("Email sudah terdaftar.");
+            break;
+
+        case "auth/invalid-email":
+            showPopup("Format email tidak valid.");
+            break;
+
+        case "auth/weak-password":
+            showPopup("Password minimal 6 karakter.");
+            break;
+
+        case "auth/network-request-failed":
+            showPopup("Tidak dapat terhubung ke server LEGENDS PORTAL.");
+            break;
+
+        default:
+            showPopup("Terjadi kesalahan saat membuat akun.");
+            console.error(err);
+    }
+
+}        
+}); 
 </script>
 <div id="successPopup" class="popup">
     <div class="popup-box">
