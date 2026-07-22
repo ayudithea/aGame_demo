@@ -187,7 +187,7 @@ body{
         👁️
     </div>
 
-    <button class="login">____</button>
+    <button class="login" onclick="login()">____</button>
 </div> 
 <button class="register"
 onclick="location.href='register.html'"></button>
@@ -202,15 +202,7 @@ storageBucket:"game-demo-4db7f.firebasestorage.app",
 messagingSenderId:"405381506143",
 appId:"1:405381506143:web:da63f34a24f01e4f0367ea"
 };
-firebase.initializeApp(firebaseConfig);
-const auth=firebase.auth();
-auth.onAuthStateChanged((user) => {
-    console.log("Status login:", user);
 
-    if (user) {
-        location.replace("portal.html");
-    }
-});
 function login(){
 const e=email.value.trim(),p=password.value.trim();
 msg.textContent="Memverifikasi...";
