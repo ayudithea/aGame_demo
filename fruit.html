@@ -929,24 +929,29 @@ for(const group of groups){
 let win = group.length * fruitValue[fruit] * (combo + 1);
 
     score += win;
-    totalWin += win;
 player.wallet.coin = score;
 
 const user = auth.currentUser;
 
-await db.collection("players")
-    .doc(user.uid)
-    .update({
-        "wallet.coin": score
-    });
-    for(const pos of group){
+if(user){
+    try{
+        await db.collection("players")
+            .doc(user.uid)
+            .update({
+                "wallet.coin": score
+            });
 
-        board[pos.r][pos.c] = null;
+        console.log("Coin tersimpan:", score);
 
+    }catch(err){
+        console.error("Gagal menyimpan coin:", err);
+        alert(err.message);
     }
-
 }
 
+for(const pos of group){
+    board[pos.r][pos.c] = null;
+}
 updatePanel();
 
 await gravity();
