@@ -18,7 +18,127 @@ body{
     align-items:center;
     background:#000;
 }
- 
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+.container{
+    position:relative;
+    width:min(100vw,520px);
+}
+
+.bg{
+    display:block;
+    width:100%;
+    height:auto;
+}
+
+.panel{
+    position:absolute;
+    inset:0;
+}
+
+/* ========================= */
+/* EMAIL */
+/* ========================= */
+.email{
+    position:absolute;
+    top:36.8%;
+    left:21%;
+    width:58%;
+    height:3.8%;
+
+    display:flex;
+    align-items:center;
+}
+
+/* ========================= */
+/* PASSWORD */
+/* ========================= */
+.pass{
+    position:absolute;
+    top:43.5%;
+    left:21%;
+    width:58%;
+    height:3.8%;
+
+    display:flex;
+    align-items:center;
+}
+
+/* ========================= */
+/* INPUT */
+/* ========================= */
+.field input{
+    flex:1;
+    border:none;
+    outline:none;
+    background:transparent;
+
+    color:#ffffff;
+    font-size:18px;
+}
+
+.field input::placeholder{
+    color:#cfcfcf;
+}
+
+.icon{
+    font-size:22px;
+    margin-right:10px;
+}
+
+.eye{
+    cursor:pointer;
+    font-size:22px;
+}
+
+/* ========================= */
+/* LOGIN */
+/* ========================= */
+.login{
+    position:absolute;
+
+    top:54.5%;
+    left:21%;
+
+    width:58%;
+    height:4.8%;
+
+    background:none;
+    border:none;
+
+    color:#111;
+    font-size:22px;
+    font-weight:bold;
+
+    cursor:pointer;
+}
+
+/* ========================= */
+/* DAFTAR */
+/* ========================= */
+.register{
+    position:absolute;
+
+    top:63%;
+    left:21%;
+
+    width:58%;
+    height:4.8%;
+
+    background:none;
+    border:none;
+
+    color:#fff;
+    font-size:20px;
+    font-weight:bold;
+
+    cursor:pointer;
+}
 
 
 </style>
