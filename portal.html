@@ -62,37 +62,67 @@ LEGENDS<br>PORTAL
 </div>
 </header>
 <header>
-<div style="font-size:34px;font-weight:300;" id="playerName">
+<div id="wallet" style="
+margin:12px;
+padding:20px;
+background:#111;
+border:2px solid #d4a500;
+border-radius:15px;
+">
+
+<div id="playerName" style="
+font-size:36px;
+font-weight:300;
+margin-bottom:25px;
+">
 PLAYER
 </div>
-</div>
+
 <div style="
-margin-top:28px;
 display:flex;
 justify-content:space-between;
 align-items:center;
 ">
 
 <div>
-<div style="font-size:18px;color:#eee;">
+
+<div style="font-size:18px;color:#ccc;">
 Saldo
 </div>
 
-<div style="font-size:34px;font-weight:bold;">
+<div style="
+display:flex;
+align-items:center;
+gap:8px;
+font-size:40px;
+font-weight:bold;
+">
 🪙 <span id="coin">0</span>
 </div>
 
-<div style="margin-top:8px;font-size:16px;">
+<div style="
+margin-top:10px;
+font-size:20px;
+">
 💎 <span id="diamond">0</span>
-&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;
 🎫 <span id="ticket">0</span>
 </div>
 
 </div>
 
-<div class="refreshBtn" onclick="location.reload()">
+<button onclick="location.reload()" style="
+height:44px;
+padding:0 18px;
+border:none;
+border-radius:12px;
+background:linear-gradient(#ffe77d,#eab500);
+font-size:18px;
+font-weight:bold;
+cursor:pointer;
+">
 🔄 Refresh
-</div>
+</button>
 
 </div>
 
