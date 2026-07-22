@@ -200,7 +200,7 @@ player.profile.username || player.profile.email.split("@")[0];
         player.profile.email;
 
     document.getElementById("coin").textContent =
-        player.wallet.coin;
+    Number(player.wallet.coin).toLocaleString("id-ID");
 
     document.getElementById("diamond").textContent =
         player.wallet.diamond;
