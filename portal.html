@@ -73,7 +73,41 @@ firebase.initializeApp(firebaseConfig);
 
 const auth = firebase.auth();
 const db = firebase.firestore();    
+let player = null;
 
+auth.onAuthStateChanged(async(user)=>{
+
+    if(!user){
+        location.replace("index.html");
+        return;
+    }
+
+    const doc = await db.collection("players")
+        .doc(user.uid)
+        .get();
+
+    if(!doc.exists){
+        alert("Data player tidak ditemukan.");
+        await auth.signOut();
+        location.replace("index.html");
+        return;
+    }
+
+    player = doc.data();
+
+    document.getElementById("playerEmail").textContent =
+        player.profile.email;
+
+    document.getElementById("coin").textContent =
+        player.wallet.coin;
+
+    document.getElementById("diamond").textContent =
+        player.wallet.diamond;
+
+    document.getElementById("ticket").textContent =
+        player.wallet.ticket;
+
+});
 function logout(){
     auth.signOut().then(()=>{
         location.replace("index.html");
