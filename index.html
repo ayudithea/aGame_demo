@@ -180,9 +180,10 @@ body{
         <div class="field pass">
             <div class="icon">🔒</div>
             <input id="password" type="password" placeholder="Password">
-            <div class="eye">👁️</div>
+              <div class="eye"
+        onclick="password.type=password.type==='password'?'text':'password';this.textContent=password.type==='password'?'👁️':'🙈'">
+        👁️
         </div>
-
         <button class="login">LOGIN</button>
 
         <button class="register">DAFTAR AKUN</button>
