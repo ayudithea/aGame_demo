@@ -238,8 +238,10 @@ const msg = document.getElementById("msg");
         showPopup("Password minimal 6 karakter.");
         return;
     }
+await auth.createUserWithEmailAndPassword(email, pass);
 
-    msg.textContent = "⏳ Membuat akun LEGENDS PORTAL...";
+await auth.signOut();
+
 
 
     showPopup(
