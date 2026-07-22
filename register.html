@@ -210,7 +210,11 @@ document.getElementById("registerBtn").addEventListener("click", async function 
 
     try {
         await auth.createUserWithEmailAndPassword(email, pass);
-        showSuccessPopup();
+
+// Logout agar pengguna harus login terlebih dahulu
+await auth.signOut();
+
+showSuccessPopup();
     } catch (e) {
         alert(e.code + "\n" + e.message);
         console.error(e);
