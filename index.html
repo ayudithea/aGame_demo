@@ -7,7 +7,7 @@
 
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
-
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
 <style>
 body{
     margin:0;
@@ -257,8 +257,8 @@ messagingSenderId:"405381506143",
 appId:"1:405381506143:web:da63f34a24f01e4f0367ea"
 };
 firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();    
-
+const auth = firebase.auth();
+const db = firebase.firestore();
 async function login(){
 
     const e = document.getElementById("email").value.trim();
