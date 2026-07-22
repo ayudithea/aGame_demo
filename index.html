@@ -191,6 +191,7 @@ body{
 </div> 
 <button class="register"
 onclick="location.href='register.html'"></button>
+<div id="msg"></div>
    </div>     
     </div>
 <script>
@@ -202,13 +203,24 @@ storageBucket:"game-demo-4db7f.firebasestorage.app",
 messagingSenderId:"405381506143",
 appId:"1:405381506143:web:da63f34a24f01e4f0367ea"
 };
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();    
 
-function login(){
-const e=email.value.trim(),p=password.value.trim();
-msg.textContent="Memverifikasi...";
-auth.signInWithEmailAndPassword(e,p)
-.then(()=>location.href='portal.html')
-.catch(err=>msg.textContent=err.message);
+async function login(){
+
+    const e = document.getElementById("email").value.trim();
+    const p = document.getElementById("password").value;
+    const msg = document.getElementById("msg");
+
+    msg.textContent = "Memverifikasi...";
+
+    try{
+        await auth.signInWithEmailAndPassword(e,p);
+        location.href = "portal.html";
+    }catch(err){
+        msg.textContent = err.message;
+    }
+
 }
 </script>
 
