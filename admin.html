@@ -1167,66 +1167,50 @@ try{
 // LOAD WITHDRAW
 // ==========================
 
-function loadWithdraw(){
+async function rejectWithdraw(id){
 
-db.collection("withdraw")
-.orderBy("createdAt","desc")
-.onSnapshot((snap)=>{
+    const ref = db.collection("withdraw").doc(id);
+    const snap = await ref.get();
 
-const tbody=document.getElementById("withdrawTable");
+    if(!snap.exists){
+        alert("Data tidak ditemukan.");
+        return;
+    }
 
-tbody.innerHTML="";
+    const data = snap.data();
 
-if(snap.empty){
+    const uid = data.uid;
+    const nominal = Number(data.nominal || 0);
 
-tbody.innerHTML=`
-<tr>
-<td colspan="4">
-Belum ada data withdraw.
-</td>
-</tr>
-`;
+    const playerRef = db.collection("players").doc(uid);
 
-return;
+    await db.runTransaction(async(tx)=>{
 
-}
+        const player = await tx.get(playerRef);
 
-snap.forEach(doc=>{
+        if(!player.exists){
+            throw "Player tidak ditemukan";
+        }
 
-const d=doc.data();
+        const p = player.data();
 
-tbody.innerHTML+=`
-<tr>
+        const coin = Number(p.wallet?.coin || 0);
 
-<td>${d.nickname||"-"}</td>
+        tx.update(playerRef,{
+            "wallet.coin": coin + nominal
+        });
 
-<td>Rp ${Number(d.nominal||0).toLocaleString("id-ID")}</td>
+        tx.update(ref,{
+            status:"Reject",
+            rejectedAt:firebase.firestore.FieldValue.serverTimestamp(),
+            rejectedBy:auth.currentUser.email
+        });
 
-<td>${d.status||"Pending"}</td>
+    });
 
-<td>
-
-<button class="btn green"
-onclick="approveWithdraw('${doc.id}')">
-✅
-</button>
-
-<button class="btn red"
-onclick="rejectWithdraw('${doc.id}')">
-❌
-</button>
-
-</td>
-
-</tr>
-`;
-
-});
-
-});
+    alert("Withdraw ditolak. Saldo dikembalikan.");
 
 }
-
 loadWithdraw();
 
 async function approveWithdraw(id){
