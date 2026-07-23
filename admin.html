@@ -683,14 +683,27 @@ btnRefresh.onclick = () => {
 const ADMIN_ID = "Admin";
 const ADMIN_PASSWORD = "Ktp487281";
 
-const id = prompt("Masukkan ID Admin");
-const password = prompt("Masukkan Password");
+if(sessionStorage.getItem("adminLogin") === "true"){
 
-if(id !== ADMIN_ID || password !== ADMIN_PASSWORD){
-    alert("ID atau Password salah!");
-    location.href = "index.html";
-}else{
     adminName.innerHTML = "Administrator";
+
+}else{
+
+    const id = prompt("Masukkan ID Admin");
+    const password = prompt("Masukkan Password");
+
+    if(id !== ADMIN_ID || password !== ADMIN_PASSWORD){
+
+        alert("ID atau Password salah!");
+        location.href = "index.html";
+
+    }else{
+
+        sessionStorage.setItem("adminLogin","true");
+        adminName.innerHTML = "Administrator";
+
+    }
+
 }
 
 const menuDashboard=document.getElementById("menuDashboard");
@@ -733,10 +746,10 @@ const pageLog=document.getElementById("pageLog");
 // ==========================
 // LOGOUT
 // ==========================
+btnLogout.onclick = ()=>{
 
-btnLogout.onclick=()=>{
-
-location.href="index.html";
+    sessionStorage.removeItem("adminLogin");
+    location.href = "index.html";
 
 };
 // ==========================
