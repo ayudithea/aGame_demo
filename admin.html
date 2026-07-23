@@ -747,25 +747,16 @@ location.href="index.html";
 
 auth.onAuthStateChanged((user)=>{
 
-if(!user){
+    console.log("AUTH :", user);
 
-location.href="index.html";
+    if(!user){
+        alert("Belum login");
+        return;
+    }
 
-return;
+    console.log("Email :", user.email);
 
-}
-
-if(!ADMIN_EMAILS.includes(user.email)){
-
-alert("Akses Admin Ditolak");
-
-auth.signOut();
-
-return;
-
-}
-
-console.log("Login Admin :",user.email);
+    adminName.innerHTML = user.email;
 
 });
 
