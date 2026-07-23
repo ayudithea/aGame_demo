@@ -1062,21 +1062,53 @@ Belum ada data deposit.
 
 loadDeposit();
 
-async function rejectDeposit(id){
+async function rejectWithdraw(id){
 
-await db.collection("deposit")
-.doc(id)
-.update({
+    const ref = db.collection("withdraw").doc(id);
+    const snap = await ref.get();
 
-status:"Reject",
+    if(!snap.exists){
+        alert("Data tidak ditemukan.");
+        return;
+    }
 
-rejectedAt:firebase.firestore.FieldValue.serverTimestamp(),
+    const data = snap.data();
 
-rejectedBy: "Administrator"
+    if(data.status !== "Pending"){
+        alert("Withdraw sudah diproses.");
+        return;
+    }
 
-});
+    const uid = data.uid;
+    const nominal = Number(data.nominal || 0);
 
-alert("Deposit ditolak.");
+    const playerRef = db.collection("players").doc(uid);
+
+    await db.runTransaction(async(tx)=>{
+
+        const player = await tx.get(playerRef);
+
+        if(!player.exists){
+            throw "Player tidak ditemukan";
+        }
+
+        const p = player.data();
+
+        const coin = Number(p.wallet?.coin || 0);
+
+        tx.update(playerRef,{
+            "wallet.coin": coin + nominal
+        });
+
+        tx.update(ref,{
+            status:"Reject",
+            rejectedAt:firebase.firestore.FieldValue.serverTimestamp(),
+            rejectedBy:"Administrator"
+        });
+
+    });
+
+    alert("Withdraw ditolak. Saldo telah dikembalikan.");
 
 }
 async function approveDeposit(id){
