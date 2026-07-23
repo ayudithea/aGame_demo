@@ -747,14 +747,17 @@ location.href="index.html";
 
 auth.onAuthStateChanged((user)=>{
 
-    console.log("AUTH :", user);
-
     if(!user){
-        alert("Belum login");
+        location.href="index.html";
         return;
     }
 
-    console.log("Email :", user.email);
+    if(!ADMIN_EMAILS.includes(user.email)){
+        alert("Akses Admin Ditolak!");
+        auth.signOut();
+        location.href="index.html";
+        return;
+    }
 
     adminName.innerHTML = user.email;
 
