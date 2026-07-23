@@ -1261,8 +1261,7 @@ await db.runTransaction(async(tx)=>{
 
     const coin = Number(p.wallet?.coin || 0);
 
-    tx.update(playerRef,{
-    "wallet.coin": coin - nominal
+
 });
 
     tx.update(ref,{
