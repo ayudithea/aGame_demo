@@ -1145,38 +1145,6 @@ const nominal=Number(data.nominal||0);
 
 const playerRef=db.collection("players").doc(uid);
 
-await db.runTransaction(async(tx)=>{
-
-const player=await tx.get(playerRef);
-
-if(!player.exists)
-
-throw "Player tidak ditemukan";
-
-}
-
-const p=player.data();
-
-const coin=Number(p.wallet?.coin||0);
-
-tx.update(playerRef,{
-
-"wallet.coin":coin+nominal
-
-});
-
-tx.update(ref,{
-
-status:"Success",
-
-approvedAt:firebase.firestore.FieldValue.serverTimestamp(),
-
-approvedBy:auth.currentUser.email
-
-});
-
-});
-
 alert("Deposit berhasil di-approve.");
 
 }catch(err){
@@ -1286,32 +1254,27 @@ const playerRef=db.collection("players").doc(uid);
 
 await db.runTransaction(async(tx)=>{
 
-const player=await tx.get(playerRef);
+    const player = await tx.get(playerRef);
 
-if(!player.exists()) throw "Player tidak ditemukan";
+    if(!player.exists){
+        throw "Player tidak ditemukan";
+    }
 
-const p=player.data();
+    const p = player.data();
 
-const coin=Number(p.wallet?.coin||0);
+    const coin = Number(p.wallet?.coin || 0);
 
-if(coin<nominal){
+    tx.update(playerRef,{
+        "wallet.coin": coin + nominal
+    });
 
-throw "Saldo Coin tidak mencukupi";
-
-}
-
-tx.update(playerRef,{
-"wallet.coin":coin-nominal
-});
-
-tx.update(ref,{
-status:"Success",
-approvedAt:firebase.firestore.FieldValue.serverTimestamp(),
-approvedBy:auth.currentUser.email
-});
+    tx.update(ref,{
+        status:"Success",
+        approvedAt:firebase.firestore.FieldValue.serverTimestamp(),
+        approvedBy:auth.currentUser.email
+    });
 
 });
-
 alert("Withdraw berhasil.");
 
 }catch(e){
