@@ -513,49 +513,61 @@ btnRequestDep.onclick = async () => {
 
     const nominal = Number(nominalDep.value);
 
-    if(isNaN(nominal) || nominal < 10000){
-        alert("Minimal deposit Rp10.000");
-        nominalDep.focus();
-        return;
-    }
+if(isNaN(nominal) || nominal < 10000){
+    alert("Minimal deposit Rp10.000");
+    nominalDep.focus();
+    return;
+}
+
+const kodeUnik = Math.floor(Math.random() * 900) + 100;
+const totalTransfer = nominal + kodeUnik;
 
     try{
 
         await db.collection("deposit").add({
 
-            uid: auth.currentUser.uid,
+uid: auth.currentUser.uid,
 
-            email: auth.currentUser.email,
+email: auth.currentUser.email,
 
-            nickname: player.profile?.nickname || "",
+nickname: player.profile?.nickname || "",
 
-            nominal: nominal,
+nominal: nominal,
 
-            metode: metode.value,
+kodeUnik: kodeUnik,
 
-            bankTujuan: metode.value==="Transfer" ? bank.value : "QRIS",
+totalTransfer: totalTransfer,
 
-            status: "Pending",
+metode: metode.value,
 
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+bankTujuan: metode.value==="Transfer" ? bank.value : "QRIS",
 
-        });
+status: "Pending",
 
-        alert("Request deposit berhasil dikirim.\nMenunggu konfirmasi Admin.");
+createdAt: firebase.firestore.FieldValue.serverTimestamp()
 
-        nominalDep.value="";
+});
 
-    }catch(err){
+        alert(
+"Request deposit berhasil.\n\n"+
+"Nominal Deposit : Rp " + nominal.toLocaleString("id-ID") +
+"\nKode Unik : " + kodeUnik +
+"\n\nTransfer Tepat : Rp " +
+totalTransfer.toLocaleString("id-ID") +
+"\n\nHarap transfer sesuai nominal tersebut."
+);
 
-        console.error(err);
+nominalDep.value="";
 
-        alert("Gagal mengirim request deposit.");
+}catch(err){
 
-    }
+console.error(err);
+
+alert("Gagal mengirim request deposit.");
+
+}
 
 };
-
-
 
 // ==========================
 // REQUEST WITHDRAW
