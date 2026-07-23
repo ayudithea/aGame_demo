@@ -1020,17 +1020,19 @@ tbody.innerHTML+=`
 <td>${d.status}</td>
 
 <td>
-
+${
+d.status==="Pending"
+? `
 <button class="btn green"
-onclick="approveDeposit('${doc.id}')">
-✅
-</button>
+onclick="approveDeposit('${doc.id}')">✅</button>
 
 <button class="btn red"
-onclick="rejectDeposit('${doc.id}')">
-❌
-</button>
-
+onclick="rejectDeposit('${doc.id}')">❌</button>
+`
+: d.status==="Success"
+? "✅ Success"
+: "❌ Reject"
+}
 </td>
 
 </tr>
@@ -1068,18 +1070,26 @@ async function rejectDeposit(id){
 
         const alasan = prompt("Masukkan alasan penolakan deposit:");
 
-        await db.collection("deposit")
-        .doc(id)
-        .update({
+        const ref = db.collection("deposit").doc(id);
+        const snap = await ref.get();
 
+        if(!snap.exists){
+            alert("Data tidak ditemukan.");
+            return;
+        }
+
+        const data = snap.data();
+
+        if(data.status !== "Pending"){
+            alert("Deposit sudah diproses.");
+            return;
+        }
+
+        await ref.update({
             status:"Reject",
-
             rejectedAt:firebase.firestore.FieldValue.serverTimestamp(),
-
             rejectedBy:"Administrator",
-
             rejectReason: alasan || "-"
-
         });
 
         alert("Deposit ditolak.");
@@ -1087,65 +1097,67 @@ async function rejectDeposit(id){
     }catch(err){
 
         console.error(err);
-
         alert("Gagal menolak deposit.");
 
     }
 
 }
-
-async function approveDeposit(id){
-
-    ...
-}
-
 async function rejectWithdraw(id){
 
-    const ref = db.collection("withdraw").doc(id);
-    const snap = await ref.get();
+    try{
 
-    if(!snap.exists){
-        alert("Data tidak ditemukan.");
-        return;
-    }
+        const ref = db.collection("withdraw").doc(id);
+        const snap = await ref.get();
 
-    const data = snap.data();
-
-    if(data.status !== "Pending"){
-        alert("Withdraw sudah diproses.");
-        return;
-    }
-
-    const uid = data.uid;
-    const nominal = Number(data.nominal || 0);
-
-    const playerRef = db.collection("players").doc(uid);
-
-    await db.runTransaction(async(tx)=>{
-
-        const player = await tx.get(playerRef);
-
-        if(!player.exists){
-            throw "Player tidak ditemukan";
+        if(!snap.exists){
+            alert("Data tidak ditemukan.");
+            return;
         }
 
-        const p = player.data();
+        const data = snap.data();
 
-        const coin = Number(p.wallet?.coin || 0);
+        if(data.status !== "Pending"){
+            alert("Withdraw sudah diproses.");
+            return;
+        }
 
-        tx.update(playerRef,{
-            "wallet.coin": coin + nominal
+        const uid = data.uid;
+        const nominal = Number(data.nominal || 0);
+
+        const playerRef = db.collection("players").doc(uid);
+
+        await db.runTransaction(async(tx)=>{
+
+            const player = await tx.get(playerRef);
+
+            if(!player.exists){
+                throw "Player tidak ditemukan";
+            }
+
+            const p = player.data();
+
+            const coin = Number(p.wallet?.coin || 0);
+
+            tx.update(playerRef,{
+                "wallet.coin": coin + nominal
+            });
+
+            tx.update(ref,{
+                status:"Reject",
+                rejectedAt:firebase.firestore.FieldValue.serverTimestamp(),
+                rejectedBy:"Administrator"
+            });
+
         });
 
-        tx.update(ref,{
-            status:"Reject",
-            rejectedAt:firebase.firestore.FieldValue.serverTimestamp(),
-            rejectedBy:"Administrator"
-        });
+        alert("Withdraw ditolak. Saldo telah dikembalikan.");
 
-    });
+    }catch(err){
 
-    alert("Withdraw ditolak. Saldo telah dikembalikan.");
+        console.error(err);
+        alert("Gagal menolak withdraw.");
+
+    }
 
 }
 async function approveDeposit(id){
@@ -1162,10 +1174,10 @@ try{
 
     const data = snap.data();
 
-    if(data.status==="Success"){
-        alert("Deposit sudah diproses.");
-        return;
-    }
+    if(data.status !== "Pending"){
+    alert("Deposit sudah diproses.");
+    return;
+}
 
     const uid = data.uid;
     const nominal = Number(data.nominal || 0);
@@ -1249,17 +1261,19 @@ tbody.innerHTML+=`
 <td>${d.status||"Pending"}</td>
 
 <td>
-
+${
+d.status==="Pending"
+? `
 <button class="btn green"
-onclick="approveWithdraw('${doc.id}')">
-✅
-</button>
+onclick="approveWithdraw('${doc.id}')">✅</button>
 
 <button class="btn red"
-onclick="rejectWithdraw('${doc.id}')">
-❌
-</button>
-
+onclick="rejectWithdraw('${doc.id}')">❌</button>
+`
+: d.status==="Success"
+? "✅ Success"
+: "❌ Reject"
+}
 </td>
 
 </tr>
