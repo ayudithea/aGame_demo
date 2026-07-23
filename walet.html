@@ -1,36 +1,401 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Wallet - Legends Portal</title>
 
-<link rel="stylesheet" href="wallet.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Wallet - Legends Portal</title>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
-</head>
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+
+background:linear-gradient(180deg,#0f172a,#111827,#000);
+
+color:#fff;
+
+min-height:100vh;
+
+}
+
+.container{
+
+width:100%;
+
+max-width:520px;
+
+margin:auto;
+
+padding:15px;
+
+}
+
+header{
+
+display:flex;
+
+align-items:center;
+
+justify-content:space-between;
+
+margin-bottom:20px;
+
+}
+
+.back{
+
+width:42px;
+
+height:42px;
+
+border:none;
+
+border-radius:50%;
+
+background:#2563eb;
+
+color:#fff;
+
+font-size:22px;
+
+cursor:pointer;
+
+}
+
+.title{
+
+font-size:26px;
+
+font-weight:bold;
+
+color:#FFD700;
+
+}
+
+.saldoBox{
+
+background:#1e293b;
+
+border-radius:20px;
+
+padding:20px;
+
+text-align:center;
+
+box-shadow:0 0 15px rgba(0,0,0,.4);
+
+margin-bottom:20px;
+
+}
+
+.saldoTitle{
+
+font-size:16px;
+
+opacity:.8;
+
+}
+
+#saldo{
+
+font-size:38px;
+
+font-weight:bold;
+
+color:#00ff99;
+
+margin-top:10px;
+
+}
+
+.tabs{
+
+display:flex;
+
+gap:10px;
+
+margin-bottom:20px;
+
+}
+
+.tabs button{
+
+flex:1;
+
+padding:15px;
+
+border:none;
+
+border-radius:12px;
+
+background:#374151;
+
+color:white;
+
+font-size:16px;
+
+cursor:pointer;
+
+transition:.3s;
+
+}
+
+.tabs button.active{
+
+background:#FFD700;
+
+color:#000;
+
+font-weight:bold;
+
+}
+
+.page{
+
+display:none;
+
+background:#1e293b;
+
+padding:20px;
+
+border-radius:18px;
+
+box-shadow:0 0 10px rgba(0,0,0,.35);
+
+margin-bottom:20px;
+
+}
+
+.page.active{
+
+display:block;
+
+}
+
+label{
+
+display:block;
+
+margin-top:15px;
+
+margin-bottom:6px;
+
+font-size:14px;
+
+}
+
+input,select{
+
+width:100%;
+
+padding:12px;
+
+border:none;
+
+border-radius:10px;
+
+font-size:15px;
+
+outline:none;
+
+}
+
+.info{
+
+margin-top:15px;
+
+background:#111827;
+
+padding:15px;
+
+border-radius:12px;
+
+line-height:28px;
+
+}
+
+.copyBtn{
+
+margin-top:10px;
+
+width:100%;
+
+padding:12px;
+
+border:none;
+
+border-radius:10px;
+
+background:#16a34a;
+
+color:white;
+
+font-weight:bold;
+
+cursor:pointer;
+
+}
+
+.actionBtn{
+
+margin-top:20px;
+
+width:100%;
+
+padding:15px;
+
+border:none;
+
+border-radius:12px;
+
+background:#2563eb;
+
+color:white;
+
+font-size:17px;
+
+font-weight:bold;
+
+cursor:pointer;
+
+}
+
+.actionBtn:hover{
+
+background:#1d4ed8;
+
+}
+
+.pending{
+
+background:#78350f;
+
+padding:15px;
+
+border-radius:15px;
+
+margin-top:20px;
+
+}
+
+.pending h3{
+
+color:#FFD700;
+
+margin-bottom:10px;
+
+}
+
+.pendingItem{
+
+background:#111827;
+
+padding:12px;
+
+border-radius:10px;
+
+margin-top:10px;
+
+line-height:24px;
+
+}
+
+.statusPending{
+
+color:orange;
+
+font-weight:bold;
+
+}
+
+.statusSuccess{
+
+color:#00ff99;
+
+font-weight:bold;
+
+}
+
+.statusReject{
+
+color:#ff4d4d;
+
+font-weight:bold;
+
+}
+
+.loading{
+
+display:none;
+
+margin-top:15px;
+
+text-align:center;
+
+color:#FFD700;
+
+}
+
+@media(max-width:600px){
+
+.container{
+
+padding:10px;
+
+}
+
+#saldo{
+
+font-size:30px;
+
+}
+
+.title{
+
+font-size:22px;
+
+}
+
+}
+
+</style>
 <body>
 
 <div class="container">
 
 <header>
 
-<button onclick="location.href='portal.html'" class="back">
+<button class="back" onclick="location.href='portal.html'">
 ←
 </button>
 
-<h2>💰 WALLET</h2>
+<div class="title">
+💰 WALLET
+</div>
+
+<div style="width:42px"></div>
 
 </header>
 
 <div class="saldoBox">
 
-<h3>Saldo Coin</h3>
+<div class="saldoTitle">
+Saldo Coin
+</div>
 
-<div id="saldoCoin">
+<div id="saldo">
 0
 </div>
 
@@ -38,135 +403,241 @@
 
 <div class="tabs">
 
-<button id="btnDeposit" class="active">
-Deposit
+<button id="tabDeposit" class="active">
+
+💰 Deposit
+
 </button>
 
-<button id="btnWithdraw">
-Withdraw
+<button id="tabWithdraw">
+
+💸 Withdraw
+
 </button>
 
 </div>
 
 <!-- ================= DEPOSIT ================= -->
 
-<div id="depositPage">
+<div id="depositPage" class="page active">
 
-<h3>Metode Deposit</h3>
+<label>
+
+Metode Deposit
+
+</label>
 
 <select id="metode">
 
-<option value="Transfer">Transfer Bank</option>
+<option value="Transfer">
 
-<option value="QRIS">QRIS</option>
+Transfer Bank
+
+</option>
+
+<option value="QRIS">
+
+QRIS
+
+</option>
 
 </select>
 
-<div id="bankArea">
+<div id="bankBox">
 
-<h4>Transfer Bank</h4>
+<label>
 
-<select id="bankTujuan">
+Pilih Bank Tujuan
+
+</label>
+
+<select id="bank">
 
 <option value="Mandiri">
+
 Bank Mandiri
+
 </option>
 
 <option value="BCA">
+
 Bank BCA
+
 </option>
 
 <option value="BRI">
+
 Bank BRI
+
 </option>
 
 <option value="SeaBank">
+
 SeaBank
+
 </option>
 
 <option value="Dana">
+
 DANA / GoPay
+
 </option>
 
 </select>
 
-<div class="rekening">
+<div class="info">
 
-<p>Nama</p>
+<div>
 
-<b id="namaTujuan">
+<b>Atas Nama</b>
+
+</div>
+
+<div id="namaTujuan">
+
 YUDI ALIYUDIN
-</b>
 
-<p>Nomor Rekening</p>
+</div>
 
-<b id="noRek">
+<br>
+
+<div>
+
+<b>Nomor Rekening</b>
+
+</div>
+
+<div id="rekeningTujuan">
+
 1340033268904
-</b>
 
-<button id="copyRekening">
-COPY
+</div>
+
+<button class="copyBtn" id="copyBtn">
+
+📋 COPY NOMOR REKENING
+
 </button>
 
 </div>
 
 </div>
 
-<div id="qrisArea" style="display:none">
+<div id="qrisBox" style="display:none">
 
-<img src="img/qris.png" width="220">
+<div class="info" style="text-align:center">
+
+<img id="qrisImage"
+src="img/qris.png"
+style="width:220px;max-width:100%;border-radius:15px;">
+
+<p style="margin-top:15px">
+
+Scan QRIS untuk melakukan pembayaran
+
+</p>
 
 </div>
 
-<input
-type="number"
-id="nominalDeposit"
-placeholder="Nominal Deposit">
+</div>
 
-<button id="requestDeposit">
+<label>
+
+Nominal Deposit
+
+</label>
+
+<input
+id="depositNominal"
+type="number"
+placeholder="Minimal 10000">
+
+<button
+class="actionBtn"
+id="depositBtn">
 
 REQUEST DEPOSIT
 
 </button>
 
+<div class="loading" id="loadingDeposit">
+
+Mengirim permintaan deposit...
+
+</div>
+
 </div>
 
 <!-- ================= WITHDRAW ================= -->
 
-<div id="withdrawPage" style="display:none">
+<div id="withdrawPage" class="page">
 
-<h3>Rekening Terdaftar</h3>
+<label>
 
-<p>Bank</p>
+Bank Tujuan Anda
 
-<div id="bankUser">-</div>
-
-<p>Nama Rekening</p>
-
-<div id="namaUser">-</div>
-
-<p>Nomor Rekening</p>
-
-<div id="rekeningUser">-</div>
+</label>
 
 <input
-type="number"
-id="nominalWithdraw"
-placeholder="Nominal Withdraw">
+id="bankUser"
+readonly>
 
-<button id="requestWithdraw">
+<label>
+
+Nama Rekening
+
+</label>
+
+<input
+id="namaUser"
+readonly>
+
+<label>
+
+Nomor Rekening
+
+</label>
+
+<input
+id="rekeningUser"
+readonly>
+
+<label>
+
+Nominal Withdraw
+
+</label>
+
+<input
+id="withdrawNominal"
+type="number"
+placeholder="Minimal 10000">
+
+<button
+class="actionBtn"
+id="withdrawBtn">
 
 REQUEST WITHDRAW
 
 </button>
 
+<div class="loading" id="loadingWithdraw">
+
+Mengirim permintaan withdraw...
+
+</div>
+
 </div>
 
 <!-- ================= STATUS ================= -->
 
-<div id="pendingArea">
+<div class="pending">
 
-<h3>Status Transaksi</h3>
+<h3>
+
+📢 Status Transaksi
+
+</h3>
 
 <div id="pendingList">
 
@@ -176,9 +647,523 @@ Belum ada transaksi.
 
 </div>
 
+<!-- ================= RIWAYAT ================= -->
+
+<div class="pending">
+
+<h3>
+
+📜 Riwayat Transaksi
+
+</h3>
+
+<div id="historyList">
+
+Belum ada riwayat transaksi.
+
 </div>
 
-<script src="wallet.js"></script>
+</div>
+<script>
+
+//================ FIREBASE CONFIG ================//
+
+const firebaseConfig={
+
+apiKey:"YOUR_API_KEY",
+
+authDomain:"YOUR_PROJECT.firebaseapp.com",
+
+projectId:"YOUR_PROJECT",
+
+storageBucket:"YOUR_PROJECT.appspot.com",
+
+messagingSenderId:"",
+
+appId:""
+
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const auth=firebase.auth();
+
+const db=firebase.firestore();
+
+let uid="";
+let player={};
+
+//================ CEK LOGIN ================//
+
+auth.onAuthStateChanged(async(user)=>{
+
+if(!user){
+
+location.href="index.html";
+
+return;
+
+}
+
+uid=user.uid;
+
+const doc=await db.collection("players").doc(uid).get();
+
+if(!doc.exists){
+
+alert("Data pemain tidak ditemukan");
+
+location.href="index.html";
+
+return;
+
+}
+
+player=doc.data();
+
+loadPlayer();
+
+loadPending();
+
+loadHistory();
+
+});
+
+//================ FORMAT RUPIAH ================//
+
+function rupiah(n){
+
+return Number(n||0).toLocaleString("id-ID");
+
+}
+
+//================ LOAD DATA PLAYER ================//
+
+function loadPlayer(){
+
+document.getElementById("saldo").innerHTML=
+
+rupiah(player.wallet.coin);
+
+document.getElementById("bankUser").value=
+
+player.bank.namaBank||"";
+
+document.getElementById("namaUser").value=
+
+player.bank.namaRekening||"";
+
+document.getElementById("rekeningUser").value=
+
+player.bank.noRekening||"";
+
+}
+
+//================ TAB ================//
+
+tabDeposit.onclick=()=>{
+
+tabDeposit.classList.add("active");
+
+tabWithdraw.classList.remove("active");
+
+depositPage.classList.add("active");
+
+withdrawPage.classList.remove("active");
+
+};
+
+tabWithdraw.onclick=()=>{
+
+tabWithdraw.classList.add("active");
+
+tabDeposit.classList.remove("active");
+
+withdrawPage.classList.add("active");
+
+depositPage.classList.remove("active");
+
+};
+
+//================ METODE ================//
+
+metode.onchange=()=>{
+
+if(metode.value=="QRIS"){
+
+bankBox.style.display="none";
+
+qrisBox.style.display="block";
+
+}else{
+
+bankBox.style.display="block";
+
+qrisBox.style.display="none";
+
+}
+
+};
+
+//================ GANTI REKENING ================//
+
+const rekening={
+
+Mandiri:"1340033268904",
+
+BCA:"4180734771",
+
+BRI:"004601060489505",
+
+SeaBank:"901341445605",
+
+Dana:"082319264646"
+
+};
+
+bank.onchange=()=>{
+
+rekeningTujuan.innerHTML=
+
+rekening[bank.value];
+
+};
+
+//================ COPY ================//
+
+copyBtn.onclick=()=>{
+
+navigator.clipboard.writeText(
+
+rekeningTujuan.innerHTML
+
+);
+
+alert("Nomor rekening berhasil disalin");
+
+};
+
+//================ REQUEST DEPOSIT ================//
+
+depositBtn.onclick=async()=>{
+
+const nominal=
+
+Number(depositNominal.value);
+
+if(nominal<10000){
+
+alert("Minimal deposit Rp10.000");
+
+return;
+
+}
+
+loadingDeposit.style.display="block";
+
+depositBtn.disabled=true;
+
+await db.collection("deposit").add({
+
+uid:uid,
+
+email:auth.currentUser.email,
+
+nominal:nominal,
+
+metode:metode.value,
+
+bank:bank.value,
+
+rekening:rekening[bank.value],
+
+status:"Pending",
+
+createdAt:firebase.firestore.FieldValue.serverTimestamp()
+
+});
+
+loadingDeposit.style.display="none";
+
+depositBtn.disabled=false;
+
+depositNominal.value="";
+
+alert("Permintaan deposit berhasil dikirim.");
+
+loadPending();
+
+loadHistory();
+
+};
+ //================ REQUEST WITHDRAW ================//
+
+withdrawBtn.onclick=async()=>{
+
+const nominal=Number(withdrawNominal.value);
+
+if(nominal<10000){
+
+alert("Minimal withdraw Rp10.000");
+
+return;
+
+}
+
+if(nominal>player.wallet.coin){
+
+alert("Saldo tidak mencukupi");
+
+return;
+
+}
+
+loadingWithdraw.style.display="block";
+
+withdrawBtn.disabled=true;
+
+await db.collection("withdraw").add({
+
+uid:uid,
+
+email:auth.currentUser.email,
+
+nominal:nominal,
+
+bank:player.bank.namaBank,
+
+namaRekening:player.bank.namaRekening,
+
+noRekening:player.bank.noRekening,
+
+status:"Pending",
+
+createdAt:firebase.firestore.FieldValue.serverTimestamp()
+
+});
+
+loadingWithdraw.style.display="none";
+
+withdrawBtn.disabled=false;
+
+withdrawNominal.value="";
+
+alert("Permintaan withdraw berhasil dikirim.");
+
+loadPending();
+
+loadHistory();
+
+};
+
+//================ STATUS PENDING ================//
+
+async function loadPending(){
+
+pendingList.innerHTML="";
+
+const user=auth.currentUser;
+
+const dep=await db.collection("deposit")
+.where("uid","==",user.uid)
+.where("status","==","Pending")
+.get();
+
+const wd=await db.collection("withdraw")
+.where("uid","==",user.uid)
+.where("status","==","Pending")
+.get();
+
+if(dep.empty && wd.empty){
+
+pendingList.innerHTML="Belum ada transaksi pending.";
+
+return;
+
+}
+
+dep.forEach(doc=>{
+
+const d=doc.data();
+
+pendingList.innerHTML+=`
+
+<div class="pendingItem">
+
+<b>💰 Deposit</b><br>
+
+Nominal :
+Rp ${rupiah(d.nominal)}<br>
+
+Status :
+<span class="statusPending">
+
+${d.status}
+
+</span>
+
+</div>
+
+`;
+
+});
+
+wd.forEach(doc=>{
+
+const d=doc.data();
+
+pendingList.innerHTML+=`
+
+<div class="pendingItem">
+
+<b>💸 Withdraw</b><br>
+
+Nominal :
+Rp ${rupiah(d.nominal)}<br>
+
+Status :
+<span class="statusPending">
+
+${d.status}
+
+</span>
+
+</div>
+
+`;
+
+});
+
+}
+
+//================ RIWAYAT ================//
+
+async function loadHistory(){
+
+historyList.innerHTML="";
+
+const user=auth.currentUser;
+
+const dep=await db.collection("deposit")
+.where("uid","==",user.uid)
+.get();
+
+const wd=await db.collection("withdraw")
+.where("uid","==",user.uid)
+.get();
+
+let kosong=true;
+
+dep.forEach(doc=>{
+
+const d=doc.data();
+
+if(d.status!="Pending"){
+
+kosong=false;
+
+historyList.innerHTML+=`
+
+<div class="pendingItem">
+
+<b>💰 Deposit</b><br>
+
+Rp ${rupiah(d.nominal)}<br>
+
+Status :
+<span class="${
+d.status=="Success"
+?
+"statusSuccess"
+:
+"statusReject"
+}">
+
+${d.status}
+
+</span>
+
+</div>
+
+`;
+
+}
+
+});
+
+wd.forEach(doc=>{
+
+const d=doc.data();
+
+if(d.status!="Pending"){
+
+kosong=false;
+
+historyList.innerHTML+=`
+
+<div class="pendingItem">
+
+<b>💸 Withdraw</b><br>
+
+Rp ${rupiah(d.nominal)}<br>
+
+Status :
+<span class="${
+d.status=="Success"
+?
+"statusSuccess"
+:
+"statusReject"
+}">
+
+${d.status}
+
+</span>
+
+</div>
+
+`;
+
+}
+
+});
+
+if(kosong){
+
+historyList.innerHTML="Belum ada riwayat transaksi.";
+
+}
+
+}
+
+//================ REALTIME SALDO ================//
+
+db.collection("players")
+
+.onSnapshot(()=>{
+
+if(uid){
+
+db.collection("players")
+
+.doc(uid)
+
+.get()
+
+.then(doc=>{
+
+player=doc.data();
+
+loadPlayer();
+
+});
+
+}
+
+});
+
+</script>
 
 </body>
-</html>
+
+</html> 
