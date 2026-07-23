@@ -346,9 +346,6 @@ document.getElementById("btnRefresh");
 
 btnRefresh.onclick=()=>{
 
-loadTransaksi();
-
-listenWallet();
 
 };
 const btnPortal=
@@ -548,7 +545,6 @@ btnRequestDep.onclick = async () => {
         alert("Request deposit berhasil dikirim.\nMenunggu konfirmasi Admin.");
 
         nominalDep.value="";
-loadTransaksi();
 
     }catch(err){
 
@@ -613,7 +609,6 @@ btnRequestWd.onclick = async () => {
         alert("Request withdraw berhasil dikirim.\nMenunggu konfirmasi Admin.");
 
         nominalWd.value="";
-loadTransaksi();
 
     }catch(err){
 
