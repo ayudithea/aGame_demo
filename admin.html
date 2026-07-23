@@ -1344,113 +1344,62 @@ alert("Withdraw ditolak.");
 
 function loadPlayer(){
 
-db.collection("players")
-.onSnapshot(...)
-const tbody=document.getElementById("playerTable");
+    db.collection("players").onSnapshot((snap)=>{
 
-tbody.innerHTML="";
+        const tbody=document.getElementById("playerTable");
+        tbody.innerHTML="";
 
-if(snap.empty){
+        if(snap.empty){
+            tbody.innerHTML=`
+            <tr>
+                <td colspan="4">Belum ada player.</td>
+            </tr>`;
+            return;
+        }
 
-tbody.innerHTML=`
-<tr>
-<td colspan="4">
-Belum ada player.
-</td>
-</tr>
-`;
+        snap.forEach(doc=>{
 
-return;
+            const p=doc.data();
 
-}
+            tbody.innerHTML+=`
+            <tr>
+                <td>${p.profile?.nickname || "-"}</td>
+                <td>${p.profile?.email || "-"}</td>
+                <td>${Number(p.wallet?.coin || 0).toLocaleString("id-ID")}</td>
+                <td>
+                    <button class="btn blue" onclick="detailPlayer('${doc.id}')">
+                        Detail
+                    </button>
+                </td>
+            </tr>`;
+        });
 
-snap.forEach(doc=>{
-
-const p=doc.data();
-
-tbody.innerHTML+=`
-
-<tr>
-
-<td>${p.profile?.nickname||"-"}</td>
-
-<td>${p.profile?.email||"-"}</td>
-
-<td>${Number(p.wallet?.coin||0).toLocaleString("id-ID")}</td>
-
-<td>
-
-<button
-class="btn blue"
-onclick="detailPlayer('${doc.id}')">
-
-Detail
-
-</button>
-
-</td>
-
-</tr>
-
-`;
-
-});
-
-});
+    });
 
 }
 
 loadPlayer();
-document
-.getElementById("searchPlayer")
-.addEventListener("input",function(){
 
-const key=this.value.toLowerCase();
-
-const rows=document
-.querySelectorAll("#playerTable tr");
-
-rows.forEach(r=>{
-
-r.style.display=
-r.innerText.toLowerCase().includes(key)
-?"":"none";
-
-});
-
-});
 async function detailPlayer(uid){
 
-const snap=await db.collection("players")
-.doc(uid)
-.onSnapshot(...)
+    const snap=await db.collection("players").doc(uid).get();
 
-if(!snap.exists){
+    if(!snap.exists){
+        alert("Player tidak ditemukan");
+        return;
+    }
 
-alert("Player tidak ditemukan");
+    const p=snap.data();
 
-return;
-
-}
-
-const p=snap.data();
-
-alert(
-
-"Nickname : "+(p.profile?.nickname||"-")+
-
-"\nEmail : "+(p.profile?.email||"-")+
-
-"\nCoin : "+Number(p.wallet?.coin||0).toLocaleString("id-ID")+
-
-"\nDiamond : "+Number(p.wallet?.diamond||0).toLocaleString("id-ID")+
-
-"\nTicket : "+Number(p.wallet?.ticket||0).toLocaleString("id-ID")
-
-);
+    alert(
+        "Nickname : "+(p.profile?.nickname || "-")+
+        "\nEmail : "+(p.profile?.email || "-")+
+        "\nCoin : "+Number(p.wallet?.coin || 0).toLocaleString("id-ID")+
+        "\nDiamond : "+Number(p.wallet?.diamond || 0).toLocaleString("id-ID")+
+        "\nTicket : "+Number(p.wallet?.ticket || 0).toLocaleString("id-ID")
+    );
 
 }
-
 </script>
 
 </body>
