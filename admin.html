@@ -1243,33 +1243,10 @@ alert("Withdraw sudah diproses.");
 return;
 
 }
-
-const uid=data.uid;
-const nominal=Number(data.nominal||0);
-
-const playerRef=db.collection("players").doc(uid);
-
-await db.runTransaction(async(tx)=>{
-
-    const player = await tx.get(playerRef);
-
-    if(!player.exists){
-        throw "Player tidak ditemukan";
-    }
-
-    const p = player.data();
-
-    const coin = Number(p.wallet?.coin || 0);
-
-
-});
-
-    tx.update(ref,{
-        status:"Success",
-        approvedAt:firebase.firestore.FieldValue.serverTimestamp(),
-        approvedBy:auth.currentUser.email
-    });
-
+await ref.update({
+    status:"Success",
+    approvedAt:firebase.firestore.FieldValue.serverTimestamp(),
+    approvedBy:auth.currentUser.email
 });
 alert("Withdraw berhasil.");
 
@@ -1282,19 +1259,58 @@ alert(e);
 }
 async function rejectWithdraw(id){
 
-await db.collection("withdraw")
-.doc(id)
-.update({
+try{
 
-status:"Reject",
+    const ref = db.collection("withdraw").doc(id);
+    const snap = await ref.get();
 
-rejectedAt:firebase.firestore.FieldValue.serverTimestamp(),
+    if(!snap.exists){
+        alert("Data tidak ditemukan.");
+        return;
+    }
 
-rejectedBy:auth.currentUser.email
+    const data = snap.data();
 
-});
+    if(data.status !== "Pending"){
+        alert("Withdraw sudah diproses.");
+        return;
+    }
 
-alert("Withdraw ditolak.");
+    const playerRef = db.collection("players").doc(data.uid);
+
+    await db.runTransaction(async(tx)=>{
+
+        const player = await tx.get(playerRef);
+
+        if(!player.exists){
+            throw "Player tidak ditemukan";
+        }
+
+        const coin = Number(player.data().wallet?.coin || 0);
+        const nominal = Number(data.nominal || 0);
+
+        // Kembalikan coin
+        tx.update(playerRef,{
+            "wallet.coin": coin + nominal
+        });
+
+        // Ubah status withdraw
+        tx.update(ref,{
+            status:"Reject",
+            rejectedAt:firebase.firestore.FieldValue.serverTimestamp(),
+            rejectedBy:auth.currentUser.email
+        });
+
+    });
+
+    alert("Withdraw ditolak. Coin telah dikembalikan.");
+
+}catch(e){
+
+    console.error(e);
+    alert(e);
+
+}
 
 }
 // ==========================
