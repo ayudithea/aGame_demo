@@ -319,9 +319,52 @@ Dashboard akan menampilkan aktivitas realtime.
 
 <div id="pageDeposit" class="hidden">
 
+<div class="card-grid">
+
+<div class="card">
+<small>Pending</small>
+<h1 id="depPending">0</h1>
+</div>
+
+<div class="card">
+<small>Success</small>
+<h1 id="depSuccess">0</h1>
+</div>
+
+<div class="card">
+<small>Reject</small>
+<h1 id="depReject">0</h1>
+</div>
+
+<div class="card">
+<small>Total Deposit</small>
+<h1 id="depNominal">Rp0</h1>
+</div>
+
+</div>
+
 <div class="section">
 
-<h3>Daftar Deposit</h3>
+<h3>Kelola Deposit</h3>
+
+<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:15px;">
+
+<input
+type="text"
+id="cariDeposit"
+placeholder="Cari Player / Email"
+style="flex:2;">
+
+<select id="filterDeposit" style="flex:1;">
+
+<option value="Semua">Semua</option>
+<option value="Pending">Pending</option>
+<option value="Success">Success</option>
+<option value="Reject">Reject</option>
+
+</select>
+
+</div>
 
 <table>
 
@@ -329,9 +372,13 @@ Dashboard akan menampilkan aktivitas realtime.
 
 <tr>
 
+<th>Tanggal</th>
+
 <th>Player</th>
 
 <th>Nominal</th>
+
+<th>Metode</th>
 
 <th>Status</th>
 
@@ -342,6 +389,16 @@ Dashboard akan menampilkan aktivitas realtime.
 </thead>
 
 <tbody id="depositTable">
+
+<tr>
+
+<td colspan="6">
+
+Belum ada data.
+
+</td>
+
+</tr>
 
 </tbody>
 
