@@ -961,51 +961,79 @@ loadNotifikasi();
 function loadDashboard(){
 
 // Total Player
-db.collection("players").onSnapshot((snap)=>{
+function loadDashboard(){
 
-document.getElementById("totalPlayer").innerHTML = snap.size;
+    // Total Player
+    db.collection("players").onSnapshot(
 
-let totalCoin = 0;
+        (snap)=>{
 
-snap.forEach(doc=>{
+            document.getElementById("totalPlayer").innerHTML = snap.size;
 
-const data = doc.data();
+            let totalCoin = 0;
 
-if(data.wallet && data.wallet.coin){
+            snap.forEach(doc=>{
 
-totalCoin += Number(data.wallet.coin);
+                const data = doc.data();
+
+                totalCoin += Number(data.wallet?.coin || 0);
+
+            });
+
+            document.getElementById("totalCoin").innerHTML =
+                totalCoin.toLocaleString("id-ID");
+
+        },
+
+        (err)=>{
+
+            console.error("Players Error :", err);
+
+        }
+
+    );
+
+    // Deposit Pending
+    db.collection("deposit")
+    .where("status","==","Pending")
+    .onSnapshot(
+
+        (snap)=>{
+
+            document.getElementById("depositPending").innerHTML =
+                snap.size;
+
+        },
+
+        (err)=>{
+
+            console.error("Deposit Error :", err);
+
+        }
+
+    );
+
+    // Withdraw Pending
+    db.collection("withdraw")
+    .where("status","==","Pending")
+    .onSnapshot(
+
+        (snap)=>{
+
+            document.getElementById("withdrawPending").innerHTML =
+                snap.size;
+
+        },
+
+        (err)=>{
+
+            console.error("Withdraw Error :", err);
+
+        }
+
+    );
 
 }
-
-});
-
-document.getElementById("totalCoin").innerHTML =
-totalCoin.toLocaleString("id-ID");
-
-});
-
-// Deposit Pending
-db.collection("deposit")
-.where("status","==","Pending")
-.onSnapshot((snap)=>{
-
-document.getElementById("depositPending").innerHTML =
-snap.size;
-
-});
-
-// Withdraw Pending
-db.collection("withdraw")
-.where("status","==","Pending")
-.onSnapshot((snap)=>{
-
-document.getElementById("withdrawPending").innerHTML =
-snap.size;
-
-});
-
-}
-
 loadDashboard();
 // ==========================
 // LOAD DEPOSIT
@@ -1119,39 +1147,56 @@ async function approveDeposit(id){
 
 try{
 
-const ref=db.collection("deposit").doc(id);
+    const ref = db.collection("deposit").doc(id);
+    const snap = await ref.get();
 
-const snap=await ref.get();
+    if(!snap.exists){
+        alert("Data tidak ditemukan.");
+        return;
+    }
 
-if(!snap.exists){
+    const data = snap.data();
 
-alert("Data tidak ditemukan.");
-return;
+    if(data.status==="Success"){
+        alert("Deposit sudah diproses.");
+        return;
+    }
 
-}
+    const uid = data.uid;
+    const nominal = Number(data.nominal || 0);
 
-const data=snap.data();
+    const playerRef = db.collection("players").doc(uid);
 
-if(data.status==="Success"){
+    await db.runTransaction(async(tx)=>{
 
-alert("Deposit sudah pernah diproses.");
-return;
+        const player = await tx.get(playerRef);
 
-}
+        if(!player.exists){
+            throw "Player tidak ditemukan";
+        }
 
-const uid=data.uid;
+        const p = player.data();
 
-const nominal=Number(data.nominal||0);
+        const coin = Number(p.wallet?.coin || 0);
 
-const playerRef=db.collection("players").doc(uid);
+        tx.update(playerRef,{
+            "wallet.coin": coin + nominal
+        });
 
-alert("Deposit berhasil di-approve.");
+        tx.update(ref,{
+            status:"Success",
+            approvedAt:firebase.firestore.FieldValue.serverTimestamp(),
+            approvedBy:auth.currentUser.email
+        });
+
+    });
+
+    alert("Deposit berhasil di-approve.");
 
 }catch(err){
 
-alert(err);
-
-console.error(err);
+    console.error(err);
+    alert(err);
 
 }
 
@@ -1265,8 +1310,8 @@ await db.runTransaction(async(tx)=>{
     const coin = Number(p.wallet?.coin || 0);
 
     tx.update(playerRef,{
-        "wallet.coin": coin + nominal
-    });
+    "wallet.coin": coin - nominal
+});
 
     tx.update(ref,{
         status:"Success",
