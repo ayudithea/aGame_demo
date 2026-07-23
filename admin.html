@@ -1167,6 +1167,65 @@ try{
 // LOAD WITHDRAW
 // ==========================
 
+function loadWithdraw(){
+
+db.collection("withdraw")
+.orderBy("createdAt","desc")
+.onSnapshot((snap)=>{
+
+const tbody=document.getElementById("withdrawTable");
+
+tbody.innerHTML="";
+
+if(snap.empty){
+
+tbody.innerHTML=`
+<tr>
+<td colspan="4">
+Belum ada data withdraw.
+</td>
+</tr>
+`;
+
+return;
+
+}
+
+snap.forEach(doc=>{
+
+const d=doc.data();
+
+tbody.innerHTML+=`
+<tr>
+
+<td>${d.nickname||"-"}</td>
+
+<td>Rp ${Number(d.nominal||0).toLocaleString("id-ID")}</td>
+
+<td>${d.status||"Pending"}</td>
+
+<td>
+
+<button class="btn green"
+onclick="approveWithdraw('${doc.id}')">
+✅
+</button>
+
+<button class="btn red"
+onclick="rejectWithdraw('${doc.id}')">
+❌
+</button>
+
+</td>
+
+</tr>
+`;
+
+});
+
+});
+
+}
 async function rejectWithdraw(id){
 
     const ref = db.collection("withdraw").doc(id);
@@ -1236,6 +1295,7 @@ await ref.update({
 
 alert("Withdraw ditolak.");
 
+}
 }
 // ==========================
 // LOAD PLAYER
