@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Admin Dashboard - Legends Portal</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#0b1220;
+color:#fff;
+}
+
+header{
+height:70px;
+background:#182235;
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:0 20px;
+border-bottom:2px solid #ffd54a;
+position:sticky;
+top:0;
+z-index:100;
+}
+
+header h2{
+color:#ffd54a;
+font-size:22px;
+}
+
+header button{
+padding:10px 18px;
+border:none;
+border-radius:8px;
+background:#ff4444;
+color:#fff;
+font-weight:bold;
+cursor:pointer;
+}
+
+.container{
+display:flex;
+min-height:calc(100vh - 70px);
+}
+
+.sidebar{
+width:240px;
+background:#182235;
+padding:15px;
+}
+
+.sidebar button{
+width:100%;
+padding:14px;
+margin-bottom:10px;
+border:none;
+border-radius:10px;
+background:#22314f;
+color:#fff;
+font-size:15px;
+cursor:pointer;
+text-align:left;
+}
+
+.sidebar button:hover{
+background:#2563eb;
+}
+
+.sidebar button.active{
+background:#ffd54a;
+color:#000;
+font-weight:bold;
+}
+
+.content{
+flex:1;
+padding:20px;
+overflow:auto;
+}
+
+.card-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:15px;
+margin-bottom:20px;
+}
+
+.card{
+background:#182235;
+border-radius:15px;
+padding:20px;
+}
+
+.card small{
+display:block;
+color:#bbb;
+margin-bottom:8px;
+}
+
+.card h1{
+color:#ffd54a;
+font-size:30px;
+}
+
+.section{
+background:#182235;
+border-radius:15px;
+padding:20px;
+margin-top:20px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:15px;
+}
+
+th{
+background:#22314f;
+padding:12px;
+}
+
+td{
+padding:12px;
+border-bottom:1px solid #333;
+text-align:center;
+}
+
+input,
+select{
+width:100%;
+padding:10px;
+border:none;
+border-radius:8px;
+margin:5px 0;
+}
+
+.btn{
+padding:10px 15px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+font-weight:bold;
+}
+
+.green{
+background:#00b894;
+color:white;
+}
+
+.red{
+background:#e74c3c;
+color:white;
+}
+
+.blue{
+background:#2563eb;
+color:white;
+}
+
+.yellow{
+background:#ffd54a;
+color:black;
+}
+
+#btnNotif{
+position:relative;
+animation:bell 1s infinite;
+}
+
+@keyframes bell{
+
+0%{transform:rotate(0deg);}
+20%{transform:rotate(-15deg);}
+40%{transform:rotate(15deg);}
+60%{transform:rotate(-10deg);}
+80%{transform:rotate(10deg);}
+100%{transform:rotate(0deg);}
+
+}
+
+.hidden{
+display:none;
+}
+
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+<h2>👑 Legends Portal Admin</h2>
+<div style="display:flex;align-items:center;gap:12px;">
+
+<button class="btn blue" id="btnRefresh">
+🔄 Refresh
+</button>
+
+<button class="btn yellow" id="btnNotif">
+🔔 0
+</button>
+
+<span id="adminName">
+Memuat...
+</span>
+
+<button id="btnLogout">
+Logout
+</button>
+
+</div>
+</header>
+
+<div class="container">
+
+<!-- ========================= -->
+<!-- SIDEBAR -->
+<!-- ========================= -->
+
+<div class="sidebar">
+
+<button class="active" id="menuDashboard">
+🏠 Dashboard
+</button>
+
+<button id="menuDeposit">
+📥 Deposit
+</button>
+
+<button id="menuWithdraw">
+📤 Withdraw
+</button>
+
+<button id="menuPlayer">
+👥 Player
+</button>
+
+<button id="menuLaporan">
+📑 Laporan
+</button>
+
+<button id="menuWallet">
+💰 Wallet
+</button>
+
+<button id="menuBroadcast">
+📢 Broadcast
+</button>
+
+<button id="menuSetting">
+⚙ Pengaturan
+</button>
+
+<button id="menuLog">
+🔒 Log Admin
+</button>
+
+</div>
+
+<!-- ========================= -->
+<!-- CONTENT -->
+<!-- ========================= -->
+
+<div class="content">
+
+<!-- DASHBOARD -->
+
+<div id="pageDashboard">
+
+<div class="card-grid">
+
+<div class="card">
+
+<small>Total Player</small>
+
+<h1 id="totalPlayer">
+0
+</h1>
+
+</div>
+
+<div class="card">
+
+<small>Coin Beredar</small>
+
+<h1 id="totalCoin">
+0
+</h1>
+
+</div>
+
+<div class="card">
+
+<small>Deposit Pending</small>
+
+<h1 id="depositPending">
+0
+</h1>
+
+</div>
+
+<div class="card">
+
+<small>Withdraw Pending</small>
+
+<h1 id="withdrawPending">
+0
+</h1>
+
+</div>
+
+</div>
+
+<div class="section">
+
+<h3>Aktivitas Hari Ini</h3>
+
+<p>
+Dashboard akan menampilkan aktivitas realtime.
+</p>
+
+</div>
+
+</div>
+
+<!-- ========================= -->
+<!-- DEPOSIT -->
+<!-- ========================= -->
+
+<div id="pageDeposit" class="hidden">
+
+<div class="card-grid">
+
+<div class="card">
+<small>Pending</small>
+<h1 id="depPending">0</h1>
+</div>
+
+<div class="card">
+<small>Success</small>
+<h1 id="depSuccess">0</h1>
+</div>
+
+<div class="card">
+<small>Reject</small>
+<h1 id="depReject">0</h1>
+</div>
+
+<div class="card">
+<small>Total Deposit</small>
+<h1 id="depNominal">Rp0</h1>
+</div>
+
+</div>
+
+<div class="section">
+
+<h3>Kelola Deposit</h3>
+
+<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:15px;">
+
+<input
+type="text"
+id="cariDeposit"
+placeholder="Cari Player / Email"
+style="flex:2;">
+
+<select id="filterDeposit" style="flex:1;">
+
+<option value="Semua">Semua</option>
+<option value="Pending">Pending</option>
+<option value="Success">Success</option>
+<option value="Reject">Reject</option>
+
+</select>
+
+</div>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Tanggal</th>
+
+<th>Player</th>
+
+<th>Nominal</th>
+
+<th>Metode</th>
+
+<th>Status</th>
+
+<th>Aksi</th>
+
+</tr>
+
+</thead>
+
+<tbody id="depositTable">
+
+<tr>
+
+<td colspan="6">
+
+Belum ada data.
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<!-- ========================= -->
+<!-- WITHDRAW -->
+<!-- ========================= -->
+
+<div id="pageWithdraw" class="hidden">
+
+<div class="section">
+
+<h3>Daftar Withdraw</h3>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Player</th>
+
+<th>Nominal</th>
+
+<th>Status</th>
+
+<th>Aksi</th>
+
+</tr>
+
+</thead>
+
+<tbody id="withdrawTable">
+
+<tr>
+<td colspan="4">
+Belum ada data withdraw.
+</td>
+</tr>
+
+</tbody>
+</table>
+
+</div>
+
+</div>
+
+<!-- ========================= -->
+<!-- PLAYER -->
+<!-- ========================= -->
+
+<div id="pagePlayer" class="hidden">
+
+<div class="section">
+
+<h3>Data Player</h3>
+
+<input
+type="text"
+id="searchPlayer"
+placeholder="Cari nickname atau email">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Nickname</th>
+
+<th>Email</th>
+
+<th>Coin</th>
+
+<th>Aksi</th>
+
+</tr>
+
+</thead>
+
+<tbody id="playerTable">
+
+<tr>
+<td colspan="4">
+Memuat data player...
+</td>
+</tr>
+
+</tbody>
+</table>
+
+</div>
+
+</div>
+
+<!-- ========================= -->
+<!-- LAPORAN -->
+<!-- ========================= -->
+
+<div id="pageLaporan" class="hidden">
+
+<div class="section">
+
+<h3>Laporan Player</h3>
+
+<div id="laporanArea">
+
+Pilih player untuk melihat laporan.
+
+</div>
+
+</div>
+
+</div>
+
+<!-- ========================= -->
+<!-- WALLET -->
+<!-- ========================= -->
+
+<div id="pageWallet" class="hidden">
+
+<div class="section">
+
+<h3>Mutasi Wallet</h3>
+
+<div id="walletArea">
+
+Belum ada data.
+
+</div>
+
+</div>
+
+</div>
+
+<!-- ========================= -->
+<!-- BROADCAST -->
+<!-- ========================= -->
+
+<div id="pageBroadcast" class="hidden">
+
+<div class="section">
+
+<h3>Broadcast</h3>
+
+<textarea
+id="broadcastText"
+style="width:100%;height:150px;border:none;border-radius:10px;padding:10px;"></textarea>
+
+<br><br>
+
+<button class="btn blue" id="btnBroadcast">
+
+Kirim Broadcast
+
+</button>
+
+</div>
+
+</div>
+
+<!-- ========================= -->
+<!-- SETTING -->
+<!-- ========================= -->
+
+<div id="pageSetting" class="hidden">
+
+<div class="section">
+
+<h3>Pengaturan Sistem</h3>
+
+<p>
+
+Menu pengaturan akan dibuat pada tahap berikutnya.
+
+</p>
+
+</div>
+
+</div>
+
+<!-- ========================= -->
+<!-- LOG -->
+<!-- ========================= -->
+
+<div id="pageLog" class="hidden">
+
+<div class="section">
+
+<h3>Log Aktivitas Admin</h3>
+
+<div id="logArea">
+
+Belum ada log.
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<script>
+
+// ==========================
+// FIREBASE
+// ==========================
+
+const firebaseConfig = {
+
+apiKey:"AIzaSyBeTALsF43ij3aAlZjF1XeBjB1gNtaTb2I",
+
+authDomain:"game-demo-4db7f.firebaseapp.com",
+
+projectId:"game-demo-4db7f",
+
+storageBucket:"game-demo-4db7f.firebasestorage.app",
+
+messagingSenderId:"405381506143",
+
+appId:"1:405381506143:web:da63f34a24f01e4f0367ea"
+
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const auth = firebase.auth();
+
+const db = firebase.firestore();
+
+
+// ==========================
+// ADMIN
+// ==========================
+
+const ADMIN_EMAILS=[
+
+"servicehpmaja@gmail.com"
+
+];
+
+
+// ==========================
+// ELEMEN
+// ==========================
+
+const adminName=document.getElementById("adminName");
+
+const btnLogout=document.getElementById("btnLogout");
+
+const btnRefresh = document.getElementById("btnRefresh");
+const btnNotif = document.getElementById("btnNotif");
+
+btnRefresh.onclick = () => {
+    location.reload();
+};
+
+const menuDashboard=document.getElementById("menuDashboard");
+
+const menuDeposit=document.getElementById("menuDeposit");
+
+const menuWithdraw=document.getElementById("menuWithdraw");
+
+const menuPlayer=document.getElementById("menuPlayer");
+
+const menuLaporan=document.getElementById("menuLaporan");
+
+const menuWallet=document.getElementById("menuWallet");
+
+const menuBroadcast=document.getElementById("menuBroadcast");
+
+const menuSetting=document.getElementById("menuSetting");
+
+const menuLog=document.getElementById("menuLog");
+
+const pageDashboard=document.getElementById("pageDashboard");
+
+const pageDeposit=document.getElementById("pageDeposit");
+
+const pageWithdraw=document.getElementById("pageWithdraw");
+
+const pagePlayer=document.getElementById("pagePlayer");
+
+const pageLaporan=document.getElementById("pageLaporan");
+
+const pageWallet=document.getElementById("pageWallet");
+
+const pageBroadcast=document.getElementById("pageBroadcast");
+
+const pageSetting=document.getElementById("pageSetting");
+
+const pageLog=document.getElementById("pageLog");
+
+
+// ==========================
+// LOGOUT
+// ==========================
+
+btnLogout.onclick=()=>{
+
+auth.signOut();
+
+location.href="index.html";
+
+};
+
+
+// ==========================
+// LOGIN ADMIN
+// ==========================
+
+auth.onAuthStateChanged((user)=>{
+
+    console.log("AUTH :", user);
+
+    if(!user){
+        alert("Belum login");
+        return;
+    }
+
+    console.log("Email :", user.email);
+
+    adminName.innerHTML = user.email;
+
+});
+
+
+// ==========================
+// GANTI HALAMAN
+// ==========================
+
+function hideAll(){
+
+pageDashboard.classList.add("hidden");
+
+pageDeposit.classList.add("hidden");
+
+pageWithdraw.classList.add("hidden");
+
+pagePlayer.classList.add("hidden");
+
+pageLaporan.classList.add("hidden");
+
+pageWallet.classList.add("hidden");
+
+pageBroadcast.classList.add("hidden");
+
+pageSetting.classList.add("hidden");
+
+pageLog.classList.add("hidden");
+
+}
+
+function resetMenu(){
+
+menuDashboard.classList.remove("active");
+
+menuDeposit.classList.remove("active");
+
+menuWithdraw.classList.remove("active");
+
+menuPlayer.classList.remove("active");
+
+menuLaporan.classList.remove("active");
+
+menuWallet.classList.remove("active");
+
+menuBroadcast.classList.remove("active");
+
+menuSetting.classList.remove("active");
+
+menuLog.classList.remove("active");
+
+}
+
+menuDashboard.onclick=()=>{
+
+hideAll();
+
+resetMenu();
+
+pageDashboard.classList.remove("hidden");
+
+menuDashboard.classList.add("active");
+
+};
+
+menuDeposit.onclick=()=>{
+
+hideAll();
+
+resetMenu();
+
+pageDeposit.classList.remove("hidden");
+
+menuDeposit.classList.add("active");
+
+};
+
+menuWithdraw.onclick=()=>{
+
+hideAll();
+
+resetMenu();
+
+pageWithdraw.classList.remove("hidden");
+
+menuWithdraw.classList.add("active");
+
+};
+
+menuPlayer.onclick=()=>{
+
+hideAll();
+
+resetMenu();
+
+pagePlayer.classList.remove("hidden");
+
+menuPlayer.classList.add("active");
+
+};
+
+menuLaporan.onclick=()=>{
+
+hideAll();
+
+resetMenu();
+
+pageLaporan.classList.remove("hidden");
+
+menuLaporan.classList.add("active");
+
+};
+
+menuWallet.onclick=()=>{
+
+hideAll();
+
+resetMenu();
+
+pageWallet.classList.remove("hidden");
+
+menuWallet.classList.add("active");
+
+};
+
+menuBroadcast.onclick=()=>{
+
+hideAll();
+
+resetMenu();
+
+pageBroadcast.classList.remove("hidden");
+
+menuBroadcast.classList.add("active");
+
+};
+
+menuSetting.onclick=()=>{
+
+hideAll();
+
+resetMenu();
+
+pageSetting.classList.remove("hidden");
+
+menuSetting.classList.add("active");
+
+};
+
+menuLog.onclick=()=>{
+
+hideAll();
+
+resetMenu();
+
+pageLog.classList.remove("hidden");
+
+menuLog.classList.add("active");
+
+};
+
+// ==========================
+// NOTIFIKASI REALTIME
+// ==========================
+
+function loadNotifikasi(){
+
+let total = 0;
+
+db.collection("deposit")
+.where("status","==","Pending")
+.onSnapshot((snap)=>{
+
+total = snap.size;
+
+db.collection("withdraw")
+.where("status","==","Pending")
+.get()
+.then((w)=>{
+
+btnNotif.innerHTML = "🔔 " + (total + w.size);
+
+});
+
+});
+
+}
+
+loadNotifikasi();
+function loadDashboard(){
+
+    // Total Player
+    db.collection("players").onSnapshot(
+        (snap)=>{
+            document.getElementById("totalPlayer").innerHTML = snap.size;
+
+            let totalCoin = 0;
+
+            snap.forEach(doc=>{
+                const data = doc.data();
+                totalCoin += Number(data.wallet?.coin || 0);
+            });
+
+            document.getElementById("totalCoin").innerHTML =
+                totalCoin.toLocaleString("id-ID");
+        },
+        (err)=>{
+            console.error("Players Error :", err);
+        }
+    );
+
+    // Deposit Pending
+    db.collection("deposit")
+    .where("status","==","Pending")
+    .onSnapshot(
+        (snap)=>{
+            document.getElementById("depositPending").innerHTML = snap.size;
+        },
+        (err)=>{
+            console.error("Deposit Error :", err);
+        }
+    );
+
+    // Withdraw Pending
+    db.collection("withdraw")
+    .where("status","==","Pending")
+    .onSnapshot(
+        (snap)=>{
+            document.getElementById("withdrawPending").innerHTML = snap.size;
+        },
+        (err)=>{
+            console.error("Withdraw Error :", err);
+        }
+    );
+
+}
+loadDashboard();
+// ==========================
+// LOAD DEPOSIT
+// ==========================
+
+function loadDeposit(){
+
+db.collection("deposit")
+.orderBy("createdAt","desc")
+.onSnapshot((snap)=>{
+
+const tbody=document.getElementById("depositTable");
+
+tbody.innerHTML="";
+
+let pending=0;
+let success=0;
+let reject=0;
+let totalNominal=0;
+
+snap.forEach(doc=>{
+
+const d=doc.data();
+
+const tanggal=d.createdAt
+? d.createdAt.toDate().toLocaleString("id-ID")
+: "-";
+
+const nominal=Number(d.nominal||0);
+
+totalNominal+=nominal;
+
+if(d.status==="Pending") pending++;
+if(d.status==="Success") success++;
+if(d.status==="Reject") reject++;
+
+tbody.innerHTML+=`
+<tr>
+
+<td>${tanggal}</td>
+
+<td>${d.nickname||"-"}</td>
+
+<td>Rp ${nominal.toLocaleString("id-ID")}</td>
+
+<td>${d.metode||"-"}</td>
+
+<td>${d.status}</td>
+
+<td>
+
+<button class="btn green"
+onclick="approveDeposit('${doc.id}')">
+✅
+</button>
+
+<button class="btn red"
+onclick="rejectDeposit('${doc.id}')">
+❌
+</button>
+
+</td>
+
+</tr>
+`;
+
+});
+
+document.getElementById("depPending").innerHTML=pending;
+document.getElementById("depSuccess").innerHTML=success;
+document.getElementById("depReject").innerHTML=reject;
+document.getElementById("depNominal").innerHTML=
+"Rp "+totalNominal.toLocaleString("id-ID");
+
+if(snap.empty){
+
+tbody.innerHTML=`
+<tr>
+<td colspan="6">
+Belum ada data deposit.
+</td>
+</tr>
+`;
+
+}
+
+});
+
+}
+
+loadDeposit();
+
+async function rejectDeposit(id){
+
+await db.collection("deposit")
+.doc(id)
+.update({
+
+status:"Reject",
+
+rejectedAt:firebase.firestore.FieldValue.serverTimestamp(),
+
+rejectedBy:auth.currentUser.email
+
+});
+
+alert("Deposit ditolak.");
+
+}
+async function approveDeposit(id){
+
+try{
+
+    const ref = db.collection("deposit").doc(id);
+    const snap = await ref.get();
+
+    if(!snap.exists){
+        alert("Data tidak ditemukan.");
+        return;
+    }
+
+    const data = snap.data();
+
+    if(data.status==="Success"){
+        alert("Deposit sudah diproses.");
+        return;
+    }
+
+    const uid = data.uid;
+    const nominal = Number(data.nominal || 0);
+
+    const playerRef = db.collection("players").doc(uid);
+
+    await db.runTransaction(async(tx)=>{
+
+        const player = await tx.get(playerRef);
+
+        if(!player.exists){
+            throw "Player tidak ditemukan";
+        }
+
+        const p = player.data();
+
+        const coin = Number(p.wallet?.coin || 0);
+
+        tx.update(playerRef,{
+            "wallet.coin": coin + nominal
+        });
+
+        tx.update(ref,{
+            status:"Success",
+            approvedAt:firebase.firestore.FieldValue.serverTimestamp(),
+            approvedBy:auth.currentUser.email
+        });
+
+    });
+
+    alert("Deposit berhasil di-approve.");
+
+}catch(err){
+
+    console.error(err);
+    alert(err);
+
+}
+
+}
+
+// ==========================
+// LOAD WITHDRAW
+// ==========================
+
+function loadWithdraw(){
+
+db.collection("withdraw")
+.orderBy("createdAt","desc")
+.onSnapshot((snap)=>{
+
+const tbody=document.getElementById("withdrawTable");
+
+tbody.innerHTML="";
+
+if(snap.empty){
+
+tbody.innerHTML=`
+<tr>
+<td colspan="4">
+Belum ada data withdraw.
+</td>
+</tr>
+`;
+
+return;
+
+}
+
+snap.forEach(doc=>{
+
+const d=doc.data();
+
+tbody.innerHTML+=`
+<tr>
+
+<td>${d.nickname||"-"}</td>
+
+<td>Rp ${Number(d.nominal||0).toLocaleString("id-ID")}</td>
+
+<td>${d.status||"Pending"}</td>
+
+<td>
+
+<button class="btn green"
+onclick="approveWithdraw('${doc.id}')">
+✅
+</button>
+
+<button class="btn red"
+onclick="rejectWithdraw('${doc.id}')">
+❌
+</button>
+
+</td>
+
+</tr>
+`;
+
+});
+
+});
+
+}
+
+loadWithdraw();
+
+async function approveWithdraw(id){
+
+try{
+
+const ref=db.collection("withdraw").doc(id);
+
+const snap=await ref.get();
+
+if(!snap.exists){
+
+alert("Data tidak ditemukan.");
+return;
+
+}
+
+const data=snap.data();
+
+if(data.status==="Success"){
+
+alert("Withdraw sudah diproses.");
+return;
+
+}
+
+const uid=data.uid;
+const nominal=Number(data.nominal||0);
+
+const playerRef=db.collection("players").doc(uid);
+
+await db.runTransaction(async(tx)=>{
+
+    const player = await tx.get(playerRef);
+
+    if(!player.exists){
+        throw "Player tidak ditemukan";
+    }
+
+    const p = player.data();
+
+    const coin = Number(p.wallet?.coin || 0);
+
+    tx.update(playerRef,{
+    "wallet.coin": coin - nominal
+});
+
+    tx.update(ref,{
+        status:"Success",
+        approvedAt:firebase.firestore.FieldValue.serverTimestamp(),
+        approvedBy:auth.currentUser.email
+    });
+
+});
+alert("Withdraw berhasil.");
+
+}catch(e){
+
+alert(e);
+
+}
+
+}
+async function rejectWithdraw(id){
+
+await db.collection("withdraw")
+.doc(id)
+.update({
+
+status:"Reject",
+
+rejectedAt:firebase.firestore.FieldValue.serverTimestamp(),
+
+rejectedBy:auth.currentUser.email
+
+});
+
+alert("Withdraw ditolak.");
+
+}
+// ==========================
+// LOAD PLAYER
+// ==========================
+
+function loadPlayer(){
+
+    db.collection("players").onSnapshot((snap)=>{
+
+        const tbody=document.getElementById("playerTable");
+        tbody.innerHTML="";
+
+        if(snap.empty){
+            tbody.innerHTML=`
+            <tr>
+                <td colspan="4">Belum ada player.</td>
+            </tr>`;
+            return;
+        }
+
+        snap.forEach(doc=>{
+
+            const p=doc.data();
+
+            tbody.innerHTML+=`
+            <tr>
+                <td>${p.profile?.nickname || "-"}</td>
+                <td>${p.profile?.email || "-"}</td>
+                <td>${Number(p.wallet?.coin || 0).toLocaleString("id-ID")}</td>
+                <td>
+                    <button class="btn blue" onclick="detailPlayer('${doc.id}')">
+                        Detail
+                    </button>
+                </td>
+            </tr>`;
+        });
+
+    });
+
+}
+
+loadPlayer();
+
+async function detailPlayer(uid){
+
+    const snap=await db.collection("players").doc(uid).get();
+
+    if(!snap.exists){
+        alert("Player tidak ditemukan");
+        return;
+    }
+
+    const p=snap.data();
+
+    alert(
+        "Nickname : "+(p.profile?.nickname || "-")+
+        "\nEmail : "+(p.profile?.email || "-")+
+        "\nCoin : "+Number(p.wallet?.coin || 0).toLocaleString("id-ID")+
+        "\nDiamond : "+Number(p.wallet?.diamond || 0).toLocaleString("id-ID")+
+        "\nTicket : "+Number(p.wallet?.ticket || 0).toLocaleString("id-ID")
+    );
+
+}
+</script>
+
+</body>
+</html>
