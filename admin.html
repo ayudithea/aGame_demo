@@ -669,12 +669,18 @@ const db = firebase.firestore();
 // ADMIN
 // ==========================
 
-const ADMIN_EMAILS=[
+const ADMIN_ID = "admin";
+const ADMIN_PASSWORD = "Ktp487281";
 
-"servicehpmaja@gmail.com"
+const id = prompt("Masukkan ID Admin");
+const password = prompt("Masukkan Password");
 
-];
-
+if(id !== ADMIN_ID || password !== ADMIN_PASSWORD){
+    alert("ID atau Password salah!");
+    location.href = "index.html";
+}else{
+    adminName.innerHTML = "Administrator";
+}
 
 // ==========================
 // ELEMEN
@@ -734,33 +740,9 @@ const pageLog=document.getElementById("pageLog");
 
 btnLogout.onclick=()=>{
 
-auth.signOut();
-
 location.href="index.html";
 
 };
-
-
-// ==========================
-// LOGIN ADMIN
-// ==========================
-
-auth.onAuthStateChanged((user)=>{
-
-    console.log("AUTH :", user);
-
-    if(!user){
-        alert("Belum login");
-        return;
-    }
-
-    console.log("Email :", user.email);
-
-    adminName.innerHTML = user.email;
-
-});
-
-
 // ==========================
 // GANTI HALAMAN
 // ==========================
