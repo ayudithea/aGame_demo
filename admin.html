@@ -1062,6 +1062,43 @@ Belum ada data deposit.
 
 loadDeposit();
 
+async function rejectDeposit(id){
+
+    try{
+
+        const alasan = prompt("Masukkan alasan penolakan deposit:");
+
+        await db.collection("deposit")
+        .doc(id)
+        .update({
+
+            status:"Reject",
+
+            rejectedAt:firebase.firestore.FieldValue.serverTimestamp(),
+
+            rejectedBy:"Administrator",
+
+            rejectReason: alasan || "-"
+
+        });
+
+        alert("Deposit ditolak.");
+
+    }catch(err){
+
+        console.error(err);
+
+        alert("Gagal menolak deposit.");
+
+    }
+
+}
+
+async function approveDeposit(id){
+
+    ...
+}
+
 async function rejectWithdraw(id){
 
     const ref = db.collection("withdraw").doc(id);
