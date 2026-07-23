@@ -1028,38 +1028,30 @@ if(d.status==="Pending") pending++;
 if(d.status==="Success") success++;
 if(d.status==="Reject") reject++;
 
-tbody.innerHTML+=`
+tbody.innerHTML += `
 <tr>
 
 <td>${tanggal}</td>
-
 <td>${d.nickname||"-"}</td>
-
 <td>Rp ${nominal.toLocaleString("id-ID")}</td>
-
 <td>${d.metode||"-"}</td>
-
 <td>${d.status}</td>
 
 <td>
-
-<button class="btn green"
-onclick="approveDeposit('${doc.id}')">
-✅
-</button>
-
-<button class="btn red"
-onclick="rejectDeposit('${doc.id}')">
-❌
-</button>
-
+${
+    d.status === "Pending"
+    ? `
+        <button class="btn green" onclick="approveDeposit('${doc.id}')">✅</button>
+        <button class="btn red" onclick="rejectDeposit('${doc.id}')">❌</button>
+      `
+    : d.status === "Success"
+    ? `<span style="color:#00ff66;font-weight:bold;">✅ Success</span>`
+    : `<span style="color:#ff4444;font-weight:bold;">❌ Ditolak</span>`
+}
 </td>
 
 </tr>
 `;
-
-});
-
 document.getElementById("depPending").innerHTML=pending;
 document.getElementById("depSuccess").innerHTML=success;
 document.getElementById("depReject").innerHTML=reject;
