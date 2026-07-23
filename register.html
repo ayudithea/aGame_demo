@@ -15,18 +15,19 @@ body{
     margin:0;
     width:100vw;
     height:100vh;
-    overflow:hidden;
+    overflow-y:auto;
     background:#000;
     font-family:Arial,sans-serif;
 }
 .container{
-    position:fixed;
-    inset:0;
+    position:relative;
+    min-height:100vh;
+    padding-bottom:40px;
 }
 
 .panel{
-    position:absolute;
-    inset:0;
+    position:relative;
+    min-height:1100px;
     background:transparent;
 }
 
@@ -39,12 +40,12 @@ body{
 }
 
 .panel > h2{
-    position:absolute;
-    width:100%;
-    top:28%;
-    text-align:center;
-    color:#ffd54a;
-    text-shadow:0 0 8px #000;
+position:absolute;
+width:100%;
+top:28%;
+text-align:center;
+color:#ffd54a;
+text-shadow:0 0 8px #000;
 }
 
 input{
@@ -62,22 +63,38 @@ input{
 }
 
 #email{
-    top:38%;
+    top:30%;
 }
 
 #password{
-    top:47%;
+    top:38%;
 }
 
 #confirm{
-    top:56%;
+    top:46%;
+}
+
+#wa{
+    top:54%;
+}
+
+#bank{
+    top:62%;
+}
+
+#namaRekening{
+    top:70%;
+}
+
+#noRekening{
+    top:78%;
 }
 
 #registerBtn{
     position:absolute;
     left:50%;
     transform:translateX(-50%);
-    top:66%;
+    top:87%;
     width:320px;
     height:50px;
     border:none;
@@ -93,7 +110,7 @@ input{
     position:absolute;
     left:50%;
     transform:translateX(-50%);
-    top:76%;
+    top:95%;
     color:#fff;
     text-decoration:none;
 }
@@ -158,7 +175,10 @@ input{
 <input type="email" id="email" placeholder="Email">
 <input type="password" id="password" placeholder="Password">
 <input type="password" id="confirm" placeholder="Konfirmasi Password">
-
+<input type="tel" id="wa" placeholder="Nomor WhatsApp">
+<input type="text" id="bank" placeholder="Nama Bank">
+<input type="text" id="namaRekening" placeholder="Nama Pemilik Rekening">
+<input type="text" id="noRekening" placeholder="Nomor Rekening">
 <button id="registerBtn" type="button">DAFTAR</button>
 
 <a class="back" href="index.html">Kembali ke Login</a>
@@ -212,7 +232,11 @@ document.getElementById("registerBtn").addEventListener("click", async function 
     const pass = document.getElementById("password").value;
     const conf = document.getElementById("confirm").value;
 
-    if (!email || !pass || !conf) {
+const wa = document.getElementById("wa").value.trim();
+const bank = document.getElementById("bank").value.trim();
+const namaRekening = document.getElementById("namaRekening").value.trim();
+const noRekening = document.getElementById("noRekening").value.trim();
+    if (!email || !pass || !conf || !wa || !bank || !namaRekening || !noRekening) {
     showPopup("Silakan lengkapi semua data.");
     return;
 }
@@ -235,11 +259,17 @@ await db.collection("players")
 .set({
 
     profile:{
-        email:user.email,
-        nickname:"",
-        avatar:"",
-        createdAt:Date.now()
-    },
+    email:user.email,
+    wa:wa,
+    nickname:"",
+    avatar:"",
+    createdAt:Date.now()
+},
+bank:{
+    namaBank:bank,
+    namaRekening:namaRekening,
+    noRekening:noRekening
+},
 
     wallet:{
         coin:0,
