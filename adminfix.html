@@ -234,7 +234,36 @@ btnMenu.onclick = () => {
     else { overlay.classList.remove("show"); }
 };
 overlay.onclick=()=>{ sidebar.classList.remove("show"); overlay.classList.remove("show"); };
-btnLogout.onclick = ()=>{ sessionStorage.removeItem("adminLogin"); location.href = "index.html"; };
+
+async function bersihkanHistorySaatLogout(){
+  try{
+    if(!isPlayerCacheReady){ await new Promise(r=>setTimeout(r, 1200)); }
+    let hDepo=0, hWd=0;
+    const snapDepo = await db.collection("deposit").get();
+    for(const doc of snapDepo.docs){
+      const d=doc.data();
+      if(!d.uid || !playerCache.has(d.uid)){ await doc.ref.delete(); hDepo++; }
+    }
+    const snapWd = await db.collection("withdraw").get();
+    for(const doc of snapWd.docs){
+      const d=doc.data();
+      if(!d.uid || !playerCache.has(d.uid)){ await doc.ref.delete(); hWd++; }
+    }
+    return {depo:hDepo, wd:hWd};
+  }catch(e){ console.error(e); return {depo:0, wd:0, error:true}; }
+}
+btnLogout.onclick = async ()=>{
+  if(!confirm("Logout & Auto Hapus History Akun Terhapus?")) return;
+  btnLogout.innerText = "Membersihkan...";
+  btnLogout.disabled = true;
+  const hasil = await bersihkanHistorySaatLogout();
+  if(!hasil.error){
+    alert(`Bersih!\nDeposit terhapus: ${hasil.depo}\nWithdraw terhapus: ${hasil.wd}`);
+  }
+  sessionStorage.removeItem("adminLogin");
+  location.href = "index.html";
+};
+
 function hideAll(){
 pageDashboard.classList.add("hidden");
 pageDeposit.classList.add("hidden");
