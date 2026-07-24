@@ -65,7 +65,20 @@ z-index:999;
 .sidebar.show{
 left:0;
 }
-  
+  #overlay{
+position:fixed;
+top:70px;
+left:0;
+width:100%;
+height:calc(100vh - 70px);
+background:rgba(0,0,0,.45);
+display:none;
+z-index:998;
+}
+
+#overlay.show{
+display:block;
+}
 .sidebar button{  
 width:100%;  
 padding:14px;  
@@ -215,7 +228,9 @@ Memuat...
 </span>  <button id="btnLogout">  
 Logout  
 </button>  </div>  
-</header>  <div class="container">  <!-- ========================= -->  <!-- SIDEBAR -->  <!-- ========================= -->  <div class="sidebar">  <button class="active" id="menuDashboard">  
+</header>  <div class="container">  <!-- ========================= -->  <!-- SIDEBAR -->  <!-- ========================= -->  <div class="sidebar"> 
+<div id="overlay"></div>
+ <button class="active" id="menuDashboard">  
 🏠 Dashboard  
 </button>  <button id="menuDeposit">  
 📥 Deposit  
@@ -408,11 +423,18 @@ const pageBroadcast=document.getElementById("pageBroadcast");
 const pageSetting=document.getElementById("pageSetting");  
   
 const pageLog=document.getElementById("pageLog");  
-  const btnMenu=document.getElementById("btnMenu");
+  const const btnMenu=document.getElementById("btnMenu");
 const sidebar=document.querySelector(".sidebar");
+const overlay=document.getElementById("overlay");
 
 btnMenu.onclick=()=>{
     sidebar.classList.toggle("show");
+    overlay.classList.toggle("show");
+};
+
+overlay.onclick=()=>{
+    sidebar.classList.remove("show");
+    overlay.classList.remove("show");
 };
   
 // ==========================  
@@ -445,9 +467,8 @@ pageWallet.classList.add("hidden");
 pageBroadcast.classList.add("hidden");  
   
 pageSetting.classList.add("hidden");  
-  
+
 pageLog.classList.add("hidden");  
-  
 }  
   
 function resetMenu(){  
@@ -471,6 +492,7 @@ menuSetting.classList.remove("active");
 menuLog.classList.remove("active");  
   
 sidebar.classList.remove("show");
+overlay.classList.remove("show");
 }  
   
 menuDashboard.onclick=()=>{  
