@@ -127,7 +127,7 @@ table{display:block;overflow-x:auto;white-space:nowrap;}input,select{font-size:1
   <div class="card" style="border-left:4px solid #00b894;"><small>Total Deposit Success</small><h1 id="labaDepo" style="color:#00b894;">Rp0</h1><small id="labaDepoCount">0x transaksi</small></div>
   <div class="card" style="border-left:4px solid #e74c3c;"><small>Total Withdraw Success</small><h1 id="labaWd" style="color:#e74c3c;">Rp0</h1><small id="labaWdCount">0x transaksi</small></div>
   <div class="card" style="border-left:4px solid #ffd54a;"><small>Saldo Coin Beredar (Semua Player)</small><h1 id="labaSaldo">0</h1><small id="labaPlayerCount">0 player</small></div>
-  <div class="card" style="border-left:4px solid #2563eb;background:#1a2a4a;"><small>Laba Kotor ((Depo + Saldo) - WD)</small><h1 id="labaKotor">Rp0</h1><small>Saldo masih dihitung aset sebelum di-WD</small></div>
+  <div class="card" style="border-left:4px solid #2563eb;background:#1a2a4a;"><small>Laba Kotor (Depo - WD)</small><h1 id="labaKotor">Rp0</h1><small>Sisa saldo adalah hutang ke player</small></div>
 </div>
 <div class="section" style="border:2px solid #ffd54a;">
 <h3 style="color:#ffd54a;">💰 Kalkulasi Laba Admin</h3>
@@ -135,13 +135,14 @@ table{display:block;overflow-x:auto;white-space:nowrap;}input,select{font-size:1
   <div style="background:#0b1220;padding:15px;border-radius:10px;">
     <h4 style="margin-bottom:10px;">Rumus Laba Bersih</h4>
     <p style="font-size:13px;color:#8aa0c7;line-height:1.8;">
-      Laba = (Total Deposit Success + Saldo Coin Beredar)<br>
-      - Total Withdraw Success<br><br>
-      <b style='color:#00b894;'>Kalau saldo 84rb di-WD, laba kepotong 84rb = rugi</b><br><br>
+      Laba Bersih = Total Deposit Success<br>
+      - Total Withdraw Success<br>
+      - Sisa Saldo Beredar<br><br>
+      <b style='color:#ffd54a;'>84rb itu hutang, kalau di-WD laba berkurang lagi</b><br><br>
       <b>Saldo beredar adalah hutang admin ke player yang belum di-withdraw.</b>
     </p>
     <div style="background:#22314f;padding:12px;border-radius:8px;margin-top:10px;text-align:center;">
-      <small>Laba Saat Ini (Depo + Saldo - WD)</small>
+      <small>Laba Bersih (Depo - WD - Saldo)</small>
       <h1 id="labaBersih" style="color:#ffd54a;font-size:28px;">Rp0</h1>
     </div>
   </div>
@@ -525,8 +526,8 @@ function loadLabaAdmin(){
       totalCoin += Number((p.wallet && p.wallet.coin)||0);
       totalDiamond += Number((p.wallet && p.wallet.diamond)||0);
     });
-    const labaKotor = depSucTotal + totalCoin - wdSucTotal;
-    const labaBersih = depSucTotal + totalCoin - wdSucTotal; // sesuai request: (Depo + Saldo) - WD
+    const labaKotor = depSucTotal - wdSucTotal;
+    const labaBersih = depSucTotal - wdSucTotal - totalCoin; // Rumus FINAL: Depo - WD - Saldo
 
     document.getElementById("labaDepo").innerText = "Rp" + depSucTotal.toLocaleString("id-ID");
     document.getElementById("labaDepoCount").innerText = depSucCount + "x transaksi success";
