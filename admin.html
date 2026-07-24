@@ -88,6 +88,7 @@ table{display:block;overflow-x:auto;white-space:nowrap;}input,select{font-size:1
 <button id="menuWallet">💰 Wallet</button>
 <button id="menuBroadcast">📢 Broadcast</button>
 <button id="menuSetting">⚙ Pengaturan</button>
+<button id="menuLaba">💹 Laba Admin</button>
 <button id="menuLog">🔒 Log Admin</button>
 </div>
 <div class="content">
@@ -121,6 +122,48 @@ table{display:block;overflow-x:auto;white-space:nowrap;}input,select{font-size:1
 <div id="pageWallet" class="hidden"><div class="section"><h3>Mutasi Wallet</h3><div id="walletArea">Belum ada data.</div></div></div>
 <div id="pageBroadcast" class="hidden"><div class="section"><h3>Broadcast</h3><textarea id="broadcastText" style="width:100%;height:150px;border:none;border-radius:10px;padding:10px;"></textarea><br><br><button class="btn blue" id="btnBroadcast">Kirim Broadcast</button></div></div>
 <div id="pageSetting" class="hidden"><div class="section"><h3>Pengaturan Sistem</h3><p>Menu pengaturan akan dibuat pada tahap berikutnya.</p></div></div>
+<div id="pageLaba" class="hidden">
+<div class="card-grid">
+  <div class="card" style="border-left:4px solid #00b894;"><small>Total Deposit Success</small><h1 id="labaDepo" style="color:#00b894;">Rp0</h1><small id="labaDepoCount">0x transaksi</small></div>
+  <div class="card" style="border-left:4px solid #e74c3c;"><small>Total Withdraw Success</small><h1 id="labaWd" style="color:#e74c3c;">Rp0</h1><small id="labaWdCount">0x transaksi</small></div>
+  <div class="card" style="border-left:4px solid #ffd54a;"><small>Saldo Coin Beredar (Semua Player)</small><h1 id="labaSaldo">0</h1><small id="labaPlayerCount">0 player</small></div>
+  <div class="card" style="border-left:4px solid #2563eb;background:#1a2a4a;"><small>Laba Kotor ((Depo + Saldo) - WD)</small><h1 id="labaKotor">Rp0</h1><small>Saldo masih dihitung aset sebelum di-WD</small></div>
+</div>
+<div class="section" style="border:2px solid #ffd54a;">
+<h3 style="color:#ffd54a;">💰 Kalkulasi Laba Admin</h3>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:15px;">
+  <div style="background:#0b1220;padding:15px;border-radius:10px;">
+    <h4 style="margin-bottom:10px;">Rumus Laba Bersih</h4>
+    <p style="font-size:13px;color:#8aa0c7;line-height:1.8;">
+      Laba = (Total Deposit Success + Saldo Coin Beredar)<br>
+      - Total Withdraw Success<br><br>
+      <b style='color:#00b894;'>Kalau saldo 84rb di-WD, laba kepotong 84rb = rugi</b><br><br>
+      <b>Saldo beredar adalah hutang admin ke player yang belum di-withdraw.</b>
+    </p>
+    <div style="background:#22314f;padding:12px;border-radius:8px;margin-top:10px;text-align:center;">
+      <small>Laba Saat Ini (Depo + Saldo - WD)</small>
+      <h1 id="labaBersih" style="color:#ffd54a;font-size:28px;">Rp0</h1>
+    </div>
+  </div>
+  <div style="background:#0b1220;padding:15px;border-radius:10px;">
+    <h4 style="margin-bottom:10px;">Detail Lengkap</h4>
+    <div style="font-size:13px;line-height:2;">
+      <div style="display:flex;justify-content:space-between;"><span>Total Deposit (Semua Status):</span><b id="detDepoAll">Rp0</b></div>
+      <div style="display:flex;justify-content:space-between;"><span>Total Withdraw (Semua Status):</span><b id="detWdAll">Rp0</b></div>
+      <div style="display:flex;justify-content:space-between;"><span>Deposit Pending:</span><b id="detDepoPen" style="color:#ffd54a;">Rp0</b></div>
+      <div style="display:flex;justify-content:space-between;"><span>Withdraw Pending:</span><b id="detWdPen" style="color:#ffd54a;">Rp0</b></div>
+      <hr style="margin:10px 0;border-color:#333;">
+      <div style="display:flex;justify-content:space-between;"><span>Total Player:</span><b id="detTotalPlayer">0</b></div>
+      <div style="display:flex;justify-content:space-between;"><span>Total Coin + Diamond:</span><b id="detTotalCoinDia">0</b></div>
+    </div>
+  </div>
+</div>
+<div style="margin-top:15px;background:#0b1220;padding:12px;border-radius:8px;display:flex;gap:10px;">
+  <button class="btn blue" onclick="loadLabaAdmin()">🔄 Refresh Laba</button>
+  <button class="btn yellow" onclick="exportLaba()">📊 Export Laporan</button>
+</div>
+</div>
+</div>
 <div id="pageLog" class="hidden"><div class="section"><h3>Log Aktivitas Admin</h3><div id="logArea">Belum ada log.</div></div></div>
 </div>
 </div>
@@ -169,6 +212,7 @@ const menuLaporan=document.getElementById("menuLaporan");
 const menuWallet=document.getElementById("menuWallet");
 const menuBroadcast=document.getElementById("menuBroadcast");
 const menuSetting=document.getElementById("menuSetting");
+const menuLaba=document.getElementById("menuLaba");
 const menuLog=document.getElementById("menuLog");
 const pageDashboard=document.getElementById("pageDashboard");
 const pageDeposit=document.getElementById("pageDeposit");
@@ -178,6 +222,7 @@ const pageLaporan=document.getElementById("pageLaporan");
 const pageWallet=document.getElementById("pageWallet");
 const pageBroadcast=document.getElementById("pageBroadcast");
 const pageSetting=document.getElementById("pageSetting");
+const pageLaba=document.getElementById("pageLaba");
 const pageLog=document.getElementById("pageLog");
 const btnMenu = document.getElementById("btnMenu");
 const sidebar=document.querySelector(".sidebar");
@@ -198,6 +243,7 @@ pageLaporan.classList.add("hidden");
 pageWallet.classList.add("hidden");
 pageBroadcast.classList.add("hidden");
 pageSetting.classList.add("hidden");
+pageLaba.classList.add("hidden");
 pageLog.classList.add("hidden");
 }
 function resetMenu(){
@@ -209,6 +255,7 @@ menuLaporan.classList.remove("active");
 menuWallet.classList.remove("active");
 menuBroadcast.classList.remove("active");
 menuSetting.classList.remove("active");
+menuLaba.classList.remove("active");
 menuLog.classList.remove("active");
 sidebar.classList.remove("show");
 overlay.classList.remove("show");
@@ -221,6 +268,7 @@ menuLaporan.onclick=()=>{ hideAll(); resetMenu(); pageLaporan.classList.remove("
 menuWallet.onclick=()=>{ hideAll(); resetMenu(); pageWallet.classList.remove("hidden"); menuWallet.classList.add("active"); };
 menuBroadcast.onclick=()=>{ hideAll(); resetMenu(); pageBroadcast.classList.remove("hidden"); menuBroadcast.classList.add("active"); };
 menuSetting.onclick=()=>{ hideAll(); resetMenu(); pageSetting.classList.remove("hidden"); menuSetting.classList.add("active"); };
+menuLaba.onclick=()=>{ hideAll(); resetMenu(); pageLaba.classList.remove("hidden"); menuLaba.classList.add("active"); loadLabaAdmin(); };
 menuLog.onclick=()=>{ hideAll(); resetMenu(); pageLog.classList.remove("hidden"); menuLog.classList.add("active"); };
 
 // ==========================
@@ -449,6 +497,68 @@ async function rejectWithdraw(id){
         alert("Withdraw ditolak. Saldo telah dikembalikan.");
     }catch(err){ console.error(err); alert("Gagal menolak withdraw."); }
 }
+
+
+function loadLabaAdmin(){
+  // Hitung dari allDepositData & allWithdrawData + playerCache
+  let depSucTotal=0, depSucCount=0, depAllTotal=0, depPenTotal=0;
+  allDepositData.forEach(x=>{
+    const n=Number(x.data.nominal||0);
+    depAllTotal+=n;
+    if(x.data.status==="Success"){ depSucTotal+=n; depSucCount++; }
+    if(x.data.status==="Pending") depPenTotal+=n;
+  });
+  let wdSucTotal=0, wdSucCount=0, wdAllTotal=0, wdPenTotal=0;
+  allWithdrawData.forEach(x=>{
+    const n=Number(x.data.nominal||0);
+    wdAllTotal+=n;
+    if(x.data.status==="Success"){ wdSucTotal+=n; wdSucCount++; }
+    if(x.data.status==="Pending") wdPenTotal+=n;
+  });
+  // Total saldo beredar
+  let totalCoin=0, totalDiamond=0, totalPlayer=0;
+  // ambil dari cache player atau snapshot langsung
+  db.collection("players").get().then(snap=>{
+    totalPlayer = snap.size;
+    snap.forEach(doc=>{
+      const p=doc.data();
+      totalCoin += Number((p.wallet && p.wallet.coin)||0);
+      totalDiamond += Number((p.wallet && p.wallet.diamond)||0);
+    });
+    const labaKotor = depSucTotal + totalCoin - wdSucTotal;
+    const labaBersih = depSucTotal + totalCoin - wdSucTotal; // sesuai request: (Depo + Saldo) - WD
+
+    document.getElementById("labaDepo").innerText = "Rp" + depSucTotal.toLocaleString("id-ID");
+    document.getElementById("labaDepoCount").innerText = depSucCount + "x transaksi success";
+    document.getElementById("labaWd").innerText = "Rp" + wdSucTotal.toLocaleString("id-ID");
+    document.getElementById("labaWdCount").innerText = wdSucCount + "x transaksi success";
+    document.getElementById("labaSaldo").innerText = totalCoin.toLocaleString("id-ID");
+    document.getElementById("labaPlayerCount").innerText = totalPlayer + " player";
+    document.getElementById("labaKotor").innerText = "Rp" + labaKotor.toLocaleString("id-ID");
+    document.getElementById("labaBersih").innerText = "Rp" + labaBersih.toLocaleString("id-ID");
+    document.getElementById("detDepoAll").innerText = "Rp" + depAllTotal.toLocaleString("id-ID");
+    document.getElementById("detWdAll").innerText = "Rp" + wdAllTotal.toLocaleString("id-ID");
+    document.getElementById("detDepoPen").innerText = "Rp" + depPenTotal.toLocaleString("id-ID");
+    document.getElementById("detWdPen").innerText = "Rp" + wdPenTotal.toLocaleString("id-ID");
+    document.getElementById("detTotalPlayer").innerText = totalPlayer + " player";
+    document.getElementById("detTotalCoinDia").innerText = totalCoin.toLocaleString("id-ID") + " coin / " + totalDiamond.toLocaleString("id-ID") + " diamond";
+    
+    // warna laba
+    const el = document.getElementById("labaBersih");
+    if(labaBersih >=0){ el.style.color="#00b894"; } else { el.style.color="#e74c3c"; }
+  });
+}
+
+function exportLaba(){
+  const depo = document.getElementById("labaDepo").innerText;
+  const wd = document.getElementById("labaWd").innerText;
+  const saldo = document.getElementById("labaSaldo").innerText;
+  const kotor = document.getElementById("labaKotor").innerText;
+  const bersih = document.getElementById("labaBersih").innerText;
+  const text = `LAPORAN LABA ADMIN - Legends Portal\n\nTotal Deposit Success: ${depo}\nTotal Withdraw Success: ${wd}\nSaldo Beredar: ${saldo}\nLaba Kotor: ${kotor}\nLaba Bersih: ${bersih}\n\nTanggal: ${new Date().toLocaleString("id-ID")}`;
+  alert(text);
+}
+
 
 function loadPlayer(){
     db.collection("players").onSnapshot((snap)=>{
