@@ -96,7 +96,7 @@ table{display:block;overflow-x:auto;white-space:nowrap;}input,select{font-size:1
 <div id="pageDeposit" class="hidden">
 <div class="card-grid"><div class="card"><small>Pending</small><h1 id="depPending">0</h1></div><div class="card"><small>Success</small><h1 id="depSuccess">0</h1></div><div class="card"><small>Reject</small><h1 id="depReject">0</h1></div><div class="card"><small>Total Deposit</small><h1 id="depNominal">Rp0</h1></div></div>
 <div class="section">
-<h3>Kelola Deposit - Hanya Akun Terdaftar</h3>
+<h3>Kelola Deposit</h3><button class="btn red" onclick="hapusHistoryDepositInvalid()" style="margin:10px 0;">🗑️ Hapus History Akun Terhapus (Deposit)</button>
 <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:15px;">
 <input type="text" id="cariDeposit" placeholder="Cari Nickname / Email" style="flex:2;">
 <select id="filterDeposit" style="flex:1;"><option value="Semua">Semua</option><option value="Pending">Pending</option><option value="Success">Success</option><option value="Reject">Reject</option></select>
@@ -107,7 +107,7 @@ table{display:block;overflow-x:auto;white-space:nowrap;}input,select{font-size:1
 
 <div id="pageWithdraw" class="hidden">
 <div class="section">
-<h3>Daftar Withdraw - Hanya Akun Terdaftar</h3>
+<h3>Daftar Withdraw</h3><button class="btn red" onclick="hapusHistoryWithdrawInvalid()" style="margin:10px 0;">🗑️ Hapus History Akun Terhapus (Withdraw)</button>
 <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:15px;">
 <input type="text" id="cariWithdraw" placeholder="Cari Nickname / Email" style="flex:2;">
 <select id="filterWithdraw" style="flex:1;"><option value="Semua">Semua</option><option value="Pending">Pending</option><option value="Success">Success</option><option value="Reject">Reject</option></select>
@@ -448,6 +448,43 @@ async function rejectWithdraw(id){
         });
         alert("Withdraw ditolak. Saldo telah dikembalikan.");
     }catch(err){ console.error(err); alert("Gagal menolak withdraw."); }
+}
+
+
+async function hapusHistoryDepositInvalid(){
+  if(!confirm("Yakin hapus SEMUA riwayat deposit yang akunnya sudah tidak ada di Data Player?\nIni permanen!")) return;
+  if(!isPlayerCacheReady){ alert("Tunggu data player dimuat dulu"); return; }
+  let hapus = 0;
+  const snap = await db.collection("deposit").get();
+  for(const doc of snap.docs){
+    const d = doc.data();
+    if(!d.uid || !playerCache.has(d.uid)){
+      await doc.ref.delete();
+      hapus++;
+    }
+  }
+  alert(hapus + " riwayat deposit akun terhapus berhasil dihapus permanen.");
+}
+
+async function hapusHistoryWithdrawInvalid(){
+  if(!confirm("Yakin hapus SEMUA riwayat withdraw yang akunnya sudah tidak ada di Data Player?\nIni permanen!")) return;
+  if(!isPlayerCacheReady){ alert("Tunggu data player dimuat dulu"); return; }
+  let hapus = 0;
+  const snap = await db.collection("withdraw").get();
+  for(const doc of snap.docs){
+    const d = doc.data();
+    if(!d.uid || !playerCache.has(d.uid)){
+      await doc.ref.delete();
+      hapus++;
+    }
+  }
+  alert(hapus + " riwayat withdraw akun terhapus berhasil dihapus permanen.");
+}
+
+async function hapusSemuaHistoryInvalid(){
+  if(!confirm("Hapus SEMUA history Deposit & Withdraw yang akunnya sudah terhapus? Permanen!")) return;
+  await hapusHistoryDepositInvalid();
+  await hapusHistoryWithdrawInvalid();
 }
 
 function loadPlayer(){
