@@ -1,177 +1,458 @@
 <!DOCTYPE html>
-<html lang="id">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Dashboard - Legends Portal</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;}
-body{background:#0b1220;color:#fff;}
-header{height:70px;background:#182235;display:flex;align-items:center;justify-content:space-between;padding:0 20px;border-bottom:2px solid #ffd54a;position:sticky;top:0;z-index:100;}
-header h2{color:#ffd54a;font-size:22px;}
-header button{padding:10px 18px;border:none;border-radius:8px;background:#ff4444;color:#fff;font-weight:bold;cursor:pointer;}
-.container{display:flex;min-height:calc(100vh - 70px);}
-.sidebar{position:fixed;top:70px;left:-260px;width:240px;height:calc(100vh - 70px);background:#182235;padding:15px;overflow-y:auto;transition:.3s;z-index:999;}
-.sidebar.show{left:0;}
-#overlay{position:fixed;top:70px;left:0;width:100%;height:calc(100vh - 70px);background:rgba(0,0,0,.45);display:none;z-index:998;}
-#overlay.show{display:block;}
-.sidebar button{width:100%;padding:14px;margin-bottom:10px;border:none;border-radius:10px;background:#22314f;color:#fff;font-size:15px;cursor:pointer;text-align:left;}
-.sidebar button:hover{background:#2563eb;}
-.sidebar button.active{background:#ffd54a;color:#000;font-weight:bold;}
-.content{width:100%;flex:1;padding:20px;overflow:auto;}
-.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px;margin-bottom:20px;}
-.card{background:#182235;border-radius:15px;padding:20px;}
-.card small{display:block;color:#bbb;margin-bottom:8px;}
-.card h1{color:#ffd54a;font-size:30px;}
-.section{background:#182235;border-radius:15px;padding:20px;margin-top:20px;}
-table{width:100%;border-collapse:collapse;margin-top:15px;}
-th{background:#22314f;padding:12px;}
-td{padding:12px;border-bottom:1px solid #333;text-align:center;}
-input,select{width:100%;padding:10px;border:none;border-radius:8px;margin:5px 0;}
-.btn{padding:10px 15px;border:none;border-radius:8px;cursor:pointer;font-weight:bold;}
-#btnMenu{padding:8px 12px;font-size:20px;}
-.green{background:#00b894;color:white;}
-.red{background:#e74c3c;color:white;}
-.blue{background:#2563eb;color:white;}
-.yellow{background:#ffd54a;color:black;}
-#btnNotif{position:relative;animation:bell 1s infinite;}
-@keyframes bell{0%{transform:rotate(0deg);}20%{transform:rotate(-15deg);}40%{transform:rotate(15deg);}60%{transform:rotate(-10deg);}80%{transform:rotate(10deg);}100%{transform:rotate(0deg);}}
-.hidden{display:none;}
-@media (max-width:768px){
-header{padding:8px;gap:6px;}header h2{font-size:18px;line-height:1.2;}
-header>div{gap:5px !important;}
-#btnRefresh,#btnNotif,#btnLogout{padding:8px 10px;font-size:13px;}
-#adminName{display:none;}.card-grid{grid-template-columns:1fr;}.content{padding:10px;}.section{padding:12px;}
-table{display:block;overflow-x:auto;white-space:nowrap;}input,select{font-size:14px;}
-.sidebar{width:220px;left:-220px;}.sidebar.show{left:0;}
-}
-</style>
-</head>
-<body>
-<header>
-<button id="btnMenu" class="btn blue">☰</button>
-<h2>👑 Legends Portal Admin</h2>
-<div style="display:flex;align-items:center;gap:12px;">
-<button class="btn blue" id="btnRefresh">🔄 Refresh</button>
-<button class="btn yellow" id="btnNotif">🔔 0</button>
-<span id="adminName">Memuat...</span>
-<button id="btnLogout">Logout</button>
-</div>
-</header>
-<div class="container">
-<div id="overlay"></div>
-<div class="sidebar">
-<button class="active" id="menuDashboard">🏠 Dashboard</button>
-<button id="menuDeposit">📥 Deposit</button>
-<button id="menuWithdraw">📤 Withdraw</button>
-<button id="menuPlayer">👥 Player</button>
-<button id="menuLaporan">📑 Laporan</button>
-<button id="menuWallet">💰 Wallet</button>
-<button id="menuBroadcast">📢 Broadcast</button>
-<button id="menuSetting">⚙ Pengaturan</button>
-<button id="menuLog">🔒 Log Admin</button>
-</div>
-<div class="content">
-<div id="pageDashboard"><div class="card-grid"><div class="card"><small>Total Player</small><h1 id="totalPlayer">0</h1></div><div class="card"><small>Coin Beredar</small><h1 id="totalCoin">0</h1></div><div class="card"><small>Deposit Pending</small><h1 id="depositPending">0</h1></div><div class="card"><small>Withdraw Pending</small><h1 id="withdrawPending">0</h1></div></div><div class="section"><h3>Aktivitas Hari Ini</h3><p>Dashboard akan menampilkan aktivitas realtime.</p></div></div>
-<div id="pageDeposit" class="hidden"><div class="card-grid"><div class="card"><small>Pending</small><h1 id="depPending">0</h1></div><div class="card"><small>Success</small><h1 id="depSuccess">0</h1></div><div class="card"><small>Reject</small><h1 id="depReject">0</h1></div><div class="card"><small>Total Deposit</small><h1 id="depNominal">Rp0</h1></div></div><div class="section"><h3>Kelola Deposit - Hanya Akun Terdaftar</h3><div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:15px;"><input type="text" id="cariDeposit" placeholder="Cari Player / Email" style="flex:2;"><select id="filterDeposit" style="flex:1;"><option value="Semua">Semua</option><option value="Pending">Pending</option><option value="Success">Success</option><option value="Reject">Reject</option></select></div><table><thead><tr><th>Tanggal</th><th>Player</th><th>Nominal</th><th>Metode</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="depositTable"><tr><td colspan="6">Belum ada data.</td></tr></tbody></table></div></div>
-<div id="pageWithdraw" class="hidden"><div class="section"><h3>Daftar Withdraw - Hanya Akun Terdaftar</h3><table><thead><tr><th>Player</th><th>Nominal</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="withdrawTable"><tr><td colspan="4">Belum ada data withdraw.</td></tr></tbody></table></div></div>
-<div id="pagePlayer" class="hidden"><div class="section"><h3>Data Player</h3><input type="text" id="searchPlayer" placeholder="Cari nickname atau email"><table><thead><tr><th>Nickname</th><th>Email</th><th>Coin</th><th>Aksi</th></tr></thead><tbody id="playerTable"><tr><td colspan="4">Memuat data player...</td></tr></tbody></table></div></div>
-<div id="pageLaporan" class="hidden"><div class="section"><h3>Laporan Player</h3><div id="laporanArea">Pilih player untuk melihat laporan.</div></div></div>
-<div id="pageWallet" class="hidden"><div class="section"><h3>Mutasi Wallet</h3><div id="walletArea">Belum ada data.</div></div></div>
-<div id="pageBroadcast" class="hidden"><div class="section"><h3>Broadcast</h3><textarea id="broadcastText" style="width:100%;height:150px;border:none;border-radius:10px;padding:10px;"></textarea><br><br><button class="btn blue" id="btnBroadcast">Kirim Broadcast</button></div></div>
-<div id="pageSetting" class="hidden"><div class="section"><h3>Pengaturan Sistem</h3><p>Menu pengaturan akan dibuat pada tahap berikutnya.</p></div></div>
-<div id="pageLog" class="hidden"><div class="section"><h3>Log Aktivitas Admin</h3><div id="logArea">Belum ada log.</div></div></div>
-</div>
-</div>
-
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script>
-const firebaseConfig = {
-apiKey:"AIzaSyBeTALsF43ij3aAlZjF1XeBjB1gNtaTb2I",
-authDomain:"game-demo-4db7f.firebaseapp.com",
-projectId:"game-demo-4db7f",
-storageBucket:"game-demo-4db7f.firebasestorage.app",
-messagingSenderId:"405381506143",
-appId:"1:405381506143:web:da63f34a24f01e4f0367ea"
-};
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
-
-const adminName=document.getElementById("adminName");
-const btnLogout=document.getElementById("btnLogout");
-const btnRefresh = document.getElementById("btnRefresh");
-const btnNotif = document.getElementById("btnNotif");
-btnRefresh.onclick = () => { location.reload(); };
-const ADMIN_ID = "Admin";
-const ADMIN_PASSWORD = "Ktp487281";
-if(sessionStorage.getItem("adminLogin") === "true"){
-    adminName.innerHTML = "Administrator";
-}else{
-    const id = prompt("Masukkan ID Admin");
-    const password = prompt("Masukkan Password");
-    if(id !== ADMIN_ID || password !== ADMIN_PASSWORD){
-        alert("ID atau Password salah!");
-        location.href = "index.html";
-    }else{
-        sessionStorage.setItem("adminLogin","true");
-        adminName.innerHTML = "Administrator";
+<html lang="id">  
+<head><!-- PLAYABLE_TOUCH_PATCH_V1 --><script>
+(function() {
+  if (window.__playableTouchPatchInstalled) return;
+  window.__playableTouchPatchInstalled = true;
+  var origAdd = EventTarget.prototype.addEventListener;
+  var blockedTypes = { touchstart: 1, touchmove: 1, wheel: 1 };
+  EventTarget.prototype.addEventListener = function(type, listener, options) {
+    if (blockedTypes[type]) {
+      if (options === undefined || options === null) {
+        options = { passive: true };
+      } else if (typeof options === 'boolean') {
+        options = { capture: options, passive: true };
+      } else {
+        options = Object.assign({}, options, { passive: true });
+      }
     }
+    return origAdd.call(this, type, listener, options);
+  };
+})();
+</script><script>window.Intl=window.Intl||{};Intl.t=function(s){return(Intl._locale&&Intl._locale[s])||s;};</script>  
+<meta charset="UTF-8">  
+<meta name="viewport" content="width=device-width, initial-scale=1.0">  <title>Admin Dashboard - Legends Portal</title>  <style>  
+  
+*{  
+margin:0;  
+padding:0;  
+box-sizing:border-box;  
+font-family:Arial,sans-serif;  
+}  
+  
+body{  
+background:#0b1220;  
+color:#fff;  
+}  
+  
+header{  
+height:70px;  
+background:#182235;  
+display:flex;  
+align-items:center;  
+justify-content:space-between;  
+padding:0 20px;  
+border-bottom:2px solid #ffd54a;  
+position:sticky;  
+top:0;  
+z-index:100;  
+}  
+  
+header h2{  
+color:#ffd54a;  
+font-size:22px;  
+}  
+  
+header button{  
+padding:10px 18px;  
+border:none;  
+border-radius:8px;  
+background:#ff4444;  
+color:#fff;  
+font-weight:bold;  
+cursor:pointer;  
+}  
+  
+.container{  
+display:flex;  
+min-height:calc(100vh - 70px);  
+}  
+  
+.sidebar{
+position:fixed;
+top:70px;
+left:-260px;
+width:240px;
+height:calc(100vh - 70px);
+background:#182235;
+padding:15px;
+overflow-y:auto;
+transition:.3s;
+z-index:999;
 }
-const menuDashboard=document.getElementById("menuDashboard");
-const menuDeposit=document.getElementById("menuDeposit");
-const menuWithdraw=document.getElementById("menuWithdraw");
-const menuPlayer=document.getElementById("menuPlayer");
-const menuLaporan=document.getElementById("menuLaporan");
-const menuWallet=document.getElementById("menuWallet");
-const menuBroadcast=document.getElementById("menuBroadcast");
-const menuSetting=document.getElementById("menuSetting");
-const menuLog=document.getElementById("menuLog");
-const pageDashboard=document.getElementById("pageDashboard");
-const pageDeposit=document.getElementById("pageDeposit");
-const pageWithdraw=document.getElementById("pageWithdraw");
-const pagePlayer=document.getElementById("pagePlayer");
-const pageLaporan=document.getElementById("pageLaporan");
-const pageWallet=document.getElementById("pageWallet");
-const pageBroadcast=document.getElementById("pageBroadcast");
-const pageSetting=document.getElementById("pageSetting");
-const pageLog=document.getElementById("pageLog");
+.sidebar.show{
+left:0;
+}
+  #overlay{
+position:fixed;
+top:70px;
+left:0;
+width:100%;
+height:calc(100vh - 70px);
+background:rgba(0,0,0,.45);
+display:none;
+z-index:998;
+}
+
+#overlay.show{
+display:block;
+}
+.sidebar button{  
+width:100%;  
+padding:14px;  
+margin-bottom:10px;  
+border:none;  
+border-radius:10px;  
+background:#22314f;  
+color:#fff;  
+font-size:15px;  
+cursor:pointer;  
+text-align:left;  
+}  
+  
+.sidebar button:hover{  
+background:#2563eb;  
+}  
+  
+.sidebar button.active{  
+background:#ffd54a;  
+color:#000;  
+font-weight:bold;  
+}  
+  
+.content{
+width:100%;
+flex:1;
+padding:20px;
+overflow:auto;
+}
+  
+.card-grid{  
+display:grid;  
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));  
+gap:15px;  
+margin-bottom:20px;  
+}  
+  
+.card{  
+background:#182235;  
+border-radius:15px;  
+padding:20px;  
+}  
+  
+.card small{  
+display:block;  
+color:#bbb;  
+margin-bottom:8px;  
+}  
+  
+.card h1{  
+color:#ffd54a;  
+font-size:30px;  
+}  
+  
+.section{  
+background:#182235;  
+border-radius:15px;  
+padding:20px;  
+margin-top:20px;  
+}  
+  
+table{  
+width:100%;  
+border-collapse:collapse;  
+margin-top:15px;  
+}  
+  
+th{  
+background:#22314f;  
+padding:12px;  
+}  
+  
+td{  
+padding:12px;  
+border-bottom:1px solid #333;  
+text-align:center;  
+}  
+  
+input,  
+select{  
+width:100%;  
+padding:10px;  
+border:none;  
+border-radius:8px;  
+margin:5px 0;  
+}  
+  
+.btn{  
+padding:10px 15px;  
+border:none;  
+border-radius:8px;  
+cursor:pointer;  
+font-weight:bold;  
+}  
+ #btnMenu{
+    padding:8px 12px;
+    font-size:20px;
+} 
+.green{  
+background:#00b894;  
+color:white;  
+}  
+  
+.red{  
+background:#e74c3c;  
+color:white;  
+}  
+  
+.blue{  
+background:#2563eb;  
+color:white;  
+}  
+  
+.yellow{  
+background:#ffd54a;  
+color:black;  
+}  
+  
+#btnNotif{  
+position:relative;  
+animation:bell 1s infinite;  
+}  
+  
+@keyframes bell{  
+  
+0%{transform:rotate(0deg);}  
+20%{transform:rotate(-15deg);}  
+40%{transform:rotate(15deg);}  
+60%{transform:rotate(-10deg);}  
+80%{transform:rotate(10deg);}  
+100%{transform:rotate(0deg);}  
+  
+}  
+  
+.hidden{  
+display:none;  
+}  
+  
+ @media (max-width:768px){
+
+header{
+    padding:8px;
+    gap:6px;
+}
+
+header h2{
+    font-size:18px;
+    line-height:1.2;
+}
+
+header>div{
+    gap:5px !important;
+}
+
+#btnRefresh,
+#btnNotif,
+#btnLogout{
+    padding:8px 10px;
+    font-size:13px;
+}
+
+#adminName{
+    display:none;
+}
+
+.card-grid{
+    grid-template-columns:1fr;
+}
+
+.content{
+    padding:10px;
+}
+
+.section{
+    padding:12px;
+}
+
+table{
+    display:block;
+    overflow-x:auto;
+    white-space:nowrap;
+}
+
+input,
+select{
+    font-size:14px;
+}
+
+.sidebar{
+    width:220px;
+    left:-220px;
+}
+
+.sidebar.show{
+    left:0;
+}
+
+} 
+</style>  </head>  <body>  <header>  
+<button id="btnMenu" class="btn blue">☰</button>
+
+<h2>👑 Legends Portal Admin</h2>
+<div style="display:flex;align-items:center;gap:12px;">  <button class="btn blue" id="btnRefresh">  
+🔄 Refresh  
+</button>  <button class="btn yellow" id="btnNotif">  
+🔔 0  
+</button>  <span id="adminName">  
+Memuat...  
+</span>  <button id="btnLogout">  
+Logout  
+</button>  </div>  
+</header>  <div class="container">  <div id="overlay"></div> <div class="sidebar"> 
+
+ <button class="active" id="menuDashboard">  
+🏠 Dashboard  
+</button>  <button id="menuDeposit">  
+📥 Deposit  
+</button>  <button id="menuWithdraw">  
+📤 Withdraw  
+</button>  <button id="menuPlayer">  
+👥 Player  
+</button>  <button id="menuLaporan">  
+📑 Laporan  
+</button>  <button id="menuWallet">  
+💰 Wallet  
+</button>  <button id="menuBroadcast">  
+📢 Broadcast  
+</button>  <button id="menuSetting">  
+⚙ Pengaturan  
+</button>  <button id="menuLog">  
+🔒 Log Admin  
+</button>  </div>  <div class="content">  <div id="pageDashboard">  <div class="card-grid">  <div class="card">  <small>Total Player</small>
+<h1 id="totalPlayer">0</h1>  </div>  <div class="card">  <small>Coin Beredar</small>
+<h1 id="totalCoin">0</h1>  </div>  <div class="card">  <small>Deposit Pending</small>
+<h1 id="depositPending">0</h1>  </div>  <div class="card">  <small>Withdraw Pending</small>
+<h1 id="withdrawPending">0</h1>  </div>  </div>  <div class="section">  <h3>Aktivitas Hari Ini</h3>  <p>Dashboard akan menampilkan aktivitas realtime.</p>  </div>  </div>  <div id="pageDeposit" class="hidden">  <div class="card-grid">  <div class="card">  
+<small>Pending</small>  
+<h1 id="depPending">0</h1>  
+</div>  <div class="card">  
+<small>Success</small>  
+<h1 id="depSuccess">0</h1>  
+</div>  <div class="card">  
+<small>Reject</small>  
+<h1 id="depReject">0</h1>  
+</div>  <div class="card">  
+<small>Total Deposit</small>  
+<h1 id="depNominal">Rp0</h1>  
+</div>  </div>  <div class="section">  <h3>Kelola Deposit - Hanya Akun Terdaftar</h3>  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:15px;">  <input type="text" id="cariDeposit" placeholder="Cari Player / Email" style="flex:2;">
+<select id="filterDeposit" style="flex:1;">  <option value="Semua">Semua</option>  
+<option value="Pending">Pending</option>  
+<option value="Success">Success</option>  
+<option value="Reject">Reject</option>  </select>  </div>  <table>  <thead>  <tr>  <th>Tanggal</th>  <th>Player</th>  <th>Nominal</th>  <th>Metode</th>  <th>Status</th>  <th>Aksi</th>  </tr>  </thead>  <tbody id="depositTable">  <tr>  <td colspan="6">  Belum ada data.
+</td>  </tr>  </tbody>  </table>  </div>  </div>  <div id="pageWithdraw" class="hidden">  <div class="section">  <h3>Daftar Withdraw - Hanya Akun Terdaftar</h3>  <table>  <thead>  <tr>  <th>Player</th>  <th>Nominal</th>  <th>Status</th>  <th>Aksi</th>  </tr>  </thead>  <tbody id="withdrawTable">  <tr>  
+<td colspan="4">  
+Belum ada data withdraw.  
+</td>  
+</tr>  </tbody>  
+</table>  </div>  </div>  <div id="pagePlayer" class="hidden">  <div class="section">  <h3>Data Player</h3>  <input type="text" id="searchPlayer" placeholder="Cari nickname atau email">
+<table>  <thead>  <tr>  <th>Nickname</th>  <th>Email</th>  <th>Coin</th>  <th>Aksi</th>  </tr>  </thead>  <tbody id="playerTable">  <tr>  
+<td colspan="4">  
+Memuat data player...  
+</td>  
+</tr>  </tbody>  
+</table>  </div>  </div>  <div id="pageLaporan" class="hidden">  <div class="section">  <h3>Laporan Player</h3>  <div id="laporanArea">  Pilih player untuk melihat laporan.
+</div>  </div>  </div>  <div id="pageWallet" class="hidden">  <div class="section">  <h3>Mutasi Wallet</h3>  <div id="walletArea">  Belum ada data.
+</div>  </div>  </div>  <div id="pageBroadcast" class="hidden">  <div class="section">  <h3>Broadcast</h3>  <textarea id="broadcastText" style="width:100%;height:150px;border:none;border-radius:10px;padding:10px;"></textarea>  <br><br>
+<button class="btn blue" id="btnBroadcast">  Kirim Broadcast
+</button>  </div>  </div>  <div id="pageSetting" class="hidden">  <div class="section">  <h3>Pengaturan Sistem</h3>  <p>  Menu pengaturan akan dibuat pada tahap berikutnya.
+</p>  </div>  </div>  <div id="pageLog" class="hidden">  <div class="section">  <h3>Log Aktivitas Admin</h3>  <div id="logArea">  Belum ada log.
+</div>  </div>  </div>  </div>  </div>  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>  <script>  
+  
+const firebaseConfig = {  
+apiKey:"AIzaSyBeTALsF43ij3aAlZjF1XeBjB1gNtaTb2I",  
+authDomain:"game-demo-4db7f.firebaseapp.com",  
+projectId:"game-demo-4db7f",  
+storageBucket:"game-demo-4db7f.firebasestorage.app",  
+messagingSenderId:"405381506143",  
+appId:"1:405381506143:web:da63f34a24f01e4f0367ea"  
+};  
+  
+firebase.initializeApp(firebaseConfig);  
+const auth = firebase.auth();  
+const db = firebase.firestore();  
+
+const adminName=document.getElementById("adminName");  
+const btnLogout=document.getElementById("btnLogout");  
+const btnRefresh = document.getElementById("btnRefresh");  
+const btnNotif = document.getElementById("btnNotif");  
+btnRefresh.onclick = () => { location.reload(); };  
+const ADMIN_ID = "Admin";  
+const ADMIN_PASSWORD = "Ktp487281";  
+if(sessionStorage.getItem("adminLogin") === "true"){  
+    adminName.innerHTML = "Administrator";  
+}else{  
+    const id = prompt("Masukkan ID Admin");  
+    const password = prompt("Masukkan Password");  
+    if(id !== ADMIN_ID || password !== ADMIN_PASSWORD){  
+        alert("ID atau Password salah!");  
+        location.href = "index.html";  
+    }else{  
+        sessionStorage.setItem("adminLogin","true");  
+        adminName.innerHTML = "Administrator";  
+    }  
+}  
+  
+const menuDashboard=document.getElementById("menuDashboard");  
+const menuDeposit=document.getElementById("menuDeposit");  
+const menuWithdraw=document.getElementById("menuWithdraw");  
+const menuPlayer=document.getElementById("menuPlayer");  
+const menuLaporan=document.getElementById("menuLaporan");  
+const menuWallet=document.getElementById("menuWallet");  
+const menuBroadcast=document.getElementById("menuBroadcast");  
+const menuSetting=document.getElementById("menuSetting");  
+const menuLog=document.getElementById("menuLog");  
+const pageDashboard=document.getElementById("pageDashboard");  
+const pageDeposit=document.getElementById("pageDeposit");  
+const pageWithdraw=document.getElementById("pageWithdraw");  
+const pagePlayer=document.getElementById("pagePlayer");  
+const pageLaporan=document.getElementById("pageLaporan");  
+const pageWallet=document.getElementById("pageWallet");  
+const pageBroadcast=document.getElementById("pageBroadcast");  
+const pageSetting=document.getElementById("pageSetting");  
+const pageLog=document.getElementById("pageLog");  
 const btnMenu = document.getElementById("btnMenu");
 const sidebar=document.querySelector(".sidebar");
 const overlay=document.getElementById("overlay");
 btnMenu.onclick = () => {
     sidebar.classList.toggle("show");
-    if (sidebar.classList.contains("show")) { overlay.classList.add("show"); } 
-    else { overlay.classList.remove("show"); }
+    if (sidebar.classList.contains("show")) { overlay.classList.add("show"); } else { overlay.classList.remove("show"); }
 };
 overlay.onclick=()=>{ sidebar.classList.remove("show"); overlay.classList.remove("show"); };
 btnLogout.onclick = ()=>{ sessionStorage.removeItem("adminLogin"); location.href = "index.html"; };
-function hideAll(){
-pageDashboard.classList.add("hidden");
-pageDeposit.classList.add("hidden");
-pageWithdraw.classList.add("hidden");
-pagePlayer.classList.add("hidden");
-pageLaporan.classList.add("hidden");
-pageWallet.classList.add("hidden");
-pageBroadcast.classList.add("hidden");
-pageSetting.classList.add("hidden");
-pageLog.classList.add("hidden");
-}
-function resetMenu(){
-menuDashboard.classList.remove("active");
-menuDeposit.classList.remove("active");
-menuWithdraw.classList.remove("active");
-menuPlayer.classList.remove("active");
-menuLaporan.classList.remove("active");
-menuWallet.classList.remove("active");
-menuBroadcast.classList.remove("active");
-menuSetting.classList.remove("active");
-menuLog.classList.remove("active");
+function hideAll(){  
+pageDashboard.classList.add("hidden");  
+pageDeposit.classList.add("hidden");  
+pageWithdraw.classList.add("hidden");  
+pagePlayer.classList.add("hidden");  
+pageLaporan.classList.add("hidden");  
+pageWallet.classList.add("hidden");  
+pageBroadcast.classList.add("hidden");  
+pageSetting.classList.add("hidden");  
+pageLog.classList.add("hidden");  
+}  
+function resetMenu(){  
+menuDashboard.classList.remove("active");  
+menuDeposit.classList.remove("active");  
+menuWithdraw.classList.remove("active");  
+menuPlayer.classList.remove("active");  
+menuLaporan.classList.remove("active");  
+menuWallet.classList.remove("active");  
+menuBroadcast.classList.remove("active");  
+menuSetting.classList.remove("active");  
+menuLog.classList.remove("active");  
 sidebar.classList.remove("show");
 overlay.classList.remove("show");
-}
+}  
 menuDashboard.onclick=()=>{ hideAll(); resetMenu(); pageDashboard.classList.remove("hidden"); menuDashboard.classList.add("active"); };
 menuDeposit.onclick=()=>{ hideAll(); resetMenu(); pageDeposit.classList.remove("hidden"); menuDeposit.classList.add("active"); };
 menuWithdraw.onclick=()=>{ hideAll(); resetMenu(); pageWithdraw.classList.remove("hidden"); menuWithdraw.classList.add("active"); };
@@ -183,13 +464,20 @@ menuSetting.onclick=()=>{ hideAll(); resetMenu(); pageSetting.classList.remove("
 menuLog.onclick=()=>{ hideAll(); resetMenu(); pageLog.classList.remove("hidden"); menuLog.classList.add("active"); };
 
 // ==========================
-// CACHE PLAYER VALID - UNTUK FILTER DEPOSIT & WITHDRAW
+// CACHE PLAYER VALID - UNTUK FILTER DEPOSIT & WITHDRAW + TAMPIL EMAIL
 // ==========================
-let playerIdSet = new Set();
+let playerCache = new Map(); // id -> {email, nickname}
 let isPlayerCacheReady = false;
+
 db.collection("players").onSnapshot(snap=>{
-  playerIdSet.clear();
-  snap.forEach(doc=> playerIdSet.add(doc.id));
+  playerCache.clear();
+  snap.forEach(doc=> {
+    const p = doc.data();
+    playerCache.set(doc.id, {
+      email: p.profile?.email || p.email || "-",
+      nickname: p.profile?.nickname || p.nickname || "-"
+    });
+  });
   isPlayerCacheReady = true;
 });
 
@@ -221,7 +509,7 @@ function loadDashboard(){
 loadDashboard();
 
 // ==========================
-// LOAD DEPOSIT - FILTER AKUN TIDAK TERDAFTAR
+// LOAD DEPOSIT - HANYA AKUN TERDAFTAR
 // ==========================
 function loadDeposit(){
 db.collection("deposit").orderBy("createdAt","desc").onSnapshot((snap)=>{
@@ -232,8 +520,10 @@ let hasValidData = false;
 
 snap.forEach(doc=>{
 const d=doc.data();
+// --- FILTER UTAMA: BUANG JIKA AKUN TIDAK TERDAFTAR ---
 if(!d.uid) return;
-if(isPlayerCacheReady && !playerIdSet.has(d.uid)) return; // BUANG HISTORY AKUN TIDAK TERDAFTAR
+if(isPlayerCacheReady && !playerCache.has(d.uid)) return;
+const info = playerCache.get(d.uid);
 
 hasValidData = true;
 const tanggal=d.createdAt ? d.createdAt.toDate().toLocaleString("id-ID") : "-";
@@ -246,12 +536,12 @@ if(d.status==="Reject") reject++;
 tbody.innerHTML+=`
 <tr>
 <td>${tanggal}</td>
-<td>${d.nickname||"-"}<br><small style="font-size:11px;color:#8aa0c7">${d.uid.substring(0,8)}...</small></td>
+<td>${d.nickname||info?.nickname||"-"}<br><small style="font-size:11px;color:#ffd54a">${info?.email||"-"}</small><br><small style="font-size:9px;color:#8aa0c7">${d.uid.substring(0,8)}...</small></td>
 <td>Rp ${nominal.toLocaleString("id-ID")}</td>
 <td>${d.metode||"-"}</td>
 <td>${d.status}</td>
 <td>
-${ d.status==="Pending" ? `<button class="btn green" onclick="approveDeposit('${doc.id}')">✅</button> <button class="btn red" onclick="rejectDeposit('${doc.id}')">❌</button>` : d.status==="Success" ? "✅ Success" : "❌ Reject"}
+${ d.status==="Pending" ? `<button class="btn green" onclick="approveDeposit('${doc.id}')">✅</button> <button class="btn red" onclick="rejectDeposit('${doc.id}')">❌</button>` : d.status==="Success" ? "✅ Success" : "❌ Reject" }
 </td>
 </tr>
 `;
@@ -305,7 +595,7 @@ try{
 }
 
 // ==========================
-// LOAD WITHDRAW - FILTER AKUN TIDAK TERDAFTAR
+// LOAD WITHDRAW - HANYA AKUN TERDAFTAR
 // ==========================
 function loadWithdraw(){
 db.collection("withdraw").orderBy("createdAt","desc").onSnapshot((snap)=>{
@@ -315,17 +605,19 @@ let hasValidData = false;
 
 snap.forEach(doc=>{
 const d=doc.data();
+// --- FILTER UTAMA: BUANG JIKA AKUN TIDAK TERDAFTAR ---
 if(!d.uid) return;
-if(isPlayerCacheReady && !playerIdSet.has(d.uid)) return; // BUANG HISTORY AKUN TIDAK TERDAFTAR
+if(isPlayerCacheReady && !playerCache.has(d.uid)) return;
+const info = playerCache.get(d.uid);
 
 hasValidData = true;
 tbody.innerHTML+=`
 <tr>
-<td>${d.nickname||"-"}<br><small style="font-size:11px;color:#8aa0c7">${d.uid.substring(0,8)}...</small></td>
+<td>${d.nickname||"-"}<br><small style="font-size:10px;color:#8aa0c7">${d.uid}</small></td>
 <td>Rp ${Number(d.nominal||0).toLocaleString("id-ID")}</td>
 <td>${d.status||"Pending"}</td>
 <td>
-${ d.status==="Pending" ? `<button class="btn green" onclick="approveWithdraw('${doc.id}')">✅</button> <button class="btn red" onclick="rejectWithdraw('${doc.id}')">❌</button>` : d.status==="Success" ? "✅ Success" : "❌ Reject"}
+${ d.status==="Pending" ? `<button class="btn green" onclick="approveWithdraw('${doc.id}')">✅</button> <button class="btn red" onclick="rejectWithdraw('${doc.id}')">❌</button>` : d.status==="Success" ? "✅ Success" : "❌ Reject" }
 </td>
 </tr>
 `;
@@ -345,7 +637,7 @@ const snap=await ref.get();
 if(!snap.exists){ alert("Data tidak ditemukan."); return; }
 const data=snap.data();
 if(data.status!=="Pending"){ alert("Withdraw sudah diproses."); return; }
-if(isPlayerCacheReady && !playerIdSet.has(data.uid)){ alert("Akun player sudah tidak terdaftar!"); return; }
+if(isPlayerCacheReady && !playerCache.has(data.uid)){ alert("Akun player sudah tidak terdaftar! Tidak bisa approve."); return; }
 await ref.update({ status:"Success", approvedAt:firebase.firestore.FieldValue.serverTimestamp(), approvedBy:"Administrator" });
 alert("Withdraw berhasil.");
 }catch(e){ console.error(e); alert(e); }
@@ -394,12 +686,16 @@ function loadPlayer(){
     });
 }
 loadPlayer();
+
 async function detailPlayer(uid){
     const snap=await db.collection("players").doc(uid).get();
     if(!snap.exists){ alert("Player tidak ditemukan"); return; }
     const p=snap.data();
-    alert("Nickname : "+(p.profile?.nickname || "-")+ "\nEmail : "+(p.profile?.email || "-")+ "\nCoin : "+Number(p.wallet?.coin || 0).toLocaleString("id-ID")+ "\nDiamond : "+Number(p.wallet?.diamond || 0).toLocaleString("id-ID")+ "\nTicket : "+Number(p.wallet?.ticket || 0).toLocaleString("id-ID"));
+    alert("Nickname : "+(p.profile?.nickname || "-")+ "
+Email : "+(p.profile?.email || "-")+ "
+Coin : "+Number(p.wallet?.coin || 0).toLocaleString("id-ID")+ "
+Diamond : "+Number(p.wallet?.diamond || 0).toLocaleString("id-ID")+ "
+Ticket : "+Number(p.wallet?.ticket || 0).toLocaleString("id-ID"));
 }
-</script>
-</body>
+</script>  </body>  
 </html>
