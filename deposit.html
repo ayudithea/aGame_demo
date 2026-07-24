@@ -74,9 +74,20 @@ body{background:#0b1220;color:#fff;min-height:100vh;}
       <div>Username: <b id="username">-</b></div>
       <div>UID: <b id="uid" style="font-size:10px;">-</b></div>
     </div>
+  
+  <!-- LOCK JIKA ADA PENDING -->
+  <div id="pendingLock" style="display:none;" class="card">
+    <div style="text-align:center;padding:10px;">
+      <div style="font-size:40px;">⏳</div>
+      <h3 style="color:#ffd54a;margin-top:10px;">Deposit Pending - Menunggu ACC Admin</h3>
+      <p style="font-size:12px;color:#bbb;margin-top:6px;">Kamu masih punya deposit yang belum di-ACC. Selesaikan dulu sebelum deposit lagi.</p>
+      <div id="pendingDetail" style="background:#0b1220;border-radius:10px;padding:12px;margin-top:12px;text-align:left;font-size:13px;"></div>
+      <button class="btn btn-back" onclick="location.reload()" style="margin-top:12px;">🔄 Cek Status ACC</button>
+      <div style="font-size:11px;color:#00ff88;margin-top:10px;">Admin akan ACC dan saldo otomatis masuk ke akun kamu</div>
+    </div>
   </div>
 
-  <div class="card">
+  <div class="card" id="rekeningCard">
     <h3 style="color:#ffd54a;margin-bottom:10px;">💰 Silakan melakukan pembayaran ke salah satu rekening berikut:</h3>
     <div style="font-size:13px;margin-bottom:10px;color:#00ff88;">👤 Atas Nama: <b>YUDI ALIYUDIN</b></div>
 
@@ -120,7 +131,7 @@ body{background:#0b1220;color:#fff;min-height:100vh;}
     </div>
   </div>
 
-  <div class="card">
+  <div class="card" id="formDepositCard">
     <h3 style="color:#00b894;margin-bottom:10px;">💰 Form Deposit - Saldo Masuk Setelah Admin ACC</h3>
     <label class="label">Nominal Deposit (Minimal Rp 10.000)</label>
     <input id="nominalDep" type="number" class="input" placeholder="Contoh: 50000" oninput="generateUnik()">
@@ -200,6 +211,10 @@ auth.onAuthStateChanged(user=>{
 });
 
 document.getElementById('btnDep').onclick=async()=>{
+  if(hasPending){
+    alert("❌ Masih ada deposit pending! Tunggu ACC admin dulu baru bisa deposit lagi.");
+    return;
+  }
   let nominal=Number(document.getElementById('nominalDep').value);
   const metode=document.getElementById('metodeDep').value;
   const catatan=document.getElementById('catatanDep').value.trim();
@@ -210,8 +225,13 @@ document.getElementById('btnDep').onclick=async()=>{
   if(kodeUnik===0 || totalTransfer===0){
     generateUnik(true);
   }
-  // Pastikan totalTransfer sudah dihitung
   if(totalTransfer===0) totalTransfer = nominal + kodeUnik;
+  
+  if(!currentUid){
+    alert("❌ UID tidak ditemukan, silakan login ulang!");
+    location.href='index.html';
+    return;
+  }
   
   if(!confirm(`Detail Deposit:\n\nNominal: Rp ${nominal.toLocaleString('id-ID')}\nKode Unik: Rp ${kodeUnik}\nTotal Transfer WAJIB: Rp ${totalTransfer.toLocaleString('id-ID')}\nTujuan: ${metode}\n\nPastikan transfer PERSIS Rp ${totalTransfer.toLocaleString('id-ID')} agar mudah di-ACC admin!`)) return;
 
@@ -221,11 +241,13 @@ document.getElementById('btnDep').onclick=async()=>{
 
   try{
     const uid=currentUid;
-    const saldoSebelum=Number(player.wallet?.coin||0);
-
-    await db.collection("deposit").add({
+    if(!uid){ throw new Error("UID kosong - auth belum siap"); }
+    const saldoSebelum=Number(player?.wallet?.coin||0);
+    console.log("Mengirim deposit ke Firebase...", {uid, nominal, kodeUnik, totalTransfer, metode});
+    
+    const docRef = await db.collection("deposit").add({
       uid: uid,
-      email: player.profile?.email || auth.currentUser.email,
+      email: player?.profile?.email || auth.currentUser.email,
       nickname: currentNick,
       nominal: nominal,
       kodeUnik: kodeUnik,
@@ -234,46 +256,98 @@ document.getElementById('btnDep').onclick=async()=>{
       catatan: catatan || "-",
       saldoSebelum: saldoSebelum,
       status: "Pending",
+      konfirmasiAdmin: false,
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
     });
+    
+    console.log("✅ Berhasil terkirim ID:", docRef.id);
+    
 
     alert(`✅ Deposit Dikirim!\n\nNominal: Rp ${nominal.toLocaleString('id-ID')}\nKode Unik: Rp ${kodeUnik}\nTOTAL WAJIB TRANSFER: Rp ${totalTransfer.toLocaleString('id-ID')}\nTujuan: ${metode}\n\nSilakan transfer PERSIS Rp ${totalTransfer.toLocaleString('id-ID')} ke rekening di atas!\n\nSaldo yang masuk ke akun: Rp ${nominal.toLocaleString('id-ID')} (kode unik tidak masuk saldo)\nStatus: Pending`);
     document.getElementById('nominalDep').value='';
     document.getElementById('catatanDep').value='';
 
   }catch(err){
-    console.error(err);
-    alert("Gagal Deposit: "+err.message);
+    console.error("❌ Gagal kirim deposit:", err);
+    alert("❌ Gagal Deposit ke Firebase:\n"+err.message+"\n\nCek:\n1. Internet\n2. Firestore Rules harus allow write collection deposit\n3. Login ulang\n\nError: "+err.code);
+    // tampilkan di console untuk debug
+    if(err.code==='permission-denied'){
+      alert("⚠️ Firestore Rules menolak! Buka Firebase Console -> Firestore -> Rules -> ubah menjadi allow read, write: if true; untuk testing");
+    }
   }finally{
     btn.disabled=false; 
     btn.textContent='✅ KIRIM DEPOSIT - Tunggu ACC Admin';
   }
 };
 
+let hasPending = false;
+
 function loadDepHistory(){
   db.collection("deposit").where("uid","==",auth.currentUser.uid).orderBy("createdAt","desc").onSnapshot(snap=>{
     const el=document.getElementById('depList');
-    if(snap.empty){ el.innerHTML='<div style="text-align:center;color:#777;padding:12px;">Belum ada Deposit</div>'; return; }
+    const pendingLock = document.getElementById('pendingLock');
+    const formCard = document.getElementById('formDepositCard');
+    const rekeningCard = document.getElementById('rekeningCard');
+    
     let html='';
-    snap.forEach(doc=>{
-      const d=doc.data();
-      const t=d.createdAt?.toDate ? d.createdAt.toDate().toLocaleString('id-ID') : '-';
-      const badge = d.status==='Pending' ? 'pending' : d.status==='Success' ? 'success' : 'reject';
-      html+=`
-        <div class="depItem">
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <b>💰 Rp ${Number(d.nominal).toLocaleString('id-ID')}</b>
-            <span class="badge ${badge}">${d.status}</span>
+    let pendingData = null;
+    
+    if(snap.empty){
+      el.innerHTML='<div style="text-align:center;color:#777;padding:12px;">Belum ada Deposit</div>';
+      hasPending = false;
+    } else {
+      snap.forEach(doc=>{
+        const d=doc.data();
+        const t=d.createdAt?.toDate ? d.createdAt.toDate().toLocaleString('id-ID') : '-';
+        const badge = d.status==='Pending' ? 'pending' : d.status==='Success' ? 'success' : 'reject';
+        if(d.status==='Pending' && !pendingData){
+          pendingData = d;
+          pendingData.id = doc.id;
+        }
+        html+=`
+          <div class="depItem">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <b>💰 Rp ${Number(d.nominal).toLocaleString('id-ID')}</b>
+              <span class="badge ${badge}">${d.status}</span>
+            </div>
+            <div class="row"><span>Tanggal</span><span>${t}</span></div>
+            <div class="row"><span>Tujuan</span><span>${d.metode||'-'}</span></div>
+            <div class="row"><span>Total Transfer</span><span style="color:#00ff88;font-weight:bold;">Rp ${Number(d.totalTransfer||d.nominal||0).toLocaleString('id-ID')} ${d.kodeUnik? `(+${d.kodeUnik})`:''}</span></div>
+            ${d.catatan? `<div class="row"><span>Catatan</span><span>${d.catatan}</span></div>`:''}
+            ${d.status==='Success'? '<div style="color:#00ff88;font-size:11px;margin-top:4px;">✅ Saldo Rp '+Number(d.nominal).toLocaleString('id-ID')+' sudah masuk ke akun kamu</div>':''}
+            ${d.status==='Pending'? '<div style="color:#ffd54a;font-size:11px;margin-top:4px;">⏳ Menunggu ACC Admin - Transfer PERSIS Rp '+Number(d.totalTransfer||d.nominal).toLocaleString('id-ID')+'</div>':''}
           </div>
-          <div class="row"><span>Tanggal</span><span>${t}</span></div>
-          <div class="row"><span>Tujuan</span><span>${d.metode||'-'}</span></div>
-          <div class="row"><span>Total Transfer</span><span style="color:#00ff88;">Rp ${Number(d.totalTransfer||d.nominal||0).toLocaleString('id-ID')} ${d.kodeUnik? `(+${d.kodeUnik})`:''}</span></div>
-          ${d.catatan? `<div class="row"><span>Catatan</span><span>${d.catatan}</span></div>`:''}
-          ${d.status==='Success'? '<div style="color:#00ff88;font-size:11px;margin-top:4px;">✅ Saldo sudah masuk ke akun kamu</div>':''}
+        `;
+      });
+      el.innerHTML=html;
+    }
+    
+    // LOGIC HIDE FORM JIKA ADA PENDING
+    if(pendingData){
+      hasPending = true;
+      formCard.style.display='none';
+      pendingLock.style.display='block';
+      // Isi detail pending
+      document.getElementById('pendingDetail').innerHTML = `
+        <div style="display:flex;justify-content:space-between;"><span>Nominal:</span><b>Rp ${Number(pendingData.nominal).toLocaleString('id-ID')}</b></div>
+        <div style="display:flex;justify-content:space-between;color:#ffd54a;"><span>Kode Unik:</span><b>+${pendingData.kodeUnik||0}</b></div>
+        <div style="display:flex;justify-content:space-between;color:#00ff88;font-size:15px;margin-top:6px;"><span>Total WAJIB Transfer:</span><b>Rp ${Number(pendingData.totalTransfer||pendingData.nominal).toLocaleString('id-ID')}</b></div>
+        <div style="display:flex;justify-content:space-between;margin-top:6px;"><span>Tujuan:</span><span>${pendingData.metode||'-'}</span></div>
+        <div style="display:flex;justify-content:space-between;"><span>Status:</span><span class="badge pending">${pendingData.status}</span></div>
+        <div style="margin-top:10px;background:#182235;padding:8px;border-radius:6px;font-size:11px;color:#bbb;">
+          ID: ${pendingData.id}<br>
+          Sudah terkirim ke Firebase ✅<br>
+          Admin akan cek mutasi ${pendingData.metode} sejumlah Rp ${Number(pendingData.totalTransfer||pendingData.nominal).toLocaleString('id-ID')}
         </div>
       `;
-    });
-    el.innerHTML=html;
+    } else {
+      hasPending = false;
+      formCard.style.display='block';
+      pendingLock.style.display='none';
+    }
+  }, err=>{
+    console.error("Error load history:", err);
+    document.getElementById('depList').innerHTML = '<div style="color:#ff3b30;padding:12px;">❌ Gagal load riwayat: '+err.message+'<br>Pastikan Firestore Rules allow read untuk user ini</div>';
   });
 }
 </script>
