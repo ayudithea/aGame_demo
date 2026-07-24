@@ -208,6 +208,7 @@ auth.onAuthStateChanged(user=>{
     document.getElementById('uid').textContent = user.uid;
   });
   loadDepHistory();
+  listenSaldoMasuk();
 });
 
 document.getElementById('btnDep').onclick=async()=>{
@@ -263,7 +264,17 @@ document.getElementById('btnDep').onclick=async()=>{
     console.log("✅ Berhasil terkirim ID:", docRef.id);
     
 
-    alert(`✅ Deposit Dikirim!\n\nNominal: Rp ${nominal.toLocaleString('id-ID')}\nKode Unik: Rp ${kodeUnik}\nTOTAL WAJIB TRANSFER: Rp ${totalTransfer.toLocaleString('id-ID')}\nTujuan: ${metode}\n\nSilakan transfer PERSIS Rp ${totalTransfer.toLocaleString('id-ID')} ke rekening di atas!\n\nSaldo yang masuk ke akun: Rp ${nominal.toLocaleString('id-ID')} (kode unik tidak masuk saldo)\nStatus: Pending`);
+    showPopup("✅", "Deposit Terkirim ke Firebase!", 
+      `Permintaan deposit kamu berhasil terkirim dan menunggu ACC Admin.`,
+      `
+        <div style="display:flex;justify-content:space-between;"><span>Nominal:</span><b>Rp ${nominal.toLocaleString('id-ID')}</b></div>
+        <div style="display:flex;justify-content:space-between;color:#ffd54a;"><span>Kode Unik:</span><b>+Rp ${kodeUnik}</b></div>
+        <div style="display:flex;justify-content:space-between;color:#00ff88;font-weight:bold;margin-top:6px;"><span>Total WAJIB Transfer:</span><b>Rp ${totalTransfer.toLocaleString('id-ID')}</b></div>
+        <div style="display:flex;justify-content:space-between;margin-top:6px;"><span>Tujuan:</span><span>${metode}</span></div>
+        <div style="display:flex;justify-content:space-between;"><span>Status:</span><span style="background:#ffd54a;color:#000;padding:2px 6px;border-radius:4px;font-size:10px;">PENDING</span></div>
+        <hr style="margin:8px 0;border-color:#333;">
+        <div style="font-size:11px;color:#bbb;">✅ Data sudah masuk Firebase<br>ID: ${docRef.id}<br>Saldo akan masuk Rp ${nominal.toLocaleString('id-ID')} setelah Admin ACC<br><br>⚠️ Transfer PERSIS Rp ${totalTransfer.toLocaleString('id-ID')} agar terdeteksi!</div>
+      `);
     document.getElementById('nominalDep').value='';
     document.getElementById('catatanDep').value='';
 
@@ -279,6 +290,66 @@ document.getElementById('btnDep').onclick=async()=>{
     btn.textContent='✅ KIRIM DEPOSIT - Tunggu ACC Admin';
   }
 };
+
+
+let lastCoin = 0;
+let isFirstLoad = true;
+
+function showPopup(icon, title, message, detailHtml=""){
+  document.getElementById('popupIcon').textContent = icon;
+  document.getElementById('popupTitle').textContent = title;
+  document.getElementById('popupMessage').innerHTML = message;
+  const detailEl = document.getElementById('popupDetail');
+  if(detailHtml){
+    detailEl.innerHTML = detailHtml;
+    detailEl.style.display='block';
+  } else {
+    detailEl.style.display='none';
+  }
+  document.getElementById('popupOverlay').style.display='flex';
+}
+
+function closePopup(){
+  document.getElementById('popupOverlay').style.display='none';
+}
+
+function showSaldoMasuk(nominalBaru, totalSaldo){
+  document.getElementById('saldoMasukText').innerHTML = `Deposit kamu di-ACC Admin!<br><b style="color:#00ff88;">Rp ${nominalBaru.toLocaleString('id-ID')}</b> sudah masuk ke akun Firebase kamu!`;
+  document.getElementById('saldoMasukNow').textContent = 'Rp ' + totalSaldo.toLocaleString('id-ID');
+  document.getElementById('saldoMasukPopup').style.display='flex';
+  // Play sound effect (vibrate)
+  if(navigator.vibrate) navigator.vibrate([200,100,200]);
+}
+
+function closeSaldoPopup(){
+  document.getElementById('saldoMasukPopup').style.display='none';
+}
+
+// LISTENER SALDO MASUK - DETEKSI PERUBAHAN COIN DI FIREBASE
+function listenSaldoMasuk(){
+  if(!auth.currentUser) return;
+  db.collection("players").doc(auth.currentUser.uid).onSnapshot(doc=>{
+    if(!doc.exists) return;
+    const coinNow = Number(doc.data().wallet?.coin||0);
+    
+    if(isFirstLoad){
+      lastCoin = coinNow;
+      isFirstLoad = false;
+      return;
+    }
+    
+    if(coinNow > lastCoin){
+      const selisih = coinNow - lastCoin;
+      console.log(`💰 Saldo masuk terdeteksi! ${lastCoin} -> ${coinNow} (+${selisih})`);
+      // Tampilkan popup saldo masuk
+      showSaldoMasuk(selisih, coinNow);
+      lastCoin = coinNow;
+    } else {
+      lastCoin = coinNow;
+    }
+  });
+}
+
 
 let hasPending = false;
 
@@ -351,5 +422,35 @@ function loadDepHistory(){
   });
 }
 </script>
+
+<!-- POPUP MODAL -->
+<div id="popupOverlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:99999;align-items:center;justify-content:center;padding:20px;">
+  <div id="popupBox" style="background:#182235;border-radius:20px;padding:24px;max-width:400px;width:100%;border:2px solid #ffd54a;text-align:center;animation:popupAnim 0.3s ease;">
+    <div id="popupIcon" style="font-size:50px;margin-bottom:10px;">✅</div>
+    <h2 id="popupTitle" style="color:#ffd54a;margin-bottom:8px;">Berhasil!</h2>
+    <div id="popupMessage" style="font-size:14px;line-height:1.6;color:#fff;margin-bottom:14px;"></div>
+    <div id="popupDetail" style="background:#0b1220;border-radius:10px;padding:12px;font-size:12px;text-align:left;margin-bottom:14px;display:none;"></div>
+    <button onclick="closePopup()" style="width:100%;padding:12px;background:#00b894;color:white;border:none;border-radius:10px;font-weight:bold;cursor:pointer;">OK Mengerti</button>
+  </div>
+</div>
+
+<div id="saldoMasukPopup" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:100000;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:linear-gradient(135deg,#003d2a,#182235);border-radius:20px;padding:24px;max-width:400px;width:100%;border:2px solid #00ff88;text-align:center;animation:popupAnim 0.4s ease;">
+    <div style="font-size:60px;animation:bell 1s infinite;">💰</div>
+    <h2 style="color:#00ff88;margin:10px 0;">SALDO MASUK!</h2>
+    <div id="saldoMasukText" style="font-size:14px;line-height:1.6;color:#fff;"></div>
+    <div style="background:#0b1220;border-radius:10px;padding:12px;margin:12px 0;">
+      <small style="color:#bbb;">Saldo Sekarang</small>
+      <h1 id="saldoMasukNow" style="color:#ffd54a;font-size:32px;">Rp 0</h1>
+    </div>
+    <button onclick="closeSaldoPopup()" style="width:100%;padding:12px;background:linear-gradient(180deg,#00b894,#006d4f);color:white;border:none;border-radius:10px;font-weight:bold;cursor:pointer;">🎉 SIAP MAIN!</button>
+  </div>
+</div>
+
+<style>
+@keyframes popupAnim{0%{transform:scale(0.7);opacity:0;}100%{transform:scale(1);opacity:1;}}
+@keyframes bell{0%{transform:rotate(0deg);}20%{transform:rotate(-15deg);}40%{transform:rotate(15deg);}60%{transform:rotate(-10deg);}80%{transform:rotate(10deg);}100%{transform:rotate(0deg);}}
+</style>
+
 </body>
 </html>
