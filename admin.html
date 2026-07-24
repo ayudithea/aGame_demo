@@ -173,7 +173,10 @@ border-radius:8px;
 cursor:pointer;  
 font-weight:bold;  
 }  
-  
+ #btnMenu{
+    padding:8px 12px;
+    font-size:20px;
+} 
 .green{  
 background:#00b894;  
 color:white;  
@@ -427,9 +430,14 @@ const pageLog=document.getElementById("pageLog");
 const sidebar=document.querySelector(".sidebar");
 const overlay=document.getElementById("overlay");
 
-btnMenu.onclick=()=>{
+btnMenu.onclick = () => {
     sidebar.classList.toggle("show");
-    overlay.classList.toggle("show");
+
+    if (sidebar.classList.contains("show")) {
+        overlay.classList.add("show");
+    } else {
+        overlay.classList.remove("show");
+    }
 };
 
 overlay.onclick=()=>{
