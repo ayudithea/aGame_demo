@@ -22,197 +22,226 @@
 </script><script>window.Intl=window.Intl||{};Intl.t=function(s){return(Intl._locale&&Intl._locale[s])||s;};</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Wallet - Legends Portal FIX</title>
+<title>Withdraw - Legends Portal</title>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;}
-body{background:#0b1220;color:#fff;}
-.container{max-width:520px;margin:auto;padding:15px;}
-.card{background:#182235;border-radius:15px;padding:15px;margin-bottom:15px;}
-h2{text-align:center;margin-bottom:15px;}
-.saldo{text-align:center;}
-.saldo small{color:#bbb;display:block;margin-bottom:8px;}
-.saldo h1{color:#ffd54a;font-size:38px;}
-.tabs{display:flex;gap:10px;margin-bottom:15px;}
-.tabs button{flex:1;padding:12px;border:none;border-radius:10px;cursor:pointer;background:#2c3e50;color:#fff;font-weight:bold;}
-.tabs button.active{background:#ffd54a;color:#000;}
-.hidden{display:none;}
-label{display:block;margin-top:10px;margin-bottom:5px;font-size:14px;}
-select,input{width:100%;padding:12px;border:none;border-radius:8px;margin-bottom:12px;}
-.btn{width:100%;padding:13px;border:none;border-radius:10px;background:#2563eb;color:#fff;cursor:pointer;font-weight:bold;}
-.btn:hover{opacity:.9;}
-.info{background:#22314f;border-radius:10px;padding:10px;margin-top:10px;line-height:1.7;}
-.info b{color:#ffd54a;}
-#qrisArea{text-align:center;}#qrisArea img{width:240px;max-width:100%;}
-.status-item{background:#22314f;border-radius:10px;padding:10px;margin-top:10px;}
+body{background:#0b1220;color:#fff;min-height:100vh;}
+.header{height:64px;background:#182235;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:2px solid #ffd54a;position:sticky;top:0;z-index:10;}
+.header h2{color:#ffd54a;font-size:18px;}
+.header button{padding:8px 14px;background:#22314f;color:#fff;border:none;border-radius:8px;font-weight:bold;cursor:pointer;}
+.container{max-width:520px;margin:auto;padding:16px;}
+.card{background:#182235;border-radius:16px;padding:16px;margin-bottom:14px;border:1px solid rgba(255,255,255,.08);}
+.saldoCard{text-align:center;background:linear-gradient(135deg,#182235,#22314f);border:2px solid #ffd54a;}
+.saldoCard small{color:#bbb;display:block;margin-bottom:6px;letter-spacing:1px;}
+.saldoCard h1{color:#ffd54a;font-size:36px;margin:6px 0;}
+.saldoCard .live{font-size:11px;color:#00ff88;}
+.label{font-size:12px;color:#aaa;margin:10px 0 6px 2px;display:block;}
+.input{width:100%;padding:13px;border-radius:10px;background:#0b1220;border:1px solid #333;color:#fff;font-size:15px;}
+.input:read-only{background:#111;color:#bbb;}
+.btn{width:100%;padding:14px;border:none;border-radius:12px;font-weight:bold;font-size:15px;cursor:pointer;margin-top:12px;}
+.btn-wd{background:linear-gradient(180deg,#ff3b30,#b71c1c);color:#fff;box-shadow:0 4px 12px rgba(255,59,48,.3);}
+.btn-wd:disabled{opacity:.5;}
+.btn-back{background:#22314f;color:#fff;}
+.infoBox{background:#0b1220;border-radius:10px;padding:10px;font-size:12px;line-height:1.6;margin-top:10px;border:1px dashed #333;}
+.badge{padding:4px 8px;border-radius:8px;font-size:11px;font-weight:bold;display:inline-block;}
+.badge.pending{background:#ffd54a;color:#000;}
+.badge.success{background:#00c853;color:#fff;}
+.badge.reject{background:#ff3b30;color:#fff;}
+.wdItem{background:#0b1220;border-radius:12px;padding:12px;margin-top:10px;border:1px solid #22314f;}
+.wdItem .row{display:flex;justify-content:space-between;font-size:13px;margin:3px 0;}
 </style>
 </head>
 <body>
+<div class="header">
+  <h2>💸 Withdraw</h2>
+  <button onclick="location.href='portal.html'">🏠 Portal</button>
+</div>
+
 <div class="container">
-<h2>💰 Wallet - FIX</h2>
-<div class="card saldo">
-<small>Saldo Coin (Realtime dari Firebase)</small>
-<h1 id="saldo">0</h1>
-<button class="btn" id="btnRefresh">🔄 Refresh</button>
-<button class="btn" id="btnPortal" style="margin-top:8px;background:#444;">🏠 Kembali ke Portal</button>
-</div>
-<div class="tabs">
-<button id="btnDep" class="active">Deposit</button>
-<button id="btnWd">Withdraw</button>
+  <!-- DATA PLAYER & SALDO -->
+  <div class="card saldoCard">
+    <small>SALDO COIN</small>
+    <h1 id="saldo">0</h1>
+    <div class="live">● Live dari Firebase</div>
+    <div style="margin-top:10px;font-size:13px;text-align:left;background:rgba(0,0,0,.3);padding:10px;border-radius:10px;">
+      <div>Email: <b id="email">-</b></div>
+      <div>Username: <b id="username">-</b></div>
+      <div>UID: <b id="uid" style="font-size:10px;">-</b></div>
+    </div>
+  </div>
+
+  <!-- REKENING -->
+  <div class="card">
+    <h3 style="color:#ffd54a;margin-bottom:10px;">🏦 Rekening Penarikan</h3>
+    <label class="label">Nama Bank</label>
+    <input id="bank" class="input" readonly>
+    <label class="label">Nama Rekening</label>
+    <input id="namaRek" class="input" readonly>
+    <label class="label">Nomor Rekening</label>
+    <input id="noRek" class="input" readonly>
+    <div id="noRekWarning" style="display:none;background:#ff3b30;color:#fff;padding:8px;border-radius:8px;margin-top:8px;font-size:12px;">⚠️ Lengkapi rekening di pengaturan profile dulu!</div>
+  </div>
+
+  <!-- FORM WD -->
+  <div class="card">
+    <h3 style="color:#ffd54a;margin-bottom:10px;">💸 Tarik Saldo</h3>
+    <label class="label">Nominal Withdraw (Minimal Rp 10.000)</label>
+    <input id="nominalWd" type="number" class="input" placeholder="Contoh: 50000">
+    
+    <div class="infoBox">
+      • Saldo akan <b style="color:#ffd54a;">langsung terpotong</b> saat klik tombol WD<br>
+      • Status awal: <span class="badge pending">Pending</span><br>
+      • Jika admin ACC: dana ditransfer ke rekening kamu<br>
+      • Jika admin Reject: saldo <b style="color:#00ff88;">otomatis kembali</b>
+    </div>
+
+    <button id="btnWd" class="btn btn-wd">🔻 TARIK SEKARANG - Saldo Langsung Terpotong</button>
+    <button class="btn btn-back" onclick="location.reload()">🔄 Refresh Saldo</button>
+  </div>
+
+  <!-- RIWAYAT WD -->
+  <div class="card">
+    <h3 style="color:#ffd54a;margin-bottom:10px;">📜 Riwayat Withdraw</h3>
+    <div id="wdList">Memuat...</div>
+  </div>
 </div>
 
-<div id="deposit" class="card">
-<label>Metode Deposit</label>
-<select id="metode"><option value="Transfer">Transfer Bank</option><option value="QRIS">QRIS</option></select>
-<div id="transferArea">
-<label>Pilih Bank Tujuan</label>
-<select id="bank"><option value="Mandiri">Mandiri</option><option value="BCA">BCA</option><option value="BRI">BRI</option><option value="SeaBank">SeaBank</option><option value="DANA / GoPay">DANA / GoPay</option></select>
-<div class="info"><b>Atas Nama</b><br>YUDI ALIYUDIN<br><br><b>Nomor Rekening</b><br><span id="rekening">1340033268904</span></div>
-</div>
-<div id="qrisArea" class="hidden"><label>Scan QRIS</label><img src="qris.png" alt="QRIS"></div>
-<label>Nominal Deposit</label>
-<input type="number" id="nominalDep" placeholder="Minimal Rp10.000">
-<button class="btn" id="btnRequestDep">REQUEST DEPOSIT</button>
-</div>
-
-<div id="withdraw" class="card hidden">
-<label>Bank</label><input id="bankUser" readonly>
-<label>Nama Rekening</label><input id="namaUser" readonly>
-<label>Nomor Rekening</label><input id="rekUser" readonly>
-<label>Nominal Withdraw</label><input type="number" id="nominalWd" placeholder="Masukkan nominal">
-<button class="btn" id="btnRequestWd" style="background:#e11;">REQUEST WITHDRAW (Saldo langsung terpotong)</button>
-<div style="font-size:11px;color:#aaa;margin-top:8px;">* Saldo akan langsung terpotong saat klik WD. Jika admin Reject, saldo otomatis kembali.</div>
-</div>
-
-<div class="card">
-<h3>Status Transaksi</h3>
-<div id="statusList">Belum ada transaksi.</div>
-</div>
-</div>
-
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
-const firebaseConfig={apiKey:"AIzaSyBeTALsF43ij3aAlZjF1XeBjB1gNtaTb2I",authDomain:"game-demo-4db7f.firebaseapp.com",projectId:"game-demo-4db7f",storageBucket:"game-demo-4db7f.firebasestorage.app",messagingSenderId:"405381506143",appId:"1:405381506143:web:da63f34a24f01e4f0367ea"};
+const firebaseConfig={
+  apiKey:"AIzaSyBeTALsF43ij3aAlZjF1XeBjB1gNtaTb2I",
+  authDomain:"game-demo-4db7f.firebaseapp.com",
+  projectId:"game-demo-4db7f",
+  storageBucket:"game-demo-4db7f.firebasestorage.app",
+  messagingSenderId:"405381506143",
+  appId:"1:405381506143:web:da63f34a24f01e4f0367ea"
+};
 firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(); const db=firebase.firestore();
-let player=null;
 
-const saldo=document.getElementById("saldo");
-document.getElementById("btnRefresh").onclick=()=>location.reload();
-document.getElementById("btnPortal").onclick=()=>location.href="portal.html";
-const btnDep=document.getElementById("btnDep"); const btnWd=document.getElementById("btnWd");
-const deposit=document.getElementById("deposit"); const withdraw=document.getElementById("withdraw");
-const metode=document.getElementById("metode"); const transferArea=document.getElementById("transferArea"); const qrisArea=document.getElementById("qrisArea");
-const bank=document.getElementById("bank"); const rekening=document.getElementById("rekening");
-const nominalDep=document.getElementById("nominalDep"); const nominalWd=document.getElementById("nominalWd");
-const btnRequestDep=document.getElementById("btnRequestDep"); const btnRequestWd=document.getElementById("btnRequestWd");
-const bankUser=document.getElementById("bankUser"); const namaUser=document.getElementById("namaUser"); const rekUser=document.getElementById("rekUser");
-const statusList=document.getElementById("statusList");
+let player=null; let currentUid=null;
 
-const rekeningMap={"Mandiri":"1340033268904","BCA":"4180734771","BRI":"004601060489505","SeaBank":"901341445605","DANA / GoPay":"082319264646"};
-rekening.innerHTML=rekeningMap[bank.value];
+auth.onAuthStateChanged(user=>{
+  if(!user){ location.href='index.html'; return; }
+  currentUid=user.uid;
+  // LISTEN REALTIME PLAYER - SALDO LIVE
+  db.collection("players").doc(user.uid).onSnapshot(doc=>{
+    if(!doc.exists){ alert("Player tidak ditemukan"); return; }
+    player=doc.data();
+    document.getElementById('saldo').textContent = Number(player.wallet?.coin||0).toLocaleString('id-ID');
+    document.getElementById('email').textContent = player.profile?.email || user.email;
+    document.getElementById('username').textContent = player.profile?.username || player.profile?.nickname || '-';
+    document.getElementById('uid').textContent = user.uid;
 
-auth.onAuthStateChanged(async(user)=>{
-    if(!user){ location.href="index.html"; return; }
-    // REALTIME SALDO
-    db.collection("players").doc(user.uid).onSnapshot(doc=>{
-        if(!doc.exists) return;
-        player=doc.data();
-        saldo.innerHTML=Number(player.wallet?.coin||0).toLocaleString("id-ID");
-        bankUser.value=player.bank?.namaBank||""; namaUser.value=player.bank?.namaRekening||""; rekUser.value=player.bank?.noRekening||"";
-    });
-    loadTransaksi();
-    listenAutoRefundAndCredit();
+    document.getElementById('bank').value = player.bank?.namaBank || player.bank?.bank || '';
+    document.getElementById('namaRek').value = player.bank?.namaRekening || '';
+    document.getElementById('noRek').value = player.bank?.noRekening || '';
+
+    if(!player.bank?.noRekening){
+      document.getElementById('noRekWarning').style.display='block';
+      document.getElementById('btnWd').disabled=true;
+    } else {
+      document.getElementById('noRekWarning').style.display='none';
+      document.getElementById('btnWd').disabled=false;
+    }
+  });
+
+  loadWdHistory();
+  listenRefund();
 });
 
-btnDep.onclick=()=>{ btnDep.classList.add("active"); btnWd.classList.remove("active"); deposit.classList.remove("hidden"); withdraw.classList.add("hidden"); };
-btnWd.onclick=()=>{ btnWd.classList.add("active"); btnDep.classList.remove("active"); withdraw.classList.remove("hidden"); deposit.classList.add("hidden"); };
-bank.onchange=()=>{ rekening.innerHTML=rekeningMap[bank.value]; };
-metode.onchange=()=>{ if(metode.value==="QRIS"){ transferArea.classList.add("hidden"); qrisArea.classList.remove("hidden"); }else{ transferArea.classList.remove("hidden"); qrisArea.classList.add("hidden"); } };
+document.getElementById('btnWd').onclick=async()=>{
+  const nominal=Number(document.getElementById('nominalWd').value);
+  if(isNaN(nominal) || nominal<10000){
+    alert("Minimal WD Rp 10.000"); return;
+  }
+  if(!player || nominal > Number(player.wallet?.coin||0)){
+    alert("Saldo tidak cukup! Saldo kamu: Rp "+Number(player?.wallet?.coin||0).toLocaleString('id-ID')); return;
+  }
+  if(!confirm(`Yakin tarik Rp ${nominal.toLocaleString('id-ID')} ?\n\nSaldo akan langsung terpotong Rp ${nominal.toLocaleString('id-ID')} dan status jadi Pending di admin.\nJika Reject, saldo otomatis kembali.`)) return;
 
-// DEPOSIT - TIDAK POTONG SALDO, TUNGGU ADMIN SUCCESS
-btnRequestDep.onclick=async()=>{
-    if(!auth.currentUser){ alert("Login dulu"); return; }
-    const nominal=Number(nominalDep.value);
-    if(isNaN(nominal)||nominal<10000){ alert("Minimal deposit Rp10.000"); return; }
-    const kodeUnik=Math.floor(Math.random()*900)+100;
-    const totalTransfer=nominal+kodeUnik;
-    try{
-        await db.collection("deposit").add({
-            uid:auth.currentUser.uid,email:auth.currentUser.email,nickname:player.profile?.nickname||"",
-            nominal:nominal,kodeUnik:kodeUnik,totalTransfer:totalTransfer,metode:metode.value,
-            bankTujuan:metode.value==="Transfer"?bank.value:"QRIS",status:"Pending",credited:false,
-            createdAt:firebase.firestore.FieldValue.serverTimestamp()
-        });
-        alert("Request deposit berhasil.\nTransfer Tepat: Rp "+totalTransfer.toLocaleString("id-ID")+"\n\nSaldo akan bertambah otomatis setelah admin ACC Success.");
-        nominalDep.value="";
-    }catch(err){ console.error(err); alert("Gagal deposit"); }
-};
+  const btn=document.getElementById('btnWd'); btn.disabled=true; btn.textContent='⏳ Memproses...';
 
-// WITHDRAW - LANGSUNG POTONG SALDO
-btnRequestWd.onclick=async()=>{
-    if(!auth.currentUser){ alert("Login dulu"); return; }
-    const nominal=Number(nominalWd.value);
-    if(isNaN(nominal)||nominal<10000){ alert("Minimal withdraw Rp10.000"); return; }
-    if(nominal>Number(player.wallet.coin)){ alert("Saldo tidak cukup"); return; }
-    if(!confirm("Yakin withdraw Rp "+nominal.toLocaleString("id-ID")+"?\nSaldo akan langsung terpotong.")) return;
-    try{
-        // 1. POTONG SALDO DULU
-        const uid=auth.currentUser.uid;
-        const newSaldo = Number(player.wallet.coin) - nominal;
-        await db.collection("players").doc(uid).update({"wallet.coin":newSaldo, "wallet.updatedAt":firebase.firestore.FieldValue.serverTimestamp()});
-        // 2. BARU BUAT REQUEST WD
-        await db.collection("withdraw").add({
-            uid:uid,email:auth.currentUser.email,nickname:player.profile?.nickname||"",
-            nominal:nominal,bank:player.bank.namaBank,namaRekening:player.bank.namaRekening,noRekening:player.bank.noRekening,
-            status:"Pending",refunded:false,createdAt:firebase.firestore.FieldValue.serverTimestamp()
-        });
-        alert("Request withdraw berhasil.\nSaldo terpotong Rp "+nominal.toLocaleString("id-ID")+"\nMenunggu ACC Admin.\nJika Reject, saldo otomatis kembali.");
-        nominalWd.value="";
-    }catch(err){ console.error(err); alert("Gagal withdraw: "+err.message); }
-};
+  try{
+    const uid=currentUid;
+    const saldoAwal=Number(player.wallet.coin);
+    const saldoAkhir=saldoAwal - nominal;
 
-function loadTransaksi(){
-    if(!auth.currentUser) return;
-    statusList.innerHTML="Memuat..."; let html="";
-    db.collection("deposit").where("uid","==",auth.currentUser.uid).orderBy("createdAt","desc").onSnapshot(snap=>{
-        html="";
-        snap.forEach(doc=>{ const d=doc.data(); html+=`<div class="status-item"><b>📥 Deposit Rp ${Number(d.nominal).toLocaleString("id-ID")}</b><br>${d.bankTujuan} - ${d.metode}<br>Status: <b style="color:${d.status=="Success"?"#00ff88":d.status=="Reject"?"#ff4444":"#ffd54a"}">${d.status}</b></div>`; });
-        db.collection("withdraw").where("uid","==",auth.currentUser.uid).orderBy("createdAt","desc").onSnapshot(ws=>{
-            ws.forEach(doc=>{ const d=doc.data(); html+=`<div class="status-item"><b>📤 Withdraw Rp ${Number(d.nominal).toLocaleString("id-ID")}</b><br>${d.bank}<br>Status: <b style="color:${d.status=="Success"?"#00ff88":d.status=="Reject"?"#ff4444":"#ffd54a"}">${d.status}</b>${d.status=="Reject" && d.refunded ?" (Sudah direfund)":""}</div>`; });
-            if(html==="") html="Belum ada transaksi.";
-            statusList.innerHTML=html;
-        });
+    // 1. POTONG SALDO DULU - INI KUNCI
+    await db.collection("players").doc(uid).update({
+      "wallet.coin": saldoAkhir,
+      "wallet.updatedAt": firebase.firestore.FieldValue.serverTimestamp()
     });
+
+    // 2. BUAT DATA WD PENDING UNTUK ADMIN
+    await db.collection("withdraw").add({
+      uid: uid,
+      email: player.profile?.email || auth.currentUser.email,
+      nickname: player.profile?.username || player.profile?.nickname || '',
+      nominal: nominal,
+      bank: player.bank.namaBank || player.bank.bank,
+      namaRekening: player.bank.namaRekening,
+      noRekening: player.bank.noRekening,
+      saldoSebelum: saldoAwal,
+      saldoSesudah: saldoAkhir,
+      status: "Pending",
+      refunded: false,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    alert(`✅ WD Berhasil!\n\nRp ${nominal.toLocaleString('id-ID')} dipotong dari saldo.\nSaldo sekarang: Rp ${saldoAkhir.toLocaleString('id-ID')}\n\nMenunggu ACC Admin. Cek di bawah untuk status.`);
+    document.getElementById('nominalWd').value='';
+
+  }catch(err){
+    console.error(err);
+    alert("Gagal WD: "+err.message);
+  }finally{
+    btn.disabled=false; btn.textContent='🔻 TARIK SEKARANG - Saldo Langsung Terpotong';
+  }
+};
+
+function loadWdHistory(){
+  db.collection("withdraw").where("uid","==",auth.currentUser.uid).orderBy("createdAt","desc").onSnapshot(snap=>{
+    const el=document.getElementById('wdList');
+    if(snap.empty){ el.innerHTML='<div style="text-align:center;color:#777;padding:12px;">Belum ada WD</div>'; return; }
+    let html='';
+    snap.forEach(doc=>{
+      const d=doc.data();
+      const t=d.createdAt?.toDate ? d.createdAt.toDate().toLocaleString('id-ID') : '-';
+      const badge = d.status==='Pending' ? 'pending' : d.status==='Success' ? 'success' : 'reject';
+      html+=`
+        <div class="wdItem">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <b>💸 Rp ${Number(d.nominal).toLocaleString('id-ID')}</b>
+            <span class="badge ${badge}">${d.status}${d.status==='Reject' && d.refunded ? ' (Refund)' : ''}</span>
+          </div>
+          <div class="row"><span>Tanggal</span><span>${t}</span></div>
+          <div class="row"><span>Bank</span><span>${d.bank} - ${d.noRekening}</span></div>
+          <div class="row"><span>Nama</span><span>${d.namaRekening}</span></div>
+        </div>
+      `;
+    });
+    el.innerHTML=html;
+  });
 }
 
-// AUTO REFUND JIKA WD REJECT & AUTO CREDIT JIKA DEPOSIT SUCCESS
-function listenAutoRefundAndCredit(){
-    const uid=auth.currentUser.uid;
-    // WD Reject -> kembalikan saldo
-    db.collection("withdraw").where("uid","==",uid).where("status","==","Reject").onSnapshot(snap=>{
-        snap.forEach(doc=>{
-            const d=doc.data();
-            if(!d.refunded){
-                db.collection("players").doc(uid).update({"wallet.coin":firebase.firestore.FieldValue.increment(d.nominal)}).then(()=>{
-                    doc.ref.update({refunded:true});
-                    alert("Withdraw Rp "+d.nominal.toLocaleString("id-ID")+" di-Reject admin, saldo dikembalikan!");
-                });
-            }
+// AUTO REFUND JIKA REJECT
+function listenRefund(){
+  db.collection("withdraw").where("uid","==",auth.currentUser.uid).where("status","==","Reject").onSnapshot(snap=>{
+    snap.forEach(doc=>{
+      const d=doc.data();
+      if(!d.refunded){
+        db.collection("players").doc(auth.currentUser.uid).update({
+          "wallet.coin": firebase.firestore.FieldValue.increment(d.nominal)
+        }).then(()=>{
+          doc.ref.update({refunded:true});
+          alert(`WD Rp ${d.nominal.toLocaleString('id-ID')} di-Reject admin, saldo Rp ${d.nominal.toLocaleString('id-ID')} sudah dikembalikan!`);
         });
+      }
     });
-    // Deposit Success -> tambahkan saldo
-    db.collection("deposit").where("uid","==",uid).where("status","==","Success").onSnapshot(snap=>{
-        snap.forEach(doc=>{
-            const d=doc.data();
-            if(!d.credited){
-                db.collection("players").doc(uid).update({"wallet.coin":firebase.firestore.FieldValue.increment(d.nominal)}).then(()=>{
-                    doc.ref.update({credited:true});
-                });
-            }
-        });
-    });
+  });
 }
 </script>
 </body>
