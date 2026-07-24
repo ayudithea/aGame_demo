@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="id">
+<head><!-- PLAYABLE_TOUCH_PATCH_V1 --><script>
+(function() {
+  if (window.__playableTouchPatchInstalled) return;
+  window.__playableTouchPatchInstalled = true;
+  var origAdd = EventTarget.prototype.addEventListener;
+  var blockedTypes = { touchstart: 1, touchmove: 1, wheel: 1 };
+  EventTarget.prototype.addEventListener = function(type, listener, options) {
+    if (blockedTypes[type]) {
+      if (options === undefined || options === null) {
+        options = { passive: true };
+      } else if (typeof options === 'boolean') {
+        options = { capture: options, passive: true };
+      } else {
+        options = Object.assign({}, options, { passive: true });
+      }
+    }
+    return origAdd.call(this, type, listener, options);
+  };
+})();
+</script><script>window.Intl=window.Intl||{};Intl.t=function(s){return(Intl._locale&&Intl._locale[s])||s;};</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deposit - Legends Portal</title>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;}
+body{background:#0b1220;color:#fff;min-height:100vh;}
+.header{height:64px;background:#182235;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:2px solid #ffd54a;position:sticky;top:0;z-index:10;}
+.header h2{color:#ffd54a;font-size:18px;}
+.header button{padding:8px 14px;background:#22314f;color:#fff;border:none;border-radius:8px;font-weight:bold;cursor:pointer;}
+.container{max-width:520px;margin:auto;padding:16px;}
+.card{background:#182235;border-radius:16px;padding:16px;margin-bottom:14px;border:1px solid rgba(255,255,255,.08);}
+.saldoCard{text-align:center;background:linear-gradient(135deg,#182235,#22314f);border:2px solid #00b894;}
+.saldoCard small{color:#bbb;display:block;margin-bottom:6px;letter-spacing:1px;}
+.saldoCard h1{color:#ffd54a;font-size:36px;margin:6px 0;}
+.saldoCard .live{font-size:11px;color:#00ff88;}
+.label{font-size:12px;color:#aaa;margin:10px 0 6px 2px;display:block;}
+.input{width:100%;padding:13px;border-radius:10px;background:#0b1220;border:1px solid #333;color:#fff;font-size:15px;}
+.select{width:100%;padding:13px;border-radius:10px;background:#0b1220;border:1px solid #333;color:#fff;font-size:15px;}
+.btn{width:100%;padding:14px;border:none;border-radius:12px;font-weight:bold;font-size:15px;cursor:pointer;margin-top:12px;}
+.btn-dep{background:linear-gradient(180deg,#00b894,#006d4f);color:#fff;box-shadow:0 4px 12px rgba(0,184,148,.3);}
+.btn-back{background:#22314f;color:#fff;}
+.infoBox{background:#0b1220;border-radius:10px;padding:10px;font-size:12px;line-height:1.6;margin-top:10px;border:1px dashed #333;}
+.badge{padding:4px 8px;border-radius:8px;font-size:11px;font-weight:bold;display:inline-block;}
+.badge.pending{background:#ffd54a;color:#000;}
+.badge.success{background:#00c853;color:#fff;}
+.badge.reject{background:#ff3b30;color:#fff;}
+.depItem{background:#0b1220;border-radius:12px;padding:12px;margin-top:10px;border:1px solid #22314f;}
+.depItem .row{display:flex;justify-content:space-between;font-size:13px;margin:3px 0;}
+.rekItem{background:#0b1220;border-radius:12px;padding:12px;margin-top:10px;border:1px solid #ffd54a;position:relative;}
+.rekItem .bankName{color:#ffd54a;font-weight:bold;font-size:14px;}
+.rekItem .noRek{font-size:16px;font-weight:bold;margin:4px 0;letter-spacing:0.5px;}
+.rekItem .an{font-size:12px;color:#bbb;}
+.btnCopy{position:absolute;top:12px;right:12px;padding:6px 10px;background:#22314f;color:#fff;border:none;border-radius:6px;font-size:11px;cursor:pointer;}
+</style>
+</head>
+<body>
+<div class="header">
+  <h2>💳 Deposit</h2>
+  <button onclick="location.href='portal.html'">🏠 Portal</button>
+</div>
+
+<div class="container">
+  <div class="card saldoCard">
+    <small>SALDO COIN SAAT INI</small>
+    <h1 id="saldo">0</h1>
+    <div class="live">● Live dari Firebase</div>
+    <div style="margin-top:10px;font-size:13px;text-align:left;background:rgba(0,0,0,.3);padding:10px;border-radius:10px;">
+      <div>Email: <b id="email">-</b></div>
+      <div>Username: <b id="username">-</b></div>
+      <div>UID: <b id="uid" style="font-size:10px;">-</b></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 style="color:#ffd54a;margin-bottom:10px;">💰 Silakan melakukan pembayaran ke salah satu rekening berikut:</h3>
+    <div style="font-size:13px;margin-bottom:10px;color:#00ff88;">👤 Atas Nama: <b>YUDI ALIYUDIN</b></div>
+
+    <div class="rekItem">
+      <div class="bankName">🏦 Bank Mandiri</div>
+      <div class="noRek" id="rekMandiri">1340033268904</div>
+      <div class="an">Atas Nama: YUDI ALIYUDIN</div>
+      <button class="btnCopy" onclick="copyText('1340033268904')">📋 Salin</button>
+    </div>
+
+    <div class="rekItem">
+      <div class="bankName">🏦 Bank BCA</div>
+      <div class="noRek" id="rekBCA">4180734771</div>
+      <div class="an">Atas Nama: YUDI ALIYUDIN</div>
+      <button class="btnCopy" onclick="copyText('4180734771')">📋 Salin</button>
+    </div>
+
+    <div class="rekItem">
+      <div class="bankName">🏦 Bank BRI</div>
+      <div class="noRek" id="rekBRI">004601060489505</div>
+      <div class="an">Atas Nama: YUDI ALIYUDIN</div>
+      <button class="btnCopy" onclick="copyText('004601060489505')">📋 Salin</button>
+    </div>
+
+    <div class="rekItem">
+      <div class="bankName">💳 DANA / GoPay</div>
+      <div class="noRek" id="rekDana">082319264646</div>
+      <div class="an">Atas Nama: YUDI ALIYUDIN</div>
+      <button class="btnCopy" onclick="copyText('082319264646')">📋 Salin</button>
+    </div>
+
+    <div class="rekItem">
+      <div class="bankName">🏦 SeaBank</div>
+      <div class="noRek" id="rekSea">901341445605</div>
+      <div class="an">Atas Nama: YUDI ALIYUDIN</div>
+      <button class="btnCopy" onclick="copyText('901341445605')">📋 Salin</button>
+    </div>
+
+    <div style="background:#003d2a;border:1px solid #00b894;color:#00ff88;padding:10px;border-radius:10px;margin-top:14px;font-size:12px;text-align:center;">
+      ✅ Mohon konfirmasi atau kirim bukti transfer setelah melakukan pembayaran.<br>Terima kasih atas kepercayaan Anda. 🙏🏻
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 style="color:#00b894;margin-bottom:10px;">💰 Form Deposit - Saldo Masuk Setelah Admin ACC</h3>
+    <label class="label">Nominal Deposit (Minimal Rp 10.000)</label>
+    <input id="nominalDep" type="number" class="input" placeholder="Contoh: 50000">
+    
+    <label class="label">Pilih Tujuan Transfer</label>
+    <select id="metodeDep" class="select">
+      <option value="Bank Mandiri - 1340033268904">Bank Mandiri - 1340033268904</option>
+      <option value="Bank BCA - 4180734771">Bank BCA - 4180734771</option>
+      <option value="Bank BRI - 004601060489505">Bank BRI - 004601060489505</option>
+      <option value="DANA / GoPay - 082319264646">DANA / GoPay - 082319264646</option>
+      <option value="SeaBank - 901341445605">SeaBank - 901341445605</option>
+    </select>
+
+    <label class="label">Catatan / Bukti Transfer (Opsional)</label>
+    <input id="catatanDep" type="text" class="input" placeholder="Sudah transfer dari BCA">
+    
+    <div class="infoBox">
+      • Status awal: <span class="badge pending">Pending</span><br>
+      • Admin akan cek transfer kamu<br>
+      • Jika Admin ACC: saldo <b style="color:#00ff88;">otomatis bertambah</b> ke akun kamu<br>
+      • Saldo masuk ke Firebase: <b>players/{uid}/wallet.coin</b>
+    </div>
+
+    <button id="btnDep" class="btn btn-dep">✅ KIRIM DEPOSIT - Tunggu ACC Admin</button>
+    <button class="btn btn-back" onclick="location.reload()">🔄 Refresh Saldo</button>
+  </div>
+
+  <div class="card">
+    <h3 style="color:#ffd54a;margin-bottom:10px;">📜 Riwayat Deposit</h3>
+    <div id="depList">Memuat...</div>
+  </div>
+</div>
+
+<script>
+const firebaseConfig={
+  apiKey:"AIzaSyBeTALsF43ij3aAlZjF1XeBjB1gNtaTb2I",
+  authDomain:"game-demo-4db7f.firebaseapp.com",
+  projectId:"game-demo-4db7f",
+  storageBucket:"game-demo-4db7f.firebasestorage.app",
+  messagingSenderId:"405381506143",
+  appId:"1:405381506143:web:da63f34a24f01e4f0367ea"
+};
+firebase.initializeApp(firebaseConfig);
+const auth=firebase.auth(); 
+const db=firebase.firestore();
+
+let player=null; 
+let currentUid=null;
+let currentNick="-";
+
+function copyText(text){
+  navigator.clipboard.writeText(text).then(()=> alert("✅ No. Rekening "+text+" disalin!"));
+}
+
+auth.onAuthStateChanged(user=>{
+  if(!user){ location.href='index.html'; return; }
+  currentUid=user.uid;
+  db.collection("players").doc(user.uid).onSnapshot(doc=>{
+    if(!doc.exists){ alert("Player tidak ditemukan"); return; }
+    player=doc.data();
+    currentNick = player.profile?.username || player.profile?.nickname || "-";
+    document.getElementById('saldo').textContent = Number(player.wallet?.coin||0).toLocaleString('id-ID');
+    document.getElementById('email').textContent = player.profile?.email || user.email;
+    document.getElementById('username').textContent = currentNick;
+    document.getElementById('uid').textContent = user.uid;
+  });
+  loadDepHistory();
+});
+
+document.getElementById('btnDep').onclick=async()=>{
+  const nominal=Number(document.getElementById('nominalDep').value);
+  const metode=document.getElementById('metodeDep').value;
+  const catatan=document.getElementById('catatanDep').value.trim();
+  
+  if(isNaN(nominal) || nominal<10000){
+    alert("Minimal Deposit Rp 10.000"); return;
+  }
+  if(!confirm(`Yakin kirim Deposit Rp ${nominal.toLocaleString('id-ID')} ke ${metode} ?\n\nSaldo akan bertambah setelah Admin ACC.`)) return;
+
+  const btn=document.getElementById('btnDep'); 
+  btn.disabled=true; 
+  btn.textContent='⏳ Mengirim...';
+
+  try{
+    const uid=currentUid;
+    const saldoSebelum=Number(player.wallet?.coin||0);
+
+    await db.collection("deposit").add({
+      uid: uid,
+      email: player.profile?.email || auth.currentUser.email,
+      nickname: currentNick,
+      nominal: nominal,
+      metode: metode,
+      catatan: catatan || "-",
+      saldoSebelum: saldoSebelum,
+      status: "Pending",
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    alert(`✅ Deposit Dikirim!\n\nRp ${nominal.toLocaleString('id-ID')} ke ${metode}\nStatus: Pending\nSaldo akan masuk Rp ${(saldoSebelum+nominal).toLocaleString('id-ID')} setelah Admin ACC.`);
+    document.getElementById('nominalDep').value='';
+    document.getElementById('catatanDep').value='';
+
+  }catch(err){
+    console.error(err);
+    alert("Gagal Deposit: "+err.message);
+  }finally{
+    btn.disabled=false; 
+    btn.textContent='✅ KIRIM DEPOSIT - Tunggu ACC Admin';
+  }
+};
+
+function loadDepHistory(){
+  db.collection("deposit").where("uid","==",auth.currentUser.uid).orderBy("createdAt","desc").onSnapshot(snap=>{
+    const el=document.getElementById('depList');
+    if(snap.empty){ el.innerHTML='<div style="text-align:center;color:#777;padding:12px;">Belum ada Deposit</div>'; return; }
+    let html='';
+    snap.forEach(doc=>{
+      const d=doc.data();
+      const t=d.createdAt?.toDate ? d.createdAt.toDate().toLocaleString('id-ID') : '-';
+      const badge = d.status==='Pending' ? 'pending' : d.status==='Success' ? 'success' : 'reject';
+      html+=`
+        <div class="depItem">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <b>💰 Rp ${Number(d.nominal).toLocaleString('id-ID')}</b>
+            <span class="badge ${badge}">${d.status}</span>
+          </div>
+          <div class="row"><span>Tanggal</span><span>${t}</span></div>
+          <div class="row"><span>Tujuan</span><span>${d.metode||'-'}</span></div>
+          ${d.catatan? `<div class="row"><span>Catatan</span><span>${d.catatan}</span></div>`:''}
+          ${d.status==='Success'? '<div style="color:#00ff88;font-size:11px;margin-top:4px;">✅ Saldo sudah masuk ke akun kamu</div>':''}
+        </div>
+      `;
+    });
+    el.innerHTML=html;
+  });
+}
+</script>
+</body>
+</html>
