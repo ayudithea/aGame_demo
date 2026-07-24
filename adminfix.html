@@ -234,8 +234,8 @@ db.collection("players").onSnapshot(snap=>{
   snap.forEach(doc=>{
     const p = doc.data();
     playerCache.set(doc.id, {
-      email: (p.profile && p.profile.email) || p.email || "-",
-      nickname: (p.profile && p.profile.nickname) || p.nickname || p.displayName || "-"
+      email: p.profile?.email || p.email || "-",
+      nickname: p.profile?.nickname || p.nickname || p.displayName || "-"
     });
   });
   isPlayerCacheReady = true;
@@ -260,7 +260,7 @@ function loadDashboard(){
             let totalCoin = 0;
             snap.forEach(doc=>{
                 const data = doc.data();
-                totalCoin += Number((data.wallet && data.wallet.coin) || 0);
+                totalCoin += Number(data.wallet?.coin || 0);
             });
             document.getElementById("totalCoin").innerHTML = totalCoin.toLocaleString("id-ID");
         },(err)=>{ console.error("Players Error :", err); }
@@ -277,8 +277,8 @@ let allDepositData = [];
 function renderDepositTable(){
 const tbody=document.getElementById("depositTable");
 if(!tbody) return;
-const keyword = ( (document.getElementById("cariDeposit") && document.getElementById("cariDeposit").value) || "").toLowerCase();
-const statusFilter = document.getElementById("filterDeposit") && value || "Semua";
+const keyword = (document.getElementById("cariDeposit")?.value || "").toLowerCase();
+const statusFilter = document.getElementById("filterDeposit")?.value || "Semua";
 tbody.innerHTML="";
 let pending=0,success=0,reject=0,totalNominal=0;
 let hasValidData = false;
@@ -286,7 +286,7 @@ let hasValidData = false;
 allDepositData.forEach(item=>{
 const d=item.data;
 const docId=item.id;
-const info = playerCache.get(d.uid) || {email:"-", nickname:d.nickname||"-"};
+const info = playerCache.get(d.uid) || {email:"Akun Dihapus", nickname:d.nickname||"-"};
 const nominal=Number(d.nominal||0);
 totalNominal+=nominal;
 if(d.status==="Pending") pending++;
@@ -302,7 +302,7 @@ const tanggal=d.createdAt ? d.createdAt.toDate().toLocaleString("id-ID") : "-";
 tbody.innerHTML+=`
 <tr>
 <td>${tanggal}</td>
-<td style="text-align:left"><b>${d.nickname||info.nickname||"-"}</b><br><span style="color:#ffd54a;font-size:12px">${info.email||"-"}</span><br><small style="font-size:10px;color:#8aa0c7">${(d.uid||"").toString().substring(0,12)}...</small></td>
+<td style="text-align:left"><b>${d.nickname||info.nickname||"-"}</b><br><span style="color:#ffd54a;font-size:12px">${info.email||"-"}</span><br><small style="font-size:10px;color:#8aa0c7">${d.uid.substring(0,12)}...</small></td>
 <td>Rp ${nominal.toLocaleString("id-ID")}</td>
 <td>${d.metode||"-"}</td>
 <td>${d.status}</td>
@@ -325,15 +325,15 @@ allDepositData=[];
 snap.forEach(doc=>{
 const d=doc.data();
 if(!d.uid) return;
-if(isPlayerCacheReady && !playerCache.has(d.uid)) return;
+// TAMPILKAN SEMUA - jangan buang history meski akun sudah dihapus
 allDepositData.push({id:doc.id, data:d});
 });
 renderDepositTable();
 });
 }
 loadDeposit();
-document.getElementById("cariDeposit") && document.getElementById("cariDeposit").addEventListener("input", renderDepositTable);
-document.getElementById("filterDeposit") && document.getElementById("filterDeposit").addEventListener("change", renderDepositTable);
+document.getElementById("cariDeposit")?.addEventListener("input", renderDepositTable);
+document.getElementById("filterDeposit")?.addEventListener("change", renderDepositTable);
 
 async function rejectDeposit(id){
     try{
@@ -361,7 +361,7 @@ try{
         const player = await tx.get(playerRef);
         if(!player.exists){ throw "Player tidak ditemukan - akun sudah tidak terdaftar"; }
         const p = player.data();
-        const coin = Number((p.wallet && p.wallet.coin) || 0);
+        const coin = Number(p.wallet?.coin || 0);
         tx.update(playerRef,{ "wallet.coin": coin + nominal });
         tx.update(ref,{ status:"Success", approvedAt:firebase.firestore.FieldValue.serverTimestamp(), approvedBy: "Administrator" });
     });
@@ -376,21 +376,21 @@ let allWithdrawData = [];
 function renderWithdrawTable(){
 const tbody=document.getElementById("withdrawTable");
 if(!tbody) return;
-const keyword = ( (document.getElementById("cariWithdraw") && document.getElementById("cariWithdraw").value) || "").toLowerCase();
-const statusFilter = document.getElementById("filterWithdraw") && value || "Semua";
+const keyword = (document.getElementById("cariWithdraw")?.value || "").toLowerCase();
+const statusFilter = document.getElementById("filterWithdraw")?.value || "Semua";
 tbody.innerHTML="";
 let hasValidData = false;
 allWithdrawData.forEach(item=>{
 const d=item.data;
 const docId=item.id;
-const info = playerCache.get(d.uid) || {email:"-", nickname:d.nickname||"-"};
+const info = playerCache.get(d.uid) || {email:"Akun Dihapus", nickname:d.nickname||"-"};
 if(statusFilter !== "Semua" && d.status !== statusFilter) return;
 const searchTarget = `${d.nickname||""} ${info.nickname||""} ${info.email||""} ${d.uid||""}`.toLowerCase();
 if(keyword && !searchTarget.includes(keyword)) return;
 hasValidData = true;
 tbody.innerHTML+=`
 <tr>
-<td style="text-align:left"><b>${d.nickname||info.nickname||"-"}</b><br><span style="color:#ffd54a;font-size:12px">${info.email||"-"}</span><br><small style="font-size:10px;color:#8aa0c7">${(d.uid||"").toString().substring(0,12)}...</small></td>
+<td style="text-align:left"><b>${d.nickname||info.nickname||"-"}</b><br><span style="color:#ffd54a;font-size:12px">${info.email||"-"}</span><br><small style="font-size:10px;color:#8aa0c7">${d.uid.substring(0,12)}...</small></td>
 <td>Rp ${Number(d.nominal||0).toLocaleString("id-ID")}</td>
 <td>${d.status||"Pending"}</td>
 <td>${ d.status==="Pending" ? `<button class="btn green" onclick="approveWithdraw('${docId}')">✅</button> <button class="btn red" onclick="rejectWithdraw('${docId}')">❌</button>` : d.status==="Success" ? "✅ Success" : "❌ Reject"}</td>
@@ -406,15 +406,15 @@ allWithdrawData=[];
 snap.forEach(doc=>{
 const d=doc.data();
 if(!d.uid) return;
-if(isPlayerCacheReady && !playerCache.has(d.uid)) return;
+// TAMPILKAN SEMUA - jangan buang history meski akun sudah dihapus
 allWithdrawData.push({id:doc.id, data:d});
 });
 renderWithdrawTable();
 });
 }
 loadWithdraw();
-document.getElementById("cariWithdraw") && document.getElementById("cariWithdraw").addEventListener("input", renderWithdrawTable);
-document.getElementById("filterWithdraw") && document.getElementById("filterWithdraw").addEventListener("change", renderWithdrawTable);
+document.getElementById("cariWithdraw")?.addEventListener("input", renderWithdrawTable);
+document.getElementById("filterWithdraw")?.addEventListener("change", renderWithdrawTable);
 
 async function approveWithdraw(id){
 try{
@@ -442,7 +442,7 @@ async function rejectWithdraw(id){
             const player = await tx.get(playerRef);
             if(!player.exists){ throw "Player tidak ditemukan"; }
             const p = player.data();
-            const coin = Number((p.wallet && p.wallet.coin) || 0);
+            const coin = Number(p.wallet?.coin || 0);
             tx.update(playerRef,{ "wallet.coin": coin + nominal });
             tx.update(ref,{ status:"Reject", rejectedAt:firebase.firestore.FieldValue.serverTimestamp(), rejectedBy:"Administrator" });
         });
@@ -462,9 +462,9 @@ function loadPlayer(){
             const p=doc.data();
             tbody.innerHTML+=`
             <tr>
-                <td>${(p.profile && p.profile.nickname) || "-"}</td>
-                <td>${(p.profile && p.profile.email) || "-"}</td>
-                <td>${Number((p.wallet && p.wallet.coin) || 0).toLocaleString("id-ID")}</td>
+                <td>${p.profile?.nickname || "-"}</td>
+                <td>${p.profile?.email || "-"}</td>
+                <td>${Number(p.wallet?.coin || 0).toLocaleString("id-ID")}</td>
                 <td><button class="btn blue" onclick="detailPlayer('${doc.id}')">Detail</button></td>
             </tr>`;
         });
@@ -475,7 +475,7 @@ async function detailPlayer(uid){
     const snap=await db.collection("players").doc(uid).get();
     if(!snap.exists){ alert("Player tidak ditemukan"); return; }
     const p=snap.data();
-    alert("Nickname : "+((p.profile && p.profile.nickname) || "-")+ "\nEmail : "+((p.profile && p.profile.email) || "-")+ "\nCoin : "+Number((p.wallet && p.wallet.coin) || 0).toLocaleString("id-ID")+ "\nDiamond : "+Number(p.wallet && diamond || 0).toLocaleString("id-ID")+ "\nTicket : "+Number(p.wallet && ticket || 0).toLocaleString("id-ID"));
+    alert("Nickname : "+(p.profile?.nickname || "-")+ "\nEmail : "+(p.profile?.email || "-")+ "\nCoin : "+Number(p.wallet?.coin || 0).toLocaleString("id-ID")+ "\nDiamond : "+Number(p.wallet?.diamond || 0).toLocaleString("id-ID")+ "\nTicket : "+Number(p.wallet?.ticket || 0).toLocaleString("id-ID"));
 }
 </script>
 </body>
