@@ -20,7 +20,7 @@
   };
 })();
 </script><script>window.Intl=window.Intl||{};Intl.t=function(s){return(Intl._locale&&Intl._locale[s])||s;};</script><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>FRUIT BOBANZA - V8</title>
+<title>FRUIT BOBANZA - V9</title>
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
@@ -28,40 +28,40 @@
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 html,body{width:100%;min-height:100%;font-family:Arial,sans-serif;background:url("halaman.png") center center/cover no-repeat fixed;}
 .topPanel{position:absolute;top:88px;left:50%;transform:translateX(-50%);width:86%;display:flex;justify-content:center;align-items:center;z-index:10;background:rgba(0,0,0,.30);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:6px;}
-.topPanel div{color:#fff;font-size:18px;font-weight:900;text-shadow:2px 2px 4px #000;}
-#winAmount{color:#ffeb3b;}
-/* BOARD - FIX POSISI BUAH PAS KOTAK PNG */
-.board{position:relative;width:min(81.5vw,410px);margin:163px auto 0;padding:0;overflow:visible;background:transparent !important;}
-#grid{position:relative;display:grid;grid-template-columns:repeat(5,1fr);gap:4px;width:100%;background:transparent !important;}
-.cell{position:relative;aspect-ratio:0.98;display:flex;justify-content:center;align-items:center;font-size:31px;background:transparent !important;border:none !important;box-shadow:none !important;overflow:visible;}
+.topPanel div{color:#fff;font-size:18px;font-weight:900;text-shadow:2px 2px 4px #000;}#winAmount{color:#ffeb3b;}
+.board{position:relative;width:min(81.5vw,410px);margin:164px auto 0;padding:0;overflow:visible;background:transparent !important;}
+#grid{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;width:100%;background:transparent !important;}
+.cell{position:relative;aspect-ratio:0.98;display:flex;justify-content:center;align-items:center;font-size:31px;background:transparent !important;border:none !important;overflow:visible;}
 .cell::after{display:none;}
-.fruit-emoji{display:block;transform:translateY(6px);filter:drop-shadow(0 3px 3px rgba(0,0,0,.45));line-height:1;}
+.fruit-emoji{display:block;filter:drop-shadow(0 3px 3px rgba(0,0,0,.45));line-height:1;}
+/* 2 BARIS ATAS TURUN SEDIKIT, 3 BARIS BAWAH TETAP */
+.cell:nth-child(-n+10) .fruit-emoji{transform:translateY(12px);}
+.cell:nth-child(n+11) .fruit-emoji{transform:translateY(6px);}
 .fall{animation:fall var(--fall-dur,.32s) ease;}
-@keyframes fall{from{transform:translateY(-65px);opacity:0;}to{transform:translateY(6px);opacity:1;}}
-/* CONTROL - RAPi */
-.controlArea{position:relative;width:min(88vw,440px);margin:4px auto 0;padding:10px 0 112px 0;display:flex;flex-direction:column;align-items:center;}
-/* MESSAGE ROW - AUTO KIRI, PESAN TENGAH, BUY KANAN */
-.msgRow{width:100%;display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;padding:0 4px;}
-.msgRow #message{flex:1;text-align:center;font-size:15px;font-weight:800;color:#fff;text-shadow:2px 2px 4px #000;min-height:20px;}
+@keyframes fall{from{transform:translateY(-65px);opacity:0;}to{transform:translateY(var(--ty,6px));opacity:1;}}
+.cell:nth-child(-n+10) .fall{--ty:12px;} .cell:nth-child(n+11) .fall{--ty:6px;}
+.controlArea{position:relative;width:min(90vw,440px);margin:6px auto 0;padding:12px 0 112px 0;display:flex;flex-direction:column;align-items:center;}
+.msgRow{width:100%;display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding:0 2px;}
+.msgRow #message{flex:1;text-align:center;font-size:14px;font-weight:800;color:#fff;text-shadow:2px 2px 4px #000;min-height:18px;}
 .actionBtn{background:rgba(0,0,0,.38);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.35);color:#fff;font-size:11px;font-weight:900;padding:7px 12px;border-radius:20px;cursor:pointer;white-space:nowrap;}
 #buyBtn{background:linear-gradient(180deg,#ff7a18,#d80000);border:1.5px solid #fff;}
 #autoCount{position:absolute;top:-7px;right:-7px;background:#ffeb3b;color:#000;font-size:10px;font-weight:900;padding:1px 5px;border-radius:10px;display:none;}
 .autoWrap{position:relative;}
-.spinRow{display:flex;align-items:center;justify-content:center;gap:22px;margin-top:2px;}
-.betBtn{width:48px;height:48px;display:flex;align-items:center;justify-content:center;cursor:pointer;background:transparent !important;border:none !important;color:#fff;font-size:40px;font-weight:900;text-shadow:0 2px 0 #000,0 0 10px rgba(0,0,0,.9);}
-.betBtn:active{transform:scale(.75);}
-.speedBtn{width:38px;height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.3);border-radius:50%;color:#fff;font-size:18px;backdrop-filter:blur(4px);}
-#spinBtn{width:80px;height:80px;border-radius:50%;border:4px solid #fff;background:linear-gradient(180deg,#a8e62e 0%,#6cc500 30%,#2e7d00 100%);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 0 0 3px #5a3a1a,0 6px 14px rgba(0,0,0,.5),inset 0 3px 6px rgba(255,255,255,.6);transition:.15s;}
+/* SPIN ROW - POSISI - DAN + DISESUAIKAN */
+.spinRow{width:100%;display:flex;align-items:center;justify-content:space-between;padding:0 12px;margin-top:4px;position:relative;}
+.betBtn{width:50px;height:50px;display:flex;align-items:center;justify-content:center;cursor:pointer;background:rgba(0,0,0,.25) !important;border:1px solid rgba(255,255,255,.2) !important;border-radius:50%;color:#fff;font-size:32px;font-weight:900;text-shadow:0 2px 0 #000;backdrop-filter:blur(3px);}
+.betBtn:active{transform:scale(.78);}
+.speedBtn{width:44px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;background:rgba(0,0,0,.30);border:1px solid rgba(255,255,255,.35);border-radius:50%;color:#fff;font-size:18px;backdrop-filter:blur(4px);position:absolute;left:78px;}
+#spinBtn{width:82px;height:82px;border-radius:50%;border:4px solid #fff;background:linear-gradient(180deg,#a8e62e 0%,#6cc500 30%,#2e7d00 100%);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 0 0 3px #5a3a1a,0 6px 14px rgba(0,0,0,.5),inset 0 3px 6px rgba(255,255,255,.6);transition:.15s;}
 #spinBtn span{font-size:38px;color:#fff;font-weight:bold;}
 #spinBtn.hidden{opacity:0;pointer-events:none;}
-/* SALDO BET - NAIK BIAR KELIHATAN */
-.saldoDisplay,.betDisplay{position:absolute;bottom:38px;min-width:92px;text-align:center;padding:7px 10px;border-radius:14px;z-index:20;background:rgba(0,0,0,.42) !important;backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.28) !important;box-shadow:0 4px 12px rgba(0,0,0,.35) !important;}
+.saldoDisplay,.betDisplay{position:absolute;bottom:38px;min-width:94px;text-align:center;padding:7px 10px;border-radius:14px;z-index:20;background:rgba(0,0,0,.42) !important;backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.28) !important;box-shadow:0 4px 12px rgba(0,0,0,.35) !important;}
 .saldoDisplay{left:8px;} .betDisplay{right:8px;}
 .saldoDisplay span,.betDisplay span{display:block;font-size:7px;font-weight:800;color:rgba(255,255,255,.7);letter-spacing:1px;}
 .saldoDisplay b,.betDisplay b{font-size:12px;color:#fff;font-weight:800;}
 .comboPopup{position:fixed;left:50%;top:42%;transform:translate(-50%,-50%);font-size:42px;font-weight:bold;color:#fff;text-shadow:0 0 14px #000;pointer-events:none;animation:comboPopup 1s forwards;z-index:9999;text-align:center;}
 @keyframes comboPopup{0%{opacity:0;transform:translate(-50%,-50%) scale(.2);}30%{opacity:1;transform:translate(-50%,-50%) scale(1.1);}100%{opacity:0;transform:translate(-50%,-130%) scale(1);}}
-#freeSpinPopup,#autoPopup,#buyPopup{position:fixed;inset:0;background:rgba(0,0,0,.8);display:none;justify-content:center;align-items:center;z-index:99999;}
+#freeSpinPopup,#autoPopup,#buyPopup{position:fixed;inset:0;background:rgba(0,0,0,.82);display:none;justify-content:center;align-items:center;z-index:99999;}
 .popupBox{width:330px;max-width:92%;background:#fff;border-radius:18px;text-align:center;padding:18px;animation:popupScale .25s;}
 @keyframes popupScale{from{transform:scale(.6);opacity:0;}to{transform:scale(1);opacity:1;}}
 .autoGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0;}
@@ -85,7 +85,6 @@ html,body{width:100%;min-height:100%;font-family:Arial,sans-serif;background:url
     <div class="betBtn" id="betMinus">−</div>
     <div class="speedBtn" id="speedBtn">▶</div>
     <button id="spinBtn"><span>⟳</span></button>
-    <div class="speedBtn" id="speedBtn2" style="opacity:0;pointer-events:none;">▶</div>
     <div class="betBtn" id="betPlus">+</div>
   </div>
   <div class="saldoDisplay"><span>SALDO</span><b id="score">0</b></div>
@@ -93,73 +92,43 @@ html,body{width:100%;min-height:100%;font-family:Arial,sans-serif;background:url
 </div>
 
 <div id="freeSpinPopup"><div class="popupBox"><div style="font-size:22px;font-weight:900;color:#ff9800;">🎉 SELAMAT! 🎉</div><div style="font-size:48px;margin:8px 0;">💎💎💎💎</div><div style="font-size:14px;color:#444;margin-bottom:12px;">Mendapatkan<br><b>10 FREE SPINS</b></div><button id="popupOk" style="width:100%;padding:11px;background:#2e7d00;color:#fff;border:none;border-radius:10px;font-weight:900;">OK</button></div></div>
-
-<div id="autoPopup"><div class="popupBox">
-  <div style="font-weight:900;font-size:17px;">AUTO SPIN</div>
-  <div class="autoGrid" id="autoGrid"></div>
-  <button id="autoCancel" style="width:100%;padding:9px;background:#eee;border:none;border-radius:10px;font-weight:700;">BATAL</button>
-  <button id="autoStop" style="width:100%;padding:9px;background:#ff1a1a;color:#fff;border:none;border-radius:10px;margin-top:6px;font-weight:700;display:none;">STOP AUTO</button>
-</div></div>
-
-<div id="buyPopup"><div class="popupBox">
-  <div style="font-weight:900;font-size:17px;">💎 BUY FREE SPIN</div>
-  <div style="margin:10px 0;font-size:13px;color:#333;">10 Free Spins - Harga 100x BET</div>
-  <div class="buyBetRow">
-    <button class="buyBetBtn" id="buyBetMinus">−</button>
-    <div style="text-align:center;"><div style="font-size:10px;color:#777;">BET</div><b id="buyBetText" style="font-size:16px;">200</b><div style="font-size:10px;color:#777;">HARGA</div><b id="buyPrice" style="font-size:15px;color:#d80000;">20.000</b></div>
-    <button class="buyBetBtn" id="buyBetPlus">+</button>
-  </div>
-  <div style="display:flex;gap:8px;margin-top:8px;">
-    <button id="buyCancel" style="flex:1;padding:11px;background:#eee;border:none;border-radius:10px;font-weight:700;">BATAL</button>
-    <button id="buyConfirm" style="flex:1;padding:11px;background:linear-gradient(180deg,#ff7a18,#d80000);color:#fff;border:none;border-radius:10px;font-weight:900;">BELI</button>
-  </div>
-</div></div>
+<div id="autoPopup"><div class="popupBox"><div style="font-weight:900;font-size:17px;">AUTO SPIN</div><div class="autoGrid" id="autoGrid"></div><button id="autoCancel" style="width:100%;padding:9px;background:#eee;border:none;border-radius:10px;font-weight:700;">BATAL</button><button id="autoStop" style="width:100%;padding:9px;background:#ff1a1a;color:#fff;border:none;border-radius:10px;margin-top:6px;font-weight:700;display:none;">STOP AUTO</button></div></div>
+<div id="buyPopup"><div class="popupBox"><div style="font-weight:900;font-size:17px;">💎 BUY FREE SPIN</div><div style="margin:10px 0;font-size:13px;color:#333;">10 Free Spins - Harga 100x BET</div><div class="buyBetRow"><button class="buyBetBtn" id="buyBetMinus">−</button><div style="text-align:center;"><div style="font-size:10px;color:#777;">BET</div><b id="buyBetText" style="font-size:16px;">200</b><div style="font-size:10px;color:#777;">HARGA</div><b id="buyPrice" style="font-size:15px;color:#d80000;">20.000</b></div><button class="buyBetBtn" id="buyBetPlus">+</button></div><div style="display:flex;gap:8px;margin-top:8px;"><button id="buyCancel" style="flex:1;padding:11px;background:#eee;border:none;border-radius:10px;font-weight:700;">BATAL</button><button id="buyConfirm" style="flex:1;padding:11px;background:linear-gradient(180deg,#ff7a18,#d80000);color:#fff;border:none;border-radius:10px;font-weight:900;">BELI</button></div></div></div>
 
 <script>
 const firebaseConfig={apiKey:"AIzaSyBeTALsF43ij3aAlZjF1XeBjB1gNtaTb2I",authDomain:"game-demo-4db7f.firebaseapp.com",projectId:"game-demo-4db7f",storageBucket:"game-demo-4db7f.firebasestorage.app",messagingSenderId:"405381506143",appId:"1:405381506143:web:da63f34a24f01e4f0367ea"};
 firebase.initializeApp(firebaseConfig); const auth=firebase.auth(); const db=firebase.firestore();
 let BET_LEVELS=[200,400,600,800,1000,2000,4000,6000,8000,10000,15000,20000,30000,50000,100000], betIndex=0, currentBet=200;
 let totalMenangSpin=0;
-// SPEED: 0=sedang,1=cepat,2=super cepat - pakai SIMBOL
-const SPEED_SET=[{icon:"▶",label:"sedang",gravity:90,drop:30,fall:"0.32s",autoDelay:800},{icon:"⏩",label:"cepat",gravity:45,drop:14,fall:"0.18s",autoDelay:400},{icon:"⚡",label:"super",gravity:18,drop:6,fall:"0.08s",autoDelay:200}];
-let speedIdx=0;
-function getSpeed(){ return SPEED_SET[speedIdx]; }
+const SPEED_SET=[{icon:"▶",gravity:90,drop:30,fall:"0.32s",autoDelay:800},{icon:"⏩",gravity:45,drop:14,fall:"0.18s",autoDelay:400},{icon:"⚡",gravity:18,drop:6,fall:"0.08s",autoDelay:200}];
+let speedIdx=0; function getSpeed(){ return SPEED_SET[speedIdx]; }
 function updateSpeedUI(){ document.getElementById('speedBtn').textContent=getSpeed().icon; document.documentElement.style.setProperty('--fall-dur', getSpeed().fall); }
-
-function updateBetUI(){
-  currentBet=BET_LEVELS[betIndex];
-  document.getElementById('betText').textContent=currentBet.toLocaleString('id-ID');
-  document.getElementById('buyBetText').textContent=currentBet.toLocaleString('id-ID');
-  document.getElementById('buyPrice').textContent=(currentBet*100).toLocaleString('id-ID');
-  document.getElementById('betMinus').style.opacity=betIndex===0?'0.25':'1';
-  document.getElementById('betPlus').style.opacity=betIndex===BET_LEVELS.length-1?'0.25':'1';
-  checkSaldoForSpin();
-}
+function updateBetUI(){ currentBet=BET_LEVELS[betIndex]; document.getElementById('betText').textContent=currentBet.toLocaleString('id-ID'); document.getElementById('buyBetText').textContent=currentBet.toLocaleString('id-ID'); document.getElementById('buyPrice').textContent=(currentBet*100).toLocaleString('id-ID'); document.getElementById('betMinus').style.opacity=betIndex===0?'0.3':'1'; document.getElementById('betPlus').style.opacity=betIndex===BET_LEVELS.length-1?'0.3':'1'; checkSaldoForSpin(); saveState(); }
 let fruitValue={"🍎":1000,"🍓":15000,"🍍":20000,"🥝":25000,"🍇":30000,"🥭":40000,"🍒":50000,"🍉":75000,"🥥":100000,"💎":400000};
-let player=null; auth.onAuthStateChanged(async u=>{ if(!u){ location.replace("index.html"); return;} const doc=await db.collection("players").doc(u.uid).get(); if(!doc.exists) return; player=doc.data(); score=player.wallet?.coin||0; updatePanel(); });
+let player=null; auth.onAuthStateChanged(async u=>{ if(!u){ location.replace("index.html"); return;} const doc=await db.collection("players").doc(u.uid).get(); if(!doc.exists) return; player=doc.data(); const saved=loadState(); if(saved && saved.score!=null){ score=saved.score; betIndex=saved.betIndex||0; autoSpins=saved.autoSpins||0; isAuto=saved.isAuto||false; speedIdx=saved.speedIdx||0; if(isAuto) document.getElementById('autoCount').style.display='block'; } else { score=player.wallet?.coin||0; } updateSpeedUI(); updatePanel(); if(board.length===0) createBoard(); else drawBoard(); });
+
 const SCATTER="💎"; let freeSpins=0,inFreeSpin=false,ROWS=5,COLS=5; const symbols=["🍎","🍓","🍍","🥝","🍇","🥭","🍒","🍉","🥥"]; let board=[],score=0,combo=0,spinning=false,forceScatter=false; const grid=document.getElementById("grid"); let cells=[]; const scoreText=document.getElementById("score"), winAmountEl=document.getElementById("winAmount"), message=document.getElementById("message"), spinBtn=document.getElementById("spinBtn");
 
 let autoSpins=0,isAuto=false; const autoOptions=[10,20,30,40,50,100,150,200,300,400,500];
-function renderAutoGrid(){ const g=document.getElementById('autoGrid'); g.innerHTML=''; autoOptions.forEach(n=>{ const d=document.createElement('div'); d.className='autoOpt'+(autoSpins===n?' active':''); d.textContent=n; d.onclick=()=>{ autoSpins=n; isAuto=true; document.getElementById('autoCount').textContent=n; document.getElementById('autoCount').style.display='block'; closeAuto(); spin(); }; g.appendChild(d); }); }
+function renderAutoGrid(){ const g=document.getElementById('autoGrid'); g.innerHTML=''; autoOptions.forEach(n=>{ const d=document.createElement('div'); d.className='autoOpt'+(autoSpins===n?' active':''); d.textContent=n; d.onclick=()=>{ autoSpins=n; isAuto=true; document.getElementById('autoCount').textContent=n; document.getElementById('autoCount').style.display='block'; closeAuto(); saveState(); spin(); }; g.appendChild(d); }); }
 function closeAuto(){ document.getElementById('autoPopup').style.display='none'; }
 function openAuto(){ renderAutoGrid(); document.getElementById('autoPopup').style.display='flex'; document.getElementById('autoStop').style.display=isAuto?'block':'none'; }
 function checkSaldoForSpin(){ if(score < currentBet && !inFreeSpin){ spinBtn.classList.add('hidden'); showMessage("💰 Saldo tidak cukup!"); } else { spinBtn.classList.remove('hidden'); } }
 function randomFruit(){ return symbols[Math.floor(Math.random()*symbols.length)]; }
-function updatePanel(){ scoreText.textContent=score.toLocaleString("id-ID"); winAmountEl.textContent=totalMenangSpin.toLocaleString("id-ID"); checkSaldoForSpin(); if(isAuto) document.getElementById('autoCount').textContent=autoSpins; }
+function updatePanel(){ scoreText.textContent=score.toLocaleString("id-ID"); winAmountEl.textContent=totalMenangSpin.toLocaleString("id-ID"); checkSaldoForSpin(); if(isAuto) document.getElementById('autoCount').textContent=autoSpins; saveState(); }
 function showMessage(t){ message.textContent=t; }
-function createBoard(){ board=[]; for(let r=0;r<ROWS;r++){ let row=[]; for(let c=0;c<COLS;c++) row.push(randomFruit()); board.push(row);} drawBoard(); updatePanel(); }
+function createBoard(){ board=[]; for(let r=0;r<ROWS;r++){ let row=[]; for(let c=0;c<COLS;c++) row.push(randomFruit()); board.push(row);} drawBoard(); updatePanel(); saveState(); }
 function drawBoard(){ grid.innerHTML=""; cells=[]; for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++){ const cell=document.createElement("div"); cell.className="cell"; const span=document.createElement("span"); span.className="fruit-emoji"; span.textContent=board[r][c]; cell.appendChild(span); grid.appendChild(cell); cells.push(cell); } }
 function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
 async function animateSpin(){
-  const sp=getSpeed();
-  spinBtn.disabled=true; spinning=true; showMessage(isAuto?"AUTO "+sp.icon+" "+autoSpins+" sisa":"SPIN...");
-  forceScatter=Math.random()*100<18;
+  const sp=getSpeed(); spinBtn.disabled=true; spinning=true; showMessage(isAuto?"AUTO "+sp.icon+" "+autoSpins+" sisa":"SPIN..."); forceScatter=Math.random()*100<18;
   for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++){ board[r][c]=null; updateCell(r,c); }
   await sleep(sp.gravity); await gravity();
   if(forceScatter && !inFreeSpin){ const used=[]; const tot=4+Math.floor(Math.random()*3); while(used.length<tot){ const r=Math.floor(Math.random()*ROWS),c=Math.floor(Math.random()*COLS),k=r+"-"+c; if(used.includes(k)) continue; used.push(k); board[r][c]=SCATTER; updateCell(r,c);} }
 }
 async function spin(){
-  if(spinning) return;
+  if(spinning && !isAuto) return;
+  if(isAuto && spinning){ stopAuto(); showMessage("Auto dihentikan"); spinBtn.disabled=false; spinning=false; return; }
   if(score < currentBet && !inFreeSpin){ showMessage("❌ Saldo di bawah BET!"); checkSaldoForSpin(); stopAuto(); return; }
   try{
     combo=0; totalMenangSpin=0; updatePanel();
@@ -174,15 +143,18 @@ async function spin(){
     await destroyMatches(res);
   }catch(e){ console.error(e); showMessage(e.message); spinBtn.disabled=false; spinning=false; }
 }
-function handleAutoNext(){ if(isAuto){ autoSpins--; document.getElementById('autoCount').textContent=autoSpins; if(autoSpins<=0){ stopAuto(); } else { setTimeout(()=>{ if(!spinning) spin(); }, getSpeed().autoDelay); } } }
-function stopAuto(){ isAuto=false; autoSpins=0; document.getElementById('autoCount').style.display='none'; }
+function handleAutoNext(){ if(isAuto){ autoSpins--; document.getElementById('autoCount').textContent=autoSpins; saveState(); if(autoSpins<=0){ stopAuto(); } else { setTimeout(()=>{ if(!spinning) spin(); }, getSpeed().autoDelay); } } }
+function stopAuto(){ isAuto=false; autoSpins=0; document.getElementById('autoCount').style.display='none'; saveState(); }
 
 document.getElementById('betMinus').onclick=()=>{ if(betIndex>0){ betIndex--; updateBetUI(); } };
 document.getElementById('betPlus').onclick=()=>{ if(betIndex<BET_LEVELS.length-1){ betIndex++; updateBetUI(); } };
 document.getElementById('buyBetMinus').onclick=()=>{ if(betIndex>0){ betIndex--; updateBetUI(); } };
 document.getElementById('buyBetPlus').onclick=()=>{ if(betIndex<BET_LEVELS.length-1){ betIndex++; updateBetUI(); } };
-document.getElementById('speedBtn').onclick=()=>{ speedIdx=(speedIdx+1)%SPEED_SET.length; updateSpeedUI(); };
-spinBtn.addEventListener("click",()=>{ if(!isAuto) spin(); });
+document.getElementById('speedBtn').onclick=()=>{
+  if(isAuto){ stopAuto(); showMessage("Auto dihentikan via kecepatan"); return; }
+  speedIdx=(speedIdx+1)%SPEED_SET.length; updateSpeedUI(); saveState();
+};
+spinBtn.addEventListener("click",()=>{ spin(); });
 document.getElementById('autoBtn').onclick=openAuto;
 document.getElementById('autoCancel').onclick=closeAuto;
 document.getElementById('autoStop').onclick=()=>{ stopAuto(); closeAuto(); };
@@ -195,6 +167,24 @@ document.getElementById('buyConfirm').onclick=async()=>{
   score-=price; if(player){ player.wallet.coin=score; const u=auth.currentUser; if(u) await db.collection("players").doc(u.uid).update({"wallet.coin":score}); } updatePanel();
   await startFreeSpins(true);
 };
+
+// PERSISTENCE ANTI REFRESH
+function saveState(){
+  try{
+    localStorage.setItem('bobanza_state', JSON.stringify({score,betIndex,autoSpins,isAuto,speedIdx,board,totalMenangSpin,timestamp:Date.now()}));
+  }catch(e){}
+}
+function loadState(){
+  try{
+    const s=JSON.parse(localStorage.getItem('bobanza_state')||'null');
+    if(!s) return null;
+    if(Date.now()-s.timestamp>600000) return null; // 10 menit expired
+    board=s.board||[];
+    totalMenangSpin=s.totalMenangSpin||0;
+    return s;
+  }catch(e){return null;}
+}
+window.addEventListener('beforeunload', saveState);
 
 function findMatches(){ const counts={},pos={}; for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++){ const f=board[r][c]; if(f===SCATTER) continue; if(!counts[f]){counts[f]=0; pos[f]=[];} counts[f]++; pos[f].push({r,c}); } const m=[]; for(const f in counts) if(counts[f]>=6) m.push(pos[f]); return m; }
 async function destroyMatches(groups){
@@ -209,7 +199,7 @@ async function destroyMatches(groups){
   await gravity();
   const again=findMatches();
   if(again.length>0){ combo++; showMessage("💥 +"+winThis.toLocaleString('id-ID')+" | Total: "+totalMenangSpin.toLocaleString('id-ID')); await sleep(getSpeed().drop*2); await destroyMatches(again); }
-  else { showWin("+"+totalMenangSpin.toLocaleString('id-ID')); showMessage("Menang "+totalMenangSpin.toLocaleString('id-ID')); spinBtn.disabled=false; spinning=false; handleAutoNext(); }
+  else { showWin("+"+totalMenangSpin.toLocaleString('id-ID')); showMessage("Menang "+totalMenangSpin.toLocaleString('id-ID')); spinBtn.disabled=false; spinning=false; saveState(); handleAutoNext(); }
 }
 async function gravity(){
   const sp=getSpeed();
@@ -225,7 +215,9 @@ function showWin(t){ const d=document.createElement("div"); d.className="comboPo
 function checkScatterCount(){ let cnt=0; for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++) if(board[r][c]===SCATTER) cnt++; return cnt; }
 async function startFreeSpins(isBuy=false){ inFreeSpin=true; freeSpins=10; showMessage(isBuy?"💎 BUY 10 FREE SPINS":"🎁 FREE SPINS : 10"); if(isBuy) await sleep(400); while(freeSpins>0){ showMessage("🎁 FREE SPINS : "+freeSpins); await sleep(400); await animateSpin(); const res=findMatches(); if(res.length) await destroyMatches(res); freeSpins--; } inFreeSpin=false; spinBtn.disabled=false; spinning=false; showMessage("Free Spin Selesai - Menang "+totalMenangSpin.toLocaleString('id-ID')); updatePanel(); handleAutoNext(); }
 function showFreeSpinPopup(){ return new Promise(res=>{ const p=document.getElementById("freeSpinPopup"); p.style.display="flex"; document.getElementById("popupOk").onclick=()=>{ p.style.display="none"; res(); }; }); }
-updateBetUI(); updateSpeedUI(); createBoard(); showMessage("Tekan tombol SPIN");
+updateBetUI(); updateSpeedUI();
+if(board.length===0) createBoard(); else { drawBoard(); updatePanel(); }
+showMessage("Tekan tombol SPIN");
 </script>
 </body>
 </html>
