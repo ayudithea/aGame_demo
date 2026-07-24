@@ -217,7 +217,66 @@ animation:bell 1s infinite;
 display:none;  
 }  
   
-  
+ @media (max-width:768px){
+
+header{
+    padding:8px;
+    gap:6px;
+}
+
+header h2{
+    font-size:18px;
+    line-height:1.2;
+}
+
+header>div{
+    gap:5px !important;
+}
+
+#btnRefresh,
+#btnNotif,
+#btnLogout{
+    padding:8px 10px;
+    font-size:13px;
+}
+
+#adminName{
+    display:none;
+}
+
+.card-grid{
+    grid-template-columns:1fr;
+}
+
+.content{
+    padding:10px;
+}
+
+.section{
+    padding:12px;
+}
+
+table{
+    display:block;
+    overflow-x:auto;
+    white-space:nowrap;
+}
+
+input,
+select{
+    font-size:14px;
+}
+
+.sidebar{
+    width:220px;
+    left:-220px;
+}
+
+.sidebar.show{
+    left:0;
+}
+
+} 
 </style>  </head>  <body>  <header>  
 <button id="btnMenu" class="btn blue">☰</button>
 
