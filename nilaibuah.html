@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="id">
+<head><!-- PLAYABLE_TOUCH_PATCH_V1 --><script>
+(function() {
+  if (window.__playableTouchPatchInstalled) return;
+  window.__playableTouchPatchInstalled = true;
+  var origAdd = EventTarget.prototype.addEventListener;
+  var blockedTypes = { touchstart: 1, touchmove: 1, wheel: 1 };
+  EventTarget.prototype.addEventListener = function(type, listener, options) {
+    if (blockedTypes[type]) {
+      if (options === undefined || options === null) {
+        options = { passive: true };
+      } else if (typeof options === 'boolean') {
+        options = { capture: options, passive: true };
+      } else {
+        options = Object.assign({}, options, { passive: true });
+      }
+    }
+    return origAdd.call(this, type, listener, options);
+  };
+})();
+</script><script>window.Intl=window.Intl||{};Intl.t=function(s){return(Intl._locale&&Intl._locale[s])||s;};</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin - Edit Nilai Buah</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
+</head>
+<body class="bg-[#111] min-h-screen p-6 font-sans">
+  <div class="bg-white max-w-[600px] mx-auto rounded-[24px] p-8">
+    <h1 class="text-2xl font-bold">💰 Edit Nilai Buah</h1>
+    <p class="text-sm text-gray-500 mt-1">Ubah nilai hadiah tiap buah. Perubahan langsung live di game tanpa upload ulang.</p>
+
+    <div id="form" class="mt-6 space-y-3">
+      <!-- diisi JS -->
+    </div>
+
+    <button id="btnSave" class="w-full mt-8 bg-black text-white py-4 rounded-xl font-bold">SIMPAN KE FIREBASE</button>
+    <p id="status" class="text-center text-sm mt-3 text-green-600 hidden">Tersimpan! Nilai buah update.</p>
+  </div>
+
+<script>
+const firebaseConfig = {
+    apiKey: "AIzaSyBeTALsF43ij3aAlZjF1XeBjB1gNtaTb2I",
+    authDomain: "game-demo-4db7f.firebaseapp.com",
+    projectId: "game-demo-4db7f",
+    storageBucket: "game-demo-4db7f.firebasestorage.app",
+    messagingSenderId: "405381506143",
+    appId: "1:405381506143:web:da63f34a24f01e4f0367ea"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+const defaultFruits = [
+  {emoji:"🍎", name:"Apel", value:1000},
+  {emoji:"🍓", name:"Stroberi", value:15000},
+  {emoji:"🍍", name:"Nanas", value:20000},
+  {emoji:"🥝", name:"Kiwi", value:25000},
+  {emoji:"🍇", name:"Anggur", value:30000},
+  {emoji:"🥭", name:"Mangga", value:40000},
+  {emoji:"🍒", name:"Ceri", value:50000},
+  {emoji:"🍉", name:"Semangka", value:75000},
+  {emoji:"🥥", name:"Kelapa", value:100000},
+  {emoji:"💎", name:"Diamond (Scatter)", value:400000},
+];
+
+const form = document.getElementById('form');
+
+function renderForm(dataArray){
+  form.innerHTML = '';
+  dataArray.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'flex items-center gap-3 border rounded-xl px-4 py-3';
+    div.innerHTML = `
+      <div class="text-3xl w-10 text-center">${item.emoji}</div>
+      <div class="flex-1">
+        <div class="text-sm font-bold">${item.name} ${item.emoji}</div>
+        <div class="text-xs text-gray-400">${item.emoji}</div>
+      </div>
+      <input data-emoji="${item.emoji}" type="number" value="${item.value}" class="fruit-input w-32 border rounded-lg px-3 py-2 text-right font-bold outline-none focus:border-black">
+    `;
+    form.appendChild(div);
+  });
+}
+
+async function load(){
+  const doc = await db.collection("game_config").doc("fruit_values").get();
+  if(doc.exists && doc.data().fruits){
+    renderForm(doc.data().fruits);
+  } else {
+    renderForm(defaultFruits);
+  }
+}
+
+document.getElementById('btnSave').onclick = async () => {
+  const inputs = document.querySelectorAll('.fruit-input');
+  const fruits = [];
+  inputs.forEach(inp => {
+    const emoji = inp.dataset.emoji;
+    const found = defaultFruits.find(f=>f.emoji===emoji);
+    fruits.push({
+      emoji: emoji,
+      name: found ? found.name : emoji,
+      value: parseInt(inp.value) || 0
+    });
+  });
+
+  // Simpan sebagai array + map biar gampang di game
+  const map = {};
+  fruits.forEach(f => map[f.emoji] = f.value);
+
+  await db.collection("game_config").doc("fruit_values").set({
+    fruits: fruits,
+    valuesMap: map,
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  }, {merge:true});
+
+  const s = document.getElementById('status');
+  s.classList.remove('hidden');
+  setTimeout(()=> s.classList.add('hidden'), 2000);
+};
+
+load();
+</script>
+</body>
+</html>
