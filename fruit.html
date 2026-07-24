@@ -22,52 +22,59 @@
 </script><script>window.Intl=window.Intl||{};Intl.t=function(s){return(Intl._locale&&Intl._locale[s])||s;};</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>🍓 Fruit Spin Pro - FIXED</title>
+<title>🍓 FRUIT BOBANZA - BET System</title>
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 html,body{width:100%;min-height:100%;font-family:Arial,sans-serif;background:url("halaman.png") center center/cover no-repeat fixed;}
-#game,.board,.Area,#message{background:transparent !important;}
-.board{box-shadow:none;backdrop-filter:none !important;}
-.topPanel{position:absolute;top:95px;left:50%;transform:translateX(-50%);width:90%;height:55px;display:flex;justify-content:space-around;align-items:center;color:#fff;font-size:22px;font-weight:bold;text-shadow:2px 2px 5px #000;z-index:999;}
-.board{position:relative;transform:translateX(18px);width:min(96vw,500px);margin:180px auto 30px;padding:8px;overflow:hidden;border-radius:28px;}
-#grid{position:relative;display:grid;grid-template-columns:repeat(5,1fr);gap:1px;width:90%;}
-.cell{position:relative;aspect-ratio:1;display:flex;justify-content:center;align-items:center;font-size:38px;overflow:hidden;transition:.15s;}
+.topPanel{position:absolute;top:95px;left:50%;transform:translateX(-50%);width:92%;height:55px;display:flex;justify-content:space-around;align-items:center;color:#fff;font-size:18px;font-weight:bold;text-shadow:2px 2px 5px #000;z-index:999;background:linear-gradient(180deg,rgba(0,0,0,.2),rgba(0,0,0,.4));border-radius:12px;border:1px solid rgba(255,255,255,.3);}
+.board{position:relative;width:min(96vw,500px);margin:180px auto 20px;padding:8px;overflow:hidden;border-radius:28px;}
+#grid{display:grid;grid-template-columns:repeat(5,1fr);gap:2px;width:95%;margin:0 auto;background:rgba(255,255,255,.15);padding:4px;border-radius:12px;backdrop-filter:blur(2px);}
+.cell{position:relative;aspect-ratio:1;display:flex;justify-content:center;align-items:center;font-size:38px;background:rgba(255,255,255,.25);border-radius:8px;overflow:hidden;transition:.15s;box-shadow:inset 0 1px 3px rgba(255,255,255,.5);}
 .cell:hover{transform:scale(1.05);}
-.cell::after{content:"";position:absolute;left:50%;bottom:10px;width:36%;height:10%;transform:translateX(-50%);background:rgba(0,0,0,.25);border-radius:50%;filter:blur(5px);pointer-events:none;}
 .fall{animation:fall .35s ease;}
 @keyframes fall{from{transform:translateY(-80px);opacity:0;}to{transform:translateY(0);opacity:1;}}
-.Area{display:flex;flex-direction:column;align-items:center;margin-top:20px;gap:8px;}
-#spinBtn{width:80px;height:80px;border-radius:50%;border:6px solid #fff;background:radial-gradient(circle at 30% 30%, #3d3d3d, #111 80%);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:inset 0 6px 12px rgba(255,255,255,.15),inset 0 -8px 12px rgba(0,0,0,.6),0 8px 18px rgba(0,0,0,.5);transition:.15s;}
-#spinBtn span{font-size:50px;color:#fff;font-weight:bold;}
+.controlArea{position:relative;width:min(96vw,500px);margin:10px auto 0;display:flex;flex-direction:column;align-items:center;gap:8px;padding-bottom:20px;}
+.spinRow{display:flex;align-items:center;justify-content:center;gap:18px;margin-top:5px;}
+.betBtn{width:56px;height:56px;border-radius:50%;border:3px solid #fff;background:linear-gradient(180deg,#666,#222);color:#fff;font-size:28px;font-weight:bold;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.5), inset 0 2px 4px rgba(255,255,255,.3);transition:.1s;user-select:none;}
+.betBtn:active{transform:scale(.9);}
+#spinBtn{width:84px;height:84px;border-radius:50%;border:5px solid #fff;background:radial-gradient(circle at 30% 30%, #555, #111 80%);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.6), inset 0 3px 8px rgba(255,255,255,.2);transition:.15s;}
+#spinBtn span{font-size:48px;color:#fff;font-weight:bold;line-height:1;}
 #spinBtn:active{transform:scale(.92);}
-#message{margin-top:10px;text-align:center;font-size:16px;font-weight:bold;color:#fff;text-shadow:2px 2px 4px #000;min-height:28px;}
-.comboPopup{position:fixed;left:50%;top:45%;transform:translate(-50%,-50%);font-size:58px;font-weight:bold;color:#fff;text-shadow:0 0 18px #000;pointer-events:none;animation:comboPopup 1.2s forwards;z-index:9999;}
-@keyframes comboPopup{0%{opacity:0;transform:translate(-50%,-50%) scale(.2);}25%{opacity:1;transform:translate(-50%,-50%) scale(1.4);}100%{opacity:0;transform:translate(-50%,-180%) scale(1);}}
+#message{font-size:18px;font-weight:bold;color:#fff;text-shadow:2px 2px 4px #000, 0 0 10px #000;min-height:26px;text-align:center;}
+.betDisplay{position:absolute;right:10px;bottom:5px;background:linear-gradient(180deg,#ffcc00,#ff9800);border:2px solid #fff;border-radius:12px;padding:6px 14px;color:#000;font-weight:bold;font-size:14px;box-shadow:0 4px 10px rgba(0,0,0,.5);text-align:center;min-width:90px;}
+.betDisplay span{font-size:11px;display:block;color:#333;line-height:1;}
+.betDisplay b{font-size:16px;}
+.comboPopup{position:fixed;left:50%;top:45%;transform:translate(-50%,-50%);font-size:54px;font-weight:bold;color:#fff;text-shadow:0 0 18px #000,0 0 30px #ff9800;pointer-events:none;animation:comboPopup 1.2s forwards;z-index:9999;text-align:center;}
+@keyframes comboPopup{0%{opacity:0;transform:translate(-50%,-50%) scale(.2);}25%{opacity:1;transform:translate(-50%,-50%) scale(1.3);}100%{opacity:0;transform:translate(-50%,-180%) scale(1);}}
 .bigFlash{animation:bigFlash .7s;}
-@keyframes bigFlash{0%{filter:brightness(1);}50%{filter:brightness(2.2);}100%{filter:brightness(1);}}
-#freeSpinPopup{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;justify-content:center;align-items:center;z-index:99999;}
+@keyframes bigFlash{0%{filter:brightness(1);}50%{filter:brightness(2.5);}100%{filter:brightness(1);}}
+#freeSpinPopup{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;justify-content:center;align-items:center;z-index:99999;}
 .popupBox{width:320px;max-width:90%;background:white;border-radius:20px;text-align:center;padding:25px;animation:popupScale .35s;}
-.popupTitle{font-size:30px;font-weight:bold;color:#ff9800;}
-.popupIcon{font-size:70px;margin:15px 0;}
-.popupText{font-size:24px;color:#444;margin-bottom:20px;}
-#popupOk{width:100%;padding:15px;font-size:22px;}
 @keyframes popupScale{from{transform:scale(.5);opacity:0;}to{transform:scale(1);opacity:1;}}
 </style>
 </head>
 <body>
 <div class="topPanel">
-    <div>💰 Saldo : <span id="score">0</span></div>
+    <div>💰 <span id="score">0</span></div>
     <div>🔥 <span id="comboLabel">COMBO</span> : <span id="combo">0</span></div>
 </div>
 <div class="board"><div id="grid"></div></div>
-<div class="Area">
-<div id="message">Tekan tombol SPIN</div>
-<button id="spinBtn"><span>⟳</span></button>
+
+<div class="controlArea">
+    <div id="message">Tekan tombol SPIN</div>
+    <div class="spinRow">
+        <div class="betBtn" id="betMinus">−</div>
+        <button id="spinBtn"><span>⟳</span></button>
+        <div class="betBtn" id="betPlus">+</div>
+    </div>
+    <!-- BET di pojok kanan bawah -->
+    <div class="betDisplay"><span>BET</span><b id="betText">200</b></div>
 </div>
-<div id="freeSpinPopup"><div class="popupBox"><div class="popupTitle">🎉 SELAMAT! 🎉</div><div class="popupIcon">💎💎💎💎</div><div class="popupText">Anda mendapatkan<br><br><b>10 FREE SPINS</b></div><button id="popupOk">OK</button></div></div>
+
+<div id="freeSpinPopup"><div class="popupBox"><div style="font-size:28px;font-weight:bold;color:#ff9800;">🎉 SELAMAT! 🎉</div><div style="font-size:60px;margin:12px 0;">💎💎💎💎</div><div style="font-size:18px;color:#444;margin-bottom:18px;">Anda mendapatkan<br><br><b>10 FREE SPINS</b></div><button id="popupOk" style="width:100%;padding:14px;background:#000;color:#fff;border:none;border-radius:12px;font-size:18px;font-weight:bold;">OK</button></div></div>
 
 <script>
 const firebaseConfig = {
@@ -82,163 +89,126 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-// --- CONFIG DARI FIREBASE (combo + buah) ---
-let comboLabels = {
-  topComboLabel: "COMBO",
-  win: "🎉 WIN",
-  combo: "🔥 COMBO x",
-  bigWin: "🏆 BIG WIN",
-  megaWin: "💎 MEGA WIN",
-  jackpot: "👑 JACKPOT"
-};
-let fruitValue = {
-    "🍎": 1000,"🍓": 15000,"🍍": 20000,"🥝": 25000,"🍇": 30000,"🥭": 40000,"🍒": 50000,"🍉": 75000,"🥥": 100000,"💎": 400000
-};
+// --- BET SYSTEM ---
+let BET_LEVELS = [200,400,600,800,1000,2000,4000,6000,8000,10000,15000,20000,30000,50000,100000];
+let betIndex = 0; // mulai dari 200
+let currentBet = BET_LEVELS[betIndex];
 
-db.collection("game_config").doc("combo_labels").onSnapshot(doc=>{
-  if(doc.exists){
-    comboLabels = {...comboLabels, ...doc.data()};
-    document.getElementById('comboLabel').textContent = comboLabels.topComboLabel;
-  }
-});
-db.collection("game_config").doc("fruit_values").onSnapshot(doc=>{
-  if(doc.exists && doc.data().valuesMap){
-    fruitValue = doc.data().valuesMap;
-  }
-});
-
-let player = null;
-auth.onAuthStateChanged(async(user)=>{
-    if(!user){ location.replace("index.html"); return; }
-    const doc = await db.collection("players").doc(user.uid).get();
-    if(!doc.exists){ alert("Data player tidak ditemukan."); location.replace("portal.html"); return; }
-    player = doc.data();
-    score = player.wallet?.coin || 0;
-    updatePanel();
-});
-
-const SCATTER = "💎";
-const SCATTER_CHANCE = 50;
-let freeSpins = 0;
-let inFreeSpin = false;
-const ROWS=5, COLS=5;
-const symbols = ["🍎","🍓","🍍","🥝","🍇","🥭","🍒","🍉","🥥"];
-let board=[], score=0, totalWin=0, totalMultiplier=1, combo=0, spinning=false, forceScatter=false;
-const grid = document.getElementById("grid");
-let cells = [];
-const scoreText = document.getElementById("score");
-const comboText = document.getElementById("combo");
-const message = document.getElementById("message");
-const spinBtn = document.getElementById("spinBtn");
-const MULTIPLIERS = [2,5,10,25,50,100,250,500,1000,5000,10000];
-function randomMultiplier(){ return MULTIPLIERS[Math.floor(Math.random()*MULTIPLIERS.length)]; }
-async function showMultiplier(){
-    const multi = randomMultiplier();
-    totalMultiplier *= multi;
-    const d = document.createElement("div");
-    d.style.cssText="position:fixed;left:50%;top:45%;transform:translate(-50%,-50%);font-size:70px;font-weight:bold;color:#FFD700;text-shadow:0 0 10px #000,0 0 25px orange;pointer-events:none;z-index:999999;transition:.8s";
-    d.textContent = "✨ x" + multi;
-    document.body.appendChild(d);
-    await sleep(700);
-    d.style.top="30%"; d.style.opacity="0";
-    await sleep(500); d.remove();
+function updateBetUI(){
+    currentBet = BET_LEVELS[betIndex];
+    document.getElementById('betText').textContent = currentBet.toLocaleString('id-ID');
+    document.getElementById('betMinus').style.opacity = betIndex===0 ? '0.4' : '1';
+    document.getElementById('betPlus').style.opacity = betIndex===BET_LEVELS.length-1 ? '0.4' : '1';
 }
+
+// Ambil config bet dari firebase kalau ada
+db.collection("game_config").doc("bet_config").onSnapshot(doc=>{
+  if(doc.exists && doc.data().levels){
+    BET_LEVELS = doc.data().levels;
+    if(betIndex >= BET_LEVELS.length) betIndex = 0;
+    updateBetUI();
+  }
+});
+
+let comboLabels = { topComboLabel:"COMBO", win:"🎉 WIN", combo:"🔥 COMBO x", bigWin:"🏆 BIG WIN", megaWin:"💎 MEGA WIN", jackpot:"👑 JACKPOT" };
+let fruitValue = { "🍎":1000,"🍓":15000,"🍍":20000,"🥝":25000,"🍇":30000,"🥭":40000,"🍒":50000,"🍉":75000,"🥥":100000,"💎":400000 };
+
+db.collection("game_config").doc("combo_labels").onSnapshot(d=>{ if(d.exists){ comboLabels={...comboLabels,...d.data()}; document.getElementById('comboLabel').textContent=comboLabels.topComboLabel; }});
+db.collection("game_config").doc("fruit_values").onSnapshot(d=>{ if(d.exists && d.data().valuesMap){ fruitValue=d.data().valuesMap; }});
+
+let player=null;
+auth.onAuthStateChanged(async user=>{
+  if(!user){ location.replace("index.html"); return; }
+  const doc=await db.collection("players").doc(user.uid).get();
+  if(!doc.exists){ alert("Data player tidak ditemukan"); return; }
+  player=doc.data();
+  score=player.wallet?.coin||0;
+  updatePanel();
+});
+
+const SCATTER="💎"; const SCATTER_CHANCE=50;
+let freeSpins=0,inFreeSpin=false, ROWS=5, COLS=5;
+const symbols=["🍎","🍓","🍍","🥝","🍇","🥭","🍒","🍉","🥥"];
+let board=[], score=0, combo=0, spinning=false, forceScatter=false;
+const grid=document.getElementById("grid"); let cells=[];
+const scoreText=document.getElementById("score"), comboText=document.getElementById("combo"), message=document.getElementById("message"), spinBtn=document.getElementById("spinBtn");
+
 function randomFruit(){ return symbols[Math.floor(Math.random()*symbols.length)]; }
-function updatePanel(){ scoreText.textContent = score.toLocaleString("id-ID"); comboText.textContent = combo; }
-function showMessage(text){ message.textContent=text; }
-function createBoard(){
-  board=[];
-  for(let r=0;r<ROWS;r++){ const row=[]; for(let c=0;c<COLS;c++){ row.push(randomFruit()); } board.push(row); }
-  drawBoard(); updatePanel();
-}
-function drawBoard(){
-    grid.innerHTML = ""; cells = [];
-    for(let r=0;r<ROWS;r++){ for(let c=0;c<COLS;c++){
-        const cell=document.createElement("div");
-        cell.className="cell";
-        cell.textContent=board[r][c];
-        grid.appendChild(cell); cells.push(cell);
-    }}
-}
-function sleep(ms){ return new Promise(resolve=>setTimeout(resolve,ms)); }
+function updatePanel(){ scoreText.textContent=score.toLocaleString("id-ID"); comboText.textContent=combo; }
+function showMessage(t){ message.textContent=t; }
+function createBoard(){ board=[]; for(let r=0;r<ROWS;r++){ let row=[]; for(let c=0;c<COLS;c++) row.push(randomFruit()); board.push(row);} drawBoard(); updatePanel(); }
+function drawBoard(){ grid.innerHTML=""; cells=[]; for(let r=0;r<ROWS;r++){ for(let c=0;c<COLS;c++){ const cell=document.createElement("div"); cell.className="cell"; cell.textContent=board[r][c]; grid.appendChild(cell); cells.push(cell); }}}
+function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
+
 async function animateSpin(){
-    spinBtn.disabled=true; spinning=true;
-    showMessage("SPIN...");
-    forceScatter=Math.random()*100<SCATTER_CHANCE;
-    for(let r=0;r<ROWS;r++){ for(let c=0;c<COLS;c++){ board[r][c]=null; updateCell(r,c); }}
-    await sleep(150);
-    await gravity();
-    if(forceScatter){
-      const used=[]; const totalScatter=4+Math.floor(Math.random()*3);
-      while(used.length<totalScatter){
-        const r=Math.floor(Math.random()*ROWS), c=Math.floor(Math.random()*COLS), key=r+"-"+c;
-        if(used.includes(key)) continue; used.push(key);
-        board[r][c]=SCATTER; updateCell(r,c);
-      }
-    }
+  spinBtn.disabled=true; spinning=true; showMessage("SPIN..."); forceScatter=Math.random()*100<SCATTER_CHANCE;
+  for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++){ board[r][c]=null; updateCell(r,c); }
+  await sleep(120); await gravity();
+  if(forceScatter){ const used=[]; const total=4+Math.floor(Math.random()*3); while(used.length<total){ const r=Math.floor(Math.random()*ROWS), c=Math.floor(Math.random()*COLS), key=r+"-"+c; if(used.includes(key)) continue; used.push(key); board[r][c]=SCATTER; updateCell(r,c);} }
 }
+
 async function spin(){
-    if(spinning) return;
-    try{
-        combo=0; updatePanel();
-        await animateSpin();
-        if(checkScatter()){ await showFreeSpinPopup(); await startFreeSpins(); return; }
-        showMessage("🔍"); await sleep(400);
-        const result=findMatches();
-        if(result.length===0){
-            score=Math.max(0,score-10000); updatePanel();
-            showMessage("❌Kalah(-10.000)"); spinBtn.disabled=false; spinning=false; return;
-        }
-        showMessage("🎉Menang!"); await destroyMatches(result);
-    }catch(e){ console.error(e); showMessage(e.message); spinBtn.disabled=false; spinning=false; }
+  if(spinning) return;
+  if(score < currentBet){ showMessage("❌ Saldo tidak cukup! BET: "+currentBet); return; }
+  try{
+    combo=0; updatePanel();
+    score -= currentBet; // POTONG BET
+    if(player){ player.wallet.coin=score; const u=auth.currentUser; if(u) await db.collection("players").doc(u.uid).update({"wallet.coin":score}); }
+    updatePanel();
+    await animateSpin();
+    if(checkScatter()){ await showFreeSpinPopup(); await startFreeSpins(); return; }
+    showMessage("🔍"); await sleep(300);
+    const result=findMatches();
+    if(result.length===0){ showMessage("❌ Kalah (-"+currentBet.toLocaleString("id-ID")+")"); spinBtn.disabled=false; spinning=false; return; }
+    showMessage("🎉 Menang!"); await destroyMatches(result);
+  }catch(e){ console.error(e); showMessage(e.message); spinBtn.disabled=false; spinning=false; }
 }
+
+document.getElementById('betMinus').onclick=()=>{ if(betIndex>0){ betIndex--; updateBetUI(); } };
+document.getElementById('betPlus').onclick=()=>{ if(betIndex<BET_LEVELS.length-1){ betIndex++; updateBetUI(); } };
 spinBtn.addEventListener("click", spin);
+
 function findMatches(){
-    const counts={}, positions={};
-    for(let r=0;r<ROWS;r++){ for(let c=0;c<COLS;c++){
-        const fruit=board[r][c]; if(fruit===SCATTER) continue;
-        if(!counts[fruit]){counts[fruit]=0; positions[fruit]=[];}
-        counts[fruit]++; positions[fruit].push({r,c});
-    }}
-    const matches=[]; for(const fruit in counts){ if(counts[fruit]>=6){ matches.push(positions[fruit]); } }
-    return matches;
+  const counts={}, pos={}; for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++){ const f=board[r][c]; if(f===SCATTER) continue; if(!counts[f]){counts[f]=0; pos[f]=[];} counts[f]++; pos[f].push({r,c}); }
+  const m=[]; for(const f in counts) if(counts[f]>=6) m.push(pos[f]); return m;
 }
 async function destroyMatches(groups){
-  for(const group of groups){ for(const pos of group){ const index=pos.r*COLS+pos.c; cells[index].style.transform="scale(1.4)"; cells[index].style.opacity="0"; } }
-  await sleep(350);
-  for(const group of groups){
-    const fruit=board[group[0].r][group[0].c];
-    let win = group.length * (fruitValue[fruit]||1000) * (combo + 1);
-    score+=win; totalWin+=win;
-    if(player){ player.wallet.coin=score; const user=auth.currentUser; if(user){ await db.collection("players").doc(user.uid).update({"wallet.coin":score}); } }
-    for(const pos of group){ board[pos.r][pos.c]=null; }
+  for(const g of groups) for(const p of g){ const i=p.r*COLS+p.c; cells[i].style.transform="scale(1.3)"; cells[i].style.opacity="0"; }
+  await sleep(300);
+  for(const g of groups){
+    const fruit=board[g[0].r][g[0].c];
+    let win = g.length * (fruitValue[fruit]||1000) * (combo+1) * (currentBet/200); // WIN KELIPATAN BET
+    score+=Math.floor(win);
+    if(player){ player.wallet.coin=score; const u=auth.currentUser; if(u) await db.collection("players").doc(u.uid).update({"wallet.coin":score}); }
+    for(const p of g) board[p.r][p.c]=null;
   }
-  updatePanel(); await gravity(); await showMultiplier();
+  updatePanel(); await gravity();
   const again=findMatches();
-  if(again.length>0){ combo++; updatePanel(); showMessage("🔥 COMBO x"+combo); await sleep(300); await destroyMatches(again); }
+  if(again.length>0){ combo++; updatePanel(); showMessage("🔥 COMBO x"+combo); await sleep(250); await destroyMatches(again); }
   else{
-    if(combo==0){ showWin(comboLabels.win); }
-    else if(combo<3){ showWin(comboLabels.combo+(combo+1)); }
-    else if(combo<5){ showWin(comboLabels.bigWin); }
-    else if(combo<8){ showWin(comboLabels.megaWin); }
-    else{ showWin(comboLabels.jackpot); if(navigator.vibrate){ navigator.vibrate([150,80,150,80,300]); } }
+    if(combo==0) showWin(comboLabels.win);
+    else if(combo<3) showWin(comboLabels.combo+(combo+1));
+    else if(combo<5) showWin(comboLabels.bigWin);
+    else if(combo<8) showWin(comboLabels.megaWin);
+    else showWin(comboLabels.jackpot);
     showMessage("Tekan SPIN lagi"); spinBtn.disabled=false; spinning=false;
   }
 }
 async function gravity(){
-    let moved=false;
-    for(let c=0;c<COLS;c++){ for(let r=ROWS-1;r>=0;r--){ if(board[r][c]===null){ let k=r-1; while(k>=0 && board[k][c]===null){k--;} if(k>=0){ board[r][c]=board[k][c]; board[k][c]=null; moved=true; } } } }
-    for(let r=0;r<ROWS;r++){ for(let c=0;c<COLS;c++){ updateCell(r,c); } }
-    if(moved){ await sleep(180); }
-    for(let c=0;c<COLS;c++){ for(let r=0;r<ROWS;r++){ if(board[r][c]===null){ board[r][c]=randomFruit(); updateCell(r,c); const index=r*COLS+c; cells[index].classList.remove("fall"); void cells[index].offsetWidth; cells[index].classList.add("fall"); await sleep(60); } } }
-    for(let r=0;r<ROWS;r++){ for(let c=0;c<COLS;c++){ const index=r*COLS+c; cells[index].style.opacity="1"; cells[index].style.transform="scale(1)"; updateCell(r,c); } }
-    await sleep(250);
+  for(let c=0;c<COLS;c++) for(let r=ROWS-1;r>=0;r--) if(board[r][c]===null){ let k=r-1; while(k>=0 && board[k][c]===null) k--; if(k>=0){ board[r][c]=board[k][c]; board[k][c]=null; } }
+  for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++) updateCell(r,c);
+  await sleep(120);
+  for(let c=0;c<COLS;c++) for(let r=0;r<ROWS;r++) if(board[r][c]===null){ board[r][c]=randomFruit(); updateCell(r,c); const i=r*COLS+c; cells[i].classList.remove("fall"); void cells[i].offsetWidth; cells[i].classList.add("fall"); await sleep(40); }
+  for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++){ const i=r*COLS+c; cells[i].style.opacity="1"; cells[i].style.transform="scale(1)"; updateCell(r,c); }
+  await sleep(200);
 }
-function updateCell(r,c){ const index=r*COLS+c; if(!cells[index]) return; cells[index].textContent=board[r][c]??""; cells[index].style.opacity="1"; }
-function showWin(text){ const d=document.createElement("div"); d.className="comboPopup"; d.innerHTML=text; document.body.appendChild(d); setTimeout(()=>{d.remove();},1200); grid.classList.add("bigFlash"); setTimeout(()=>{grid.classList.remove("bigFlash");},700); }
-function checkScatter(){ let count=0; for(let r=0;r<ROWS;r++){ for(let c=0;c<COLS;c++){ if(board[r][c]===SCATTER){count++;}}} if(count>=4){ freeSpins+=10; inFreeSpin=true; showWin("⭐ FREE SPINS x10 ⭐"); return true; } return false; }
-async function startFreeSpins(){ while(freeSpins>0){ freeSpins--; showMessage("🎁 FREE SPINS : "+freeSpins); await sleep(700); await animateSpin(); const result=findMatches(); if(result.length){ await destroyMatches(result);} } inFreeSpin=false; spinBtn.disabled=false; spinning=false; showMessage("Free Spin Selesai"); }
-function showFreeSpinPopup(){ return new Promise(resolve=>{ const popup=document.getElementById("freeSpinPopup"); popup.style.display="flex"; document.getElementById("popupOk").onclick=()=>{ popup.style.display="none"; resolve(); }; }); }
+function updateCell(r,c){ const i=r*COLS+c; if(!cells[i]) return; cells[i].textContent=board[r][c]??""; }
+function showWin(t){ const d=document.createElement("div"); d.className="comboPopup"; d.innerHTML=t; document.body.appendChild(d); setTimeout(()=>d.remove(),1200); grid.classList.add("bigFlash"); setTimeout(()=>grid.classList.remove("bigFlash"),700); }
+function checkScatter(){ let cnt=0; for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++) if(board[r][c]===SCATTER) cnt++; if(cnt>=4){ freeSpins+=10; inFreeSpin=true; showWin("⭐ FREE SPINS x10 ⭐"); return true; } return false; }
+async function startFreeSpins(){ while(freeSpins>0){ freeSpins--; showMessage("🎁 FREE SPINS : "+freeSpins); await sleep(600); await animateSpin(); const res=findMatches(); if(res.length) await destroyMatches(res); } inFreeSpin=false; spinBtn.disabled=false; spinning=false; showMessage("Free Spin Selesai"); }
+function showFreeSpinPopup(){ return new Promise(res=>{ const p=document.getElementById("freeSpinPopup"); p.style.display="flex"; document.getElementById("popupOk").onclick=()=>{ p.style.display="none"; res(); }; }); }
+
+updateBetUI();
 createBoard();
 showMessage("Tekan tombol SPIN");
 </script>
