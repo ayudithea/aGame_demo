@@ -123,7 +123,16 @@ body{background:#0b1220;color:#fff;min-height:100vh;}
   <div class="card">
     <h3 style="color:#00b894;margin-bottom:10px;">💰 Form Deposit - Saldo Masuk Setelah Admin ACC</h3>
     <label class="label">Nominal Deposit (Minimal Rp 10.000)</label>
-    <input id="nominalDep" type="number" class="input" placeholder="Contoh: 50000">
+    <input id="nominalDep" type="number" class="input" placeholder="Contoh: 50000" oninput="generateUnik()">
+    <div id="unikBox" style="display:none;background:#1a2a00;border:1px solid #00b894;border-radius:10px;padding:12px;margin-top:10px;">
+      <div style="font-size:12px;color:#bbb;">Rincian Transfer:</div>
+      <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:13px;"><span>Nominal Deposit:</span><b id="unikNominal">Rp 0</b></div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;color:#ffd54a;"><span>+ Kode Unik (wajib):</span><b id="unikKode">Rp 0</b></div>
+      <hr style="margin:8px 0;border-color:#333;">
+      <div style="display:flex;justify-content:space-between;font-size:15px;"><span><b>Total Transfer (WAJIB PAS):</b></span><b id="unikTotal" style="color:#00ff88;font-size:18px;">Rp 0</b></div>
+      <div style="font-size:11px;color:#ff8a65;margin-top:6px;">⚠️ Transfer harus persis sesuai Total Transfer agar terdeteksi otomatis. Saldo yang masuk tetap nominal deposit (tanpa kode unik).</div>
+      <button type="button" onclick="generateUnik(true)" style="margin-top:8px;padding:6px 10px;background:#22314f;color:#fff;border:none;border-radius:6px;font-size:11px;cursor:pointer;">🔄 Ganti Kode Unik</button>
+    </div>
     
     <label class="label">Pilih Tujuan Transfer</label>
     <select id="metodeDep" class="select">
@@ -191,14 +200,20 @@ auth.onAuthStateChanged(user=>{
 });
 
 document.getElementById('btnDep').onclick=async()=>{
-  const nominal=Number(document.getElementById('nominalDep').value);
+  let nominal=Number(document.getElementById('nominalDep').value);
   const metode=document.getElementById('metodeDep').value;
   const catatan=document.getElementById('catatanDep').value.trim();
   
   if(isNaN(nominal) || nominal<10000){
     alert("Minimal Deposit Rp 10.000"); return;
   }
-  if(!confirm(`Yakin kirim Deposit Rp ${nominal.toLocaleString('id-ID')} ke ${metode} ?\n\nSaldo akan bertambah setelah Admin ACC.`)) return;
+  if(kodeUnik===0 || totalTransfer===0){
+    generateUnik(true);
+  }
+  // Pastikan totalTransfer sudah dihitung
+  if(totalTransfer===0) totalTransfer = nominal + kodeUnik;
+  
+  if(!confirm(`Detail Deposit:\n\nNominal: Rp ${nominal.toLocaleString('id-ID')}\nKode Unik: Rp ${kodeUnik}\nTotal Transfer WAJIB: Rp ${totalTransfer.toLocaleString('id-ID')}\nTujuan: ${metode}\n\nPastikan transfer PERSIS Rp ${totalTransfer.toLocaleString('id-ID')} agar mudah di-ACC admin!`)) return;
 
   const btn=document.getElementById('btnDep'); 
   btn.disabled=true; 
@@ -213,6 +228,8 @@ document.getElementById('btnDep').onclick=async()=>{
       email: player.profile?.email || auth.currentUser.email,
       nickname: currentNick,
       nominal: nominal,
+      kodeUnik: kodeUnik,
+      totalTransfer: totalTransfer,
       metode: metode,
       catatan: catatan || "-",
       saldoSebelum: saldoSebelum,
@@ -220,7 +237,7 @@ document.getElementById('btnDep').onclick=async()=>{
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
     });
 
-    alert(`✅ Deposit Dikirim!\n\nRp ${nominal.toLocaleString('id-ID')} ke ${metode}\nStatus: Pending\nSaldo akan masuk Rp ${(saldoSebelum+nominal).toLocaleString('id-ID')} setelah Admin ACC.`);
+    alert(`✅ Deposit Dikirim!\n\nNominal: Rp ${nominal.toLocaleString('id-ID')}\nKode Unik: Rp ${kodeUnik}\nTOTAL WAJIB TRANSFER: Rp ${totalTransfer.toLocaleString('id-ID')}\nTujuan: ${metode}\n\nSilakan transfer PERSIS Rp ${totalTransfer.toLocaleString('id-ID')} ke rekening di atas!\n\nSaldo yang masuk ke akun: Rp ${nominal.toLocaleString('id-ID')} (kode unik tidak masuk saldo)\nStatus: Pending`);
     document.getElementById('nominalDep').value='';
     document.getElementById('catatanDep').value='';
 
@@ -250,6 +267,7 @@ function loadDepHistory(){
           </div>
           <div class="row"><span>Tanggal</span><span>${t}</span></div>
           <div class="row"><span>Tujuan</span><span>${d.metode||'-'}</span></div>
+          <div class="row"><span>Total Transfer</span><span style="color:#00ff88;">Rp ${Number(d.totalTransfer||d.nominal||0).toLocaleString('id-ID')} ${d.kodeUnik? `(+${d.kodeUnik})`:''}</span></div>
           ${d.catatan? `<div class="row"><span>Catatan</span><span>${d.catatan}</span></div>`:''}
           ${d.status==='Success'? '<div style="color:#00ff88;font-size:11px;margin-top:4px;">✅ Saldo sudah masuk ke akun kamu</div>':''}
         </div>
